@@ -247,6 +247,8 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
 (function () {
   // RELEASED: the weeks whose materials are out. Change this one line to release a week.
   var RELEASED = [];
+  // RELEASED_FILES: single files released ahead of their week (for testing or early release).
+  var RELEASED_FILES = ["week1/0.1_Course_Presentation.pdf"];
   var PREVIEW = false; // preview only: files are placeholders until they are uploaded
 
   var K = { L: "Lecture", S: "Ship types", E: "Exercise", Q: "Quiz", H: "Homework", D: "Demo", R: "Reading", N: "Notes", C: "Course", T: "Template", X: "Tool" };
@@ -342,7 +344,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       if (!s.mats.length) mats.appendChild(el("div", { cls: "none", text: s.guest ? "Material from the guest lecturer." : "No materials for this session." }));
       s.mats.forEach(function (x) {
         var kids = [el("span", { cls: "k", text: K[x.k] }), el("span", { cls: "t" }, [x.t, x.note ? el("small", { text: " · " + x.note }) : null])];
-        if (on) {
+        if (on || RELEASED_FILES.indexOf(x.file) >= 0) {
           var href = x.file;
           if (/\.ipynb$/.test(x.file)) href = "https://colab.research.google.com/github/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/" + x.file;
           mats.appendChild(el("a", { cls: "mat", href: href, target: "_blank", rel: "noopener" }, kids));
@@ -369,7 +371,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
   cur.sessions.forEach(function (s) { nl.appendChild(el("li", {}, [el("b", { text: s.c }), el("span", { text: s.d.split(" ")[0] + " · " + s.t })])); });
   var j = document.getElementById("now-jump"); j.href = "#week" + cur.n; j.textContent = "Week " + cur.n + " materials";
 
-  document.getElementById("stamp").textContent = PREVIEW ? "Preview · week 1 shown as released; files are placeholders" : (RELEASED.length ? "Released: week " + RELEASED.join(", ") : "Materials are released about a week before each session");
+  document.getElementById("stamp").textContent = PREVIEW ? "Preview · week 1 shown as released; files are placeholders" : (RELEASED.length ? "Released: week " + RELEASED.join(", ") : RELEASED_FILES.length ? "First materials are out; the rest are released about a week before each session" : "Materials are released about a week before each session");
 })();
 </script>
 
