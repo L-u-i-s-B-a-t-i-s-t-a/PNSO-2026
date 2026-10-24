@@ -251,7 +251,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
   var RELEASED_FILES = ["week1/0.1_Course_Presentation.pdf"];
   var PREVIEW = false; // preview only: files are placeholders until they are uploaded
 
-  var K = { L: "Lecture", S: "Ship types", E: "Exercise", Q: "Quiz", H: "Homework", D: "Demo", R: "Reading", N: "Notes", C: "Course", T: "Template", X: "Tool" };
+  var K = { L: "Lecture", S: "Ship types", E: "Exercise", Q: "Quiz", H: "Homework", D: "Demo", R: "Reading", N: "Notes", C: "Course", T: "Template", X: "Tool", A: "Answers" };
   function m(k, t, file, note) { return { k: k, t: t, file: file, note: note }; }
 
   var WEEKS = [
@@ -263,14 +263,14 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       { c: "W1.3", d: "Fri 6 Nov", h: "13:30–15:30", room: "E2", t: "Design methods; displacement estimate; main dimensions", st: "Container carriers 1", rd: "§1.3.6–1.3.7; §2.1–2.2; App. A", ex: "Exercise 1.3 · First Δ, L, B, T, D from the App. A regressions, with 95 % bands", dl: "D2",
         mats: [m("L", "1.3 Design Methods, Displacement and Main Dimensions", "week1/L1.3.pdf"), m("S", "Container Carriers 1", "week1/ST1.3.pdf"), m("H", "H0 Reference Ship Database", "notebooks/H0_Reference_Ship_Database.ipynb", "optional")] },
       { c: "W1.4", d: "Fri 6 Nov", h: "15:30–17:00", room: "E1", t: "The displacement equation", st: "Container carriers 2", rd: "§2.13; App. C", ex: "Exercise 1.4 · Displacement equation, Q1–Q6", dl: "D3",
-        mats: [m("L", "1.4 The Design Equation", "week1/L1.4.pdf"), m("E", "Exercise 1.4 Displacement Equation", "week1/Ex1.4.pdf"), m("S", "Container Carriers 2", "week1/ST1.4.pdf"), m("H", "H1 Displacement Equation", "notebooks/H1_Displacement_Equation.ipynb", "optional"), m("Q", "Quiz 1", "week1/quiz1.html")] }
+        mats: [m("L", "1.4 The Design Equation", "week1/L1.4.pdf"), m("E", "Exercise 1.4 Displacement Equation", "week1/Ex1.4.pdf"), m("S", "Container Carriers 2", "week1/ST1.4.pdf"), m("H", "H1 Displacement Equation", "notebooks/H1_Displacement_Equation.ipynb", "optional"), m("Q", "Quiz 1", "week1/quiz1.html"), m("A", "Exercise answers, week 1 (reference ship)", "week1/Answers_Week1.pdf", "after the week")] }
     ] },
     { n: 2, days: "11–13 Nov", rel: "4 Nov", sessions: [
       { c: "W2.1–2.2", d: "Wed 11 Nov", h: "13:00–16:30", room: "E2", t: "Human factors in ship design", st: "Guest lecturer", guest: true, mats: [] },
       { c: "W2.3", d: "Fri 13 Nov", h: "13:30–15:30", room: "E2", t: "Main dimensions and form coefficients · Law and Regulations introduction", st: "Containers, securing and hatch covers", rd: "§2.3–2.12; §2.7.1", ex: "Exercise 2.3 · Choose L, B, T, D, CB and check them against the book's ranges", dl: "D3",
         mats: [m("L", "2.3a Main Dimensions and Form Coefficients", "week2/L2.3a.pdf"), m("L", "2.3b Law and Regulations: an Introduction", "week2/L2.3b.pdf"), m("S", "Containers, Securing and Hatch Covers", "week2/ST2.3.pdf")] },
       { c: "W2.4", d: "Fri 13 Nov", h: "15:30–17:00", room: "E1", t: "Preliminary power estimate", st: "Multi-purpose vessels", rd: "§2.14; §5.1", ex: "Exercise 2.4 · Power by Admiralty and Holtrop–Mennen; compare", dl: "D3",
-        mats: [m("L", "2.4 Preliminary Power Estimate", "week2/L2.4.pdf"), m("X", "Holtrop–Mennen power calculator", "week2/tool_holtrop_mennen.html"), m("S", "Multipurpose Vessels", "week2/ST2.4.pdf"), m("Q", "Quiz 2", "week2/quiz2.html")] }
+        mats: [m("L", "2.4 Preliminary Power Estimate", "week2/L2.4.pdf"), m("X", "Holtrop–Mennen power calculator", "week2/tool_holtrop_mennen.html"), m("S", "Multipurpose Vessels", "week2/ST2.4.pdf"), m("Q", "Quiz 2", "week2/quiz2.html"), m("A", "Exercise answers, week 2 (reference ship)", "week2/Answers_Week2.pdf", "after the week")] }
     ] },
     { n: 3, days: "18–20 Nov", rel: "11 Nov", sessions: [
       { c: "W3.1", d: "Wed 18 Nov", h: "13:00–15:00", room: "E2", t: "Weights, centroids and the displacement check", st: "Bulk carriers 1", rd: "§2.15–2.16", ex: "Exercise 3.1 · Lightship by two methods; close the weight balance", dl: "D3",
@@ -280,7 +280,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       { c: "W3.3", d: "Fri 20 Nov", h: "13:30–15:30", room: "E2", t: "Main machinery and propeller", st: "RoRo ships", rd: "§5.2–5.3", ex: "Exercise 3.3 · An engine and a propeller", dl: "D3",
         mats: [m("L", "3.3 Main Machinery and Propeller", "week3/L3.3.pdf"), m("S", "RoRo Ships", "week3/ST3.3.pdf"), m("H", "H2 Main Dimensions, Power and Weights", "notebooks/H2_Main_Dimensions_Power_Weights.ipynb", "optional")] },
       { c: "W3.4", d: "Fri 20 Nov", h: "15:30–17:00", room: "E1", t: "The voyage model", st: "RoRo cargo and equipment", rd: "§1.2.1; voyage notes", ex: "Exercise 3.4 · Round-trip time and fuel on the reference route", dl: "D4",
-        mats: [m("L", "3.4 The Voyage Model", "week3/L3.4.pdf"), m("N", "Voyage and Finance Notes, Part A", "week3/Notes_A.pdf"), m("S", "RoRo Cargo and Equipment", "week3/ST3.4.pdf")] }
+        mats: [m("L", "3.4 The Voyage Model", "week3/L3.4.pdf"), m("N", "Voyage and Finance Notes, Part A", "week3/Notes_A.pdf"), m("S", "RoRo Cargo and Equipment", "week3/ST3.4.pdf"), m("A", "Exercise answers, week 3 (reference ship)", "week3/Answers_Week3.pdf", "after the week")] }
     ] },
     { n: 4, days: "25–27 Nov", rel: "18 Nov", sessions: [
       { c: "W4.1", d: "Wed 25 Nov", h: "13:00–15:00", room: "E2", t: "Building cost", st: "Oil tankers 1", rd: "§6.2–6.5", ex: "Exercise 4.1 · Newbuilding cost by weight group", dl: "D4",
@@ -288,7 +288,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       { c: "W4.2", d: "Wed 25 Nov", h: "15:00–16:30", room: "E2", t: "Financing, operating costs and the required freight rate", st: "Oil tankers 2", rd: "Finance notes; Reading 4.2", ex: "Exercise 4.2 · RFR and NPV; sensitivity to speed", dl: "D4",
         mats: [m("L", "4.2 Financing, Operating Costs and the RFR", "week4/L4.2.pdf"), m("N", "Voyage and Finance Notes, Part B", "week4/Notes_B.pdf"), m("R", "Reading 4.2 How to Finance a Ship", "week4/Reading_4.2.pdf"), m("S", "Oil Tankers 2", "week4/ST4.2.pdf"), m("H", "H3 Cost and Required Freight Rate", "notebooks/H3_Cost_and_Required_Freight_Rate.ipynb", "optional"), m("Q", "Quiz 4", "week4/quiz4.html")] },
       { c: "W4.3", d: "Fri 27 Nov", h: "13:30–15:30", room: "E2", t: "Stability, trim, freeboard and EEDI", st: "Product and chemical carriers", rd: "§2.18–2.19; §1.2.2", ex: "Exercise 4.3 · GM, freeboard and attained EEDI", dl: "D7",
-        mats: [m("L", "4.3 Stability, Trim, Freeboard and EEDI", "week4/L4.3.pdf"), m("S", "Product and Chemical Carriers", "week4/ST4.3.pdf"), m("H", "H4 Stability and EEDI Check", "notebooks/H4_Stability_and_EEDI_Check.ipynb", "optional")] },
+        mats: [m("L", "4.3 Stability, Trim, Freeboard and EEDI", "week4/L4.3.pdf"), m("S", "Product and Chemical Carriers", "week4/ST4.3.pdf"), m("H", "H4 Stability and EEDI Check", "notebooks/H4_Stability_and_EEDI_Check.ipynb", "optional"), m("A", "Exercise answers, week 4 (reference ship)", "week4/Answers_Week4.pdf", "after the week")] },
       { c: "W4.4", d: "Fri 27 Nov", h: "15:30–17:00", room: "E1", fixed: true, t: "Evaluation Test (20 %)", st: "Design process and the Law and Regulations reading", mats: [] }
     ] },
     { n: 5, days: "2–4 Dec", rel: "25 Nov", sessions: [
@@ -299,20 +299,20 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       { c: "W5.3", d: "Fri 4 Dec", h: "13:30–15:30", room: "E2", t: "Multi-objective optimization and decision making", st: "Fast ferries and catamarans", rd: "App. F", ex: "Exercise 5.3 · Pareto front RFR against EEDI; pick one design with TOPSIS", dl: "D6",
         mats: [m("L", "5.3 Multi-Objective Optimization and MADM", "week5/L5.3.pdf"), m("S", "Fast Ferries and Catamarans", "week5/ST5.3.pdf")] },
       { c: "W5.4", d: "Fri 4 Dec", h: "15:30–17:00", room: "E1", t: "Hull form 1: displacement distribution and waterlines", st: "Passenger and cruise ships", rd: "§3.1–3.2", ex: "Exercise 5.4 · Sectional area curve and LCB", dl: "D8",
-        mats: [m("L", "5.4 Hull Form 1", "week5/L5.4.pdf"), m("S", "Passenger and Cruise Ships", "week5/ST5.4.pdf"), m("H", "H5 Sectional Area Curve and LCB", "notebooks/H5_Sectional_Area_Curve_and_LCB.ipynb", "optional")] }
+        mats: [m("L", "5.4 Hull Form 1", "week5/L5.4.pdf"), m("S", "Passenger and Cruise Ships", "week5/ST5.4.pdf"), m("H", "H5 Sectional Area Curve and LCB", "notebooks/H5_Sectional_Area_Curve_and_LCB.ipynb", "optional"), m("A", "Exercise answers, week 5 (reference ship)", "week5/Answers_Week5.pdf", "after the week")] }
     ] },
     { n: 6, days: "9–11 Dec", rel: "2 Dec", sessions: [
       { c: "W6.1", d: "Wed 9 Dec", h: "13:00–15:00", room: "E2", t: "Hull form 2: sections, bow, bulb and stern; hull series", st: "Offshore tug and supply vessels", rd: "§3.3–3.5; App. B", ex: "Exercise 6.1 · Sections, bow and stern", dl: "D8",
         mats: [m("L", "6.1 Hull Form 2", "week6/L6.1.pdf"), m("S", "Offshore Tug and Supply Vessels", "week6/ST6.1.pdf")] },
       { c: "W6.2", d: "Wed 9 Dec", h: "15:00–16:30", room: "E2", t: "Lines plan, general arrangement and capacity plan", st: "Fishing vessels", rd: "§4.1–4.6; §2.7.1", ex: "Exercise 6.2 · A first GA and capacity plan", dl: "D8",
-        mats: [m("L", "6.2 Lines Plan, GA and Capacity Plan", "week6/L6.2.pdf"), m("S", "Fishing Vessels", "week6/ST6.2.pdf"), m("Q", "Quiz 6", "week6/quiz6.html")] },
+        mats: [m("L", "6.2 Lines Plan, GA and Capacity Plan", "week6/L6.2.pdf"), m("S", "Fishing Vessels", "week6/ST6.2.pdf"), m("Q", "Quiz 6", "week6/quiz6.html"), m("A", "Exercise answers, week 6 (reference ship)", "week6/Answers_Week6.pdf", "after the week")] },
       { c: "W6.3–6.4", d: "Fri 11 Dec", h: "13:30–17:00", room: "E2/E1", fixed: true, t: "Project clinics", st: "Review of each group's model and report", mats: [] }
     ] },
     { n: 7, days: "16–18 Dec", rel: "9 Dec", sessions: [
       { c: "W7.1", d: "Wed 16 Dec", h: "13:00–15:00", room: "E2", t: "Ship design in the digital transition", st: "OBO carriers", rd: "App. G §G.2–G.6", ex: "Exercise 7.1 · Digital siblings: demonstration, then an individual step", dl: "D6",
         mats: [m("L", "7.1 Ship Design in the Digital Transition", "week7/L7.1.pdf"), m("S", "OBO Carriers", "week7/ST7.1.pdf")] },
       { c: "W7.2", d: "Wed 16 Dec", h: "15:00–16:30", room: "E2", t: "Artificial intelligence in ship design", st: "Our ships side by side", rd: "App. G §G.7–G.8", ex: "Exercise 7.2 · A surrogate model, checked", dl: "D6",
-        mats: [m("L", "7.2 Artificial Intelligence in Ship Design", "week7/L7.2.pdf"), m("D", "Demo 7 Digital Siblings and a Surrogate Model", "notebooks/Demo7_Digital_Siblings_and_a_Surrogate_Model.ipynb"), m("S", "Our Ships Side by Side", "week7/ST7.2.pdf"), m("Q", "Quiz 7", "week7/quiz7.html")] },
+        mats: [m("L", "7.2 Artificial Intelligence in Ship Design", "week7/L7.2.pdf"), m("D", "Demo 7 Digital Siblings and a Surrogate Model", "notebooks/Demo7_Digital_Siblings_and_a_Surrogate_Model.ipynb"), m("S", "Our Ships Side by Side", "week7/ST7.2.pdf"), m("Q", "Quiz 7", "week7/quiz7.html"), m("A", "Exercise answers, week 7 (reference ship)", "week7/Answers_Week7.pdf", "after the week")] },
       { c: "W7.3–7.4", d: "Fri 18 Dec", h: "13:30–17:00", room: "E2/E1", fixed: true, t: "Project presentations (20 %)", st: "15 minutes per group, then discussion", mats: [] }
     ] }
   ];
@@ -344,7 +344,9 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       if (!s.mats.length) mats.appendChild(el("div", { cls: "none", text: s.guest ? "Material from the guest lecturer." : "No materials for this session." }));
       s.mats.forEach(function (x) {
         var kids = [el("span", { cls: "k", text: K[x.k] }), el("span", { cls: "t" }, [x.t, x.note ? el("small", { text: " · " + x.note }) : null])];
-        if (on || RELEASED_FILES.indexOf(x.file) >= 0) {
+        // Answer sheets are never released with their week: list them in RELEASED_FILES after the sessions.
+        var live = x.k === "A" ? RELEASED_FILES.indexOf(x.file) >= 0 : (on || RELEASED_FILES.indexOf(x.file) >= 0);
+        if (live) {
           var href = x.file;
           if (/\.ipynb$/.test(x.file)) href = "https://colab.research.google.com/github/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/" + x.file;
           mats.appendChild(el("a", { cls: "mat", href: href, target: "_blank", rel: "noopener" }, kids));
