@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>PNSO 2026</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a course timetable. A header with the course and this week's sessions, then the seven weeks down a dated rail (sessions as rows, materials beside them), then the project, assessment and help. */
+:root {
+  --bg: #f6f8f9;
+  --surface: #ffffff;
+  --ink: #16243a;
+  --muted: #56647a;
+  --line: #d6dee5;
+  --rule: #e7ecf0;
+  --accent: #007eb5;
+  --accent-soft: #e2f1f8;
+  --exercise: #b4521c;
+  --exercise-soft: #fbefe5;
+  --fixed: #16243a;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  --body: "IBM Plex Sans", Arial, Helvetica, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1522; --surface: #151f31; --ink: #e6ecf3; --muted: #9aa8bb; --line: #2a3850; --rule: #1d2840;
+    --accent: #55b9ea; --accent-soft: #13324a; --exercise: #f0965f; --exercise-soft: #3a2619; --fixed: #e6ecf3;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1522; --surface: #151f31; --ink: #e6ecf3; --muted: #9aa8bb; --line: #2a3850; --rule: #1d2840;
+  --accent: #55b9ea; --accent-soft: #13324a; --exercise: #f0965f; --exercise-soft: #3a2619; --fixed: #e6ecf3;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55; margin: 0; }
+a { color: var(--accent); text-underline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.label { font-family: var(--mono); font-size: 12px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+h2 { font-size: 28px; font-weight: 700; line-height: 1.1; }
+h3 { font-size: 18px; font-weight: 600; line-height: 1.25; }
+p { margin: 0; }
+
+/* Header */
+header.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+header.top .wrap { padding-block: 32px 28px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px 40px; align-items: start; }
+.course h1 { font-size: clamp(34px, 6vw, 54px); font-weight: 700; line-height: 1.02; letter-spacing: -0.01em; }
+.course h1 span { color: var(--accent); }
+.course .who { margin-top: 14px; color: var(--muted); max-width: 52ch; }
+.course .who b { color: var(--ink); font-weight: 600; }
+.course .links { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; }
+.course .links code { font-family: var(--mono); font-size: 13px; color: var(--ink); user-select: all; }
+.now { border: 1px solid var(--line); border-left: 6px solid var(--accent); border-radius: 4px; padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); }
+.now ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.now li { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 10px; font-size: 14px; }
+.now li b { font-family: var(--mono); font-weight: 500; font-size: 13px; color: var(--accent); }
+.now a.jump { font-size: 14px; font-weight: 500; }
+
+nav.jump { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+nav.jump .wrap { display: flex; gap: 4px; overflow-x: auto; padding-block: 8px; }
+nav.jump a { font-family: var(--display); font-weight: 600; font-size: 14px; color: var(--ink); text-decoration: none; padding: 5px 10px; border-radius: 4px; white-space: nowrap; }
+nav.jump a:hover { background: var(--accent-soft); }
+
+main .wrap { display: flex; flex-direction: column; gap: 48px; padding-block: 36px 72px; }
+section { scroll-margin-top: 56px; display: flex; flex-direction: column; gap: 16px; }
+.lead { max-width: 68ch; color: var(--muted); }
+
+/* Weeks */
+.week { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 0 24px; scroll-margin-top: 56px; }
+.week .rail { border-top: 3px solid var(--ink); padding-top: 10px; display: flex; flex-direction: column; gap: 2px; }
+.week .rail b { font-family: var(--display); font-size: 24px; line-height: 1; }
+.week .rail span { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.week .rail .state { margin-top: 8px; align-self: start; font-family: var(--mono); font-size: 11px; padding: 2px 7px; border-radius: 3px; background: var(--rule); color: var(--muted); }
+.week .rail .state.on { background: var(--accent-soft); color: var(--accent); }
+.sessions { border-top: 1px solid var(--line); display: flex; flex-direction: column; }
+.session { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 10px 24px; padding-block: 16px; border-bottom: 1px solid var(--rule); }
+.session .head { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.session .when { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.session .when b { color: var(--accent); font-weight: 500; }
+.session .meta { font-size: 13px; color: var(--muted); }
+.session .meta em { font-style: normal; font-family: var(--mono); font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; margin-right: 6px; }
+.session .ex { font-size: 14px; border-left: 3px solid var(--exercise); background: var(--exercise-soft); padding: 6px 10px; border-radius: 0 4px 4px 0; }
+.session .ex b { color: var(--exercise); font-weight: 600; }
+.session.fixed .head h3 { color: var(--fixed); }
+.session.fixed { background: linear-gradient(90deg, var(--accent-soft), transparent 75%); padding-inline: 10px; }
+.mats { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.mat { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 10px; align-items: baseline; font-size: 14px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); text-decoration: none; color: var(--ink); }
+a.mat:hover { border-color: var(--accent); }
+a.mat:hover .t { color: var(--accent); }
+.mat .k { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.mat .t { min-width: 0; overflow-wrap: anywhere; }
+.mat .t small { color: var(--muted); font-size: 12px; }
+.mat.later { border-style: dashed; background: transparent; color: var(--muted); }
+.none { font-size: 13px; color: var(--muted); font-style: italic; }
+
+/* Project, assessment, help */
+.ships { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.ship { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+.ship .figs { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--mono); font-size: 13px; }
+.ship .figs span b { font-family: var(--display); font-size: 22px; font-weight: 700; margin-right: 4px; font-variant-numeric: tabular-nums; }
+.ship p { font-size: 14px; color: var(--muted); }
+.dlist { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0 24px; border-top: 1px solid var(--line); }
+.dlist div { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; padding-block: 8px; border-bottom: 1px solid var(--rule); font-size: 14px; }
+.dlist b { font-family: var(--mono); font-weight: 500; color: var(--accent); }
+.grades { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.grade { border-top: 3px solid var(--ink); padding-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+.grade b { font-family: var(--display); font-size: 36px; line-height: 1; font-variant-numeric: tabular-nums; }
+.grade span { font-weight: 600; }
+.grade p { font-size: 14px; color: var(--muted); }
+.rules { display: flex; flex-direction: column; gap: 8px; max-width: 74ch; font-size: 14px; color: var(--muted); padding-left: 18px; margin: 0; }
+.rules b { color: var(--ink); }
+.help { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.help > div { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 18px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; }
+.help code { font-family: var(--mono); font-size: 13px; user-select: all; }
+footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 24px; justify-content: space-between; }
+
+@media (max-width: 760px) {
+  header.top .wrap { grid-template-columns: 1fr; }
+  .week { grid-template-columns: 1fr; }
+  .week .rail { flex-direction: row; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .week .rail .state { margin-top: 0; }
+  .session { grid-template-columns: 1fr; }
+  .mat { grid-template-columns: 80px minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="course">
+      <div class="label">Instituto Superior Técnico · 2026/27 · 4 Nov – 18 Dec</div>
+      <h1>Ship and Ocean <span>Systems Design</span></h1>
+      <div class="links">
+        <span>E-mail <code>luis@veranavis.com</code></span>
+        <a href="https://calendly.com/vnsd-luisbatista/meetme" target="_blank" rel="noopener">Book office hours</a>
+      </div>
+    </div>
+    <div class="now" id="now" aria-live="polite">
+      <div class="label" id="now-label">This week</div>
+      <ol id="now-list"></ol>
+      <a class="jump" id="now-jump" href="#week1">All materials for this week</a>
+    </div>
+  </div>
+</header>
+
+<nav class="jump" aria-label="Sections">
+  <div class="wrap">
+    <a href="#weeks">Weeks</a>
+    <a href="#week1">W1</a><a href="#week2">W2</a><a href="#week3">W3</a><a href="#week4">W4</a><a href="#week5">W5</a><a href="#week6">W6</a><a href="#week7">W7</a>
+    <a href="#project">Project</a>
+    <a href="#assessment">Assessment</a>
+    <a href="#help">Help</a>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+
+    <section id="weeks">
+      <div class="label">Course plan</div>
+      <h2>Week by week</h2>
+      <p class="lead">Every session opens with 10 minutes on a ship type, continues with a lecture from the book and ends with an exercise on your group's own ship. Its result goes straight into a project deliverable. Materials appear here about a week before each session; dashed items are not out yet.</p>
+      <div id="calendar" style="display:flex; flex-direction:column; gap:32px"></div>
+    </section>
+
+    <section id="project">
+      <div class="label">Ship Design Project · 60 %</div>
+      <h2>Two ships for the Azores</h2>
+      <p class="lead">Each group designs one of two Baseline ships. The full brief is in 0.2 Ship Design Project (week 1). Groups are formed on Fri 6 Nov.</p>
+      <div class="ships">
+        <div class="ship">
+          <div class="label">Baseline A</div>
+          <h3>Azores Express</h3>
+          <div class="figs"><span><b>1,300</b>TEU</span><span><b>18–19</b>kn</span><span><b>1</b>round voyage a week</span></div>
+          <p>Container ship, gearless, dual-fuel (LNG and HFO), single shaft, forward superstructure. Lisbon – Ponta Delgada – Praia da Vitória – Lisbon.</p>
+        </div>
+        <div class="ship">
+          <div class="label">Baseline B</div>
+          <h3>Azores Feeder</h3>
+          <div class="figs"><span><b>130</b>TEU</span><span><b>11–12</b>kn</span><span><b>2</b>island loops a week</span></div>
+          <p>Geared container ship, battery-electric with swappable battery containers, two shafts. Hull family of the group's choice; a PSV-type hull is suggested.</p>
+        </div>
+      </div>
+      <h3 style="margin-top:8px">Deliverables, one ZIP by e-mail by Sun 13 Dec</h3>
+      <div class="dlist">
+        <div><b>D1</b><span>Design basis</span></div>
+        <div><b>D2</b><span>Reference ship database</span></div>
+        <div><b>D3</b><span>Ship model</span></div>
+        <div><b>D4</b><span>Voyage and financial model</span></div>
+        <div><b>D5</b><span>Validation note</span></div>
+        <div><b>D6</b><span>Optimization report</span></div>
+        <div><b>D7</b><span>Compliance sheet</span></div>
+        <div><b>D8</b><span>General arrangement and hull form</span></div>
+        <div><b>D9</b><span>Two specialization documents</span></div>
+        <div><b>D10</b><span>Datasheet and presentation</span></div>
+      </div>
+    </section>
+
+    <section id="assessment">
+      <div class="label">Assessment</div>
+      <h2>How the grade is made</h2>
+      <div class="grades">
+        <div class="grade"><b>60 %</b><span>Ship Design Project</span><p>D1–D10 and two specializations. Due Sun 13 Dec.</p></div>
+        <div class="grade"><b>20 %</b><span>Evaluation Test</span><p>The design process and the Law and Regulations reading. Fri 27 Nov.</p></div>
+        <div class="grade"><b>20 %</b><span>Project presentation</span><p>15 minutes per group, then discussion. Fri 18 Dec.</p></div>
+      </div>
+      <ul class="rules">
+        <li><b>Not graded:</b> the weekly quizzes and the homework notebooks. Use them to check yourself.</li>
+        <li><b>Not tested:</b> ship types, human factors, and stability and freeboard calculations.</li>
+        <li><b>Software:</b> programming, 3D modelling and drafting are neither taught nor graded. Python (Colab or VS Code) or Excel are both fine.</li>
+        <li><b>AI tools</b> may be used if you declare where in the report. Every group must be able to explain and reproduce its own work at the presentation.</li>
+      </ul>
+    </section>
+
+    <section id="help">
+      <div class="label">Help</div>
+      <h2>Getting help</h2>
+      <div class="help">
+        <div><h3>Office hours</h3><p>2 hours a week, one 30-minute slot per group per week. State your questions when you book.</p><p><a href="https://calendly.com/vnsd-luisbatista/meetme" target="_blank" rel="noopener">Book a slot</a> · Vera Navis Ship Design, Av. 5 de Outubro 72, 9.º A, Lisboa</p></div>
+        <div><h3>Notebooks</h3><p>The homework notebooks (H0–H5) and demos run in Google Colab, with no installation. Each one works the course's example ship first, then has input cells for your own ship.</p></div>
+        <div><h3>Timetable</h3><p>Wed 13:00–15:00 and 15:00–16:30, room E2. Fri 13:30–15:30 (E2) and 15:30–17:00 (E1).</p></div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Ship and Ocean Systems Design 2026 · Instituto Superior Técnico</span>
+    <span id="stamp"></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // RELEASED: the weeks whose materials are out. Change this one line to release a week.
+  var RELEASED = [];
+  var PREVIEW = false; // preview only: files are placeholders until they are uploaded
+
+  var K = { L: "Lecture", S: "Ship types", E: "Exercise", Q: "Quiz", H: "Homework", D: "Demo", R: "Reading", N: "Notes", C: "Course", T: "Template", X: "Tool" };
+  function m(k, t, file, note) { return { k: k, t: t, file: file, note: note }; }
+
+  var WEEKS = [
+    { n: 1, days: "4–6 Nov", rel: "28 Oct", sessions: [
+      { c: "W1.1", d: "Wed 4 Nov", h: "13:00–15:00", room: "E2", fixed: true, t: "Course presentation and Ship Design Project", st: "Classification of merchant ships", ex: "Exercise 1.1 · Fill in the owner's requirements template", dl: "D1",
+        mats: [m("C", "0.1 Course Presentation", "week1/0.1_Course_Presentation.pdf"), m("C", "0.2 Ship Design Project", "week1/0.2_Ship_Design_Project.pdf"), m("S", "Classification of Merchant Ships", "week1/ST1.1_Classification.pdf"), m("T", "0.3 Report and 0.4 Datasheet templates", "week1/0.3-0.4_Templates.pdf")] },
+      { c: "W1.2", d: "Wed 4 Nov", h: "15:00–16:30", room: "E2", t: "Design process: phases, design spiral, owner's requirements", st: "Deadweight, volume and linear-dimension carriers", rd: "§1.3.1–1.3.5", ex: "Exercise 1.2 · Classify the ship and map its design spiral", dl: "D1",
+        mats: [m("L", "1.2 Design Process and Owner's Requirements", "week1/L1.2.pdf"), m("S", "Deadweight, Volume and Linear-Dimension Carriers", "week1/ST1.2.pdf"), m("R", "Reading 1.2 Shipbuilding Contract", "week1/Reading_1.2.pdf")] },
+      { c: "W1.3", d: "Fri 6 Nov", h: "13:30–15:30", room: "E2", t: "Design methods; displacement estimate; main dimensions", st: "Container carriers 1", rd: "§1.3.6–1.3.7; §2.1–2.2; App. A", ex: "Exercise 1.3 · First Δ, L, B, T, D from the App. A regressions, with 95 % bands", dl: "D2",
+        mats: [m("L", "1.3 Design Methods, Displacement and Main Dimensions", "week1/L1.3.pdf"), m("S", "Container Carriers 1", "week1/ST1.3.pdf"), m("H", "H0 Reference Ship Database", "notebooks/H0_Reference_Ship_Database.ipynb", "optional")] },
+      { c: "W1.4", d: "Fri 6 Nov", h: "15:30–17:00", room: "E1", t: "The displacement equation", st: "Container carriers 2", rd: "§2.13; App. C", ex: "Exercise 1.4 · Displacement equation, Q1–Q6", dl: "D3",
+        mats: [m("L", "1.4 The Design Equation", "week1/L1.4.pdf"), m("E", "Exercise 1.4 Displacement Equation", "week1/Ex1.4.pdf"), m("S", "Container Carriers 2", "week1/ST1.4.pdf"), m("H", "H1 Displacement Equation", "notebooks/H1_Displacement_Equation.ipynb", "optional"), m("Q", "Quiz 1", "week1/quiz1.html")] }
+    ] },
+    { n: 2, days: "11–13 Nov", rel: "4 Nov", sessions: [
+      { c: "W2.1–2.2", d: "Wed 11 Nov", h: "13:00–16:30", room: "E2", t: "Human factors in ship design", st: "Guest lecturer", guest: true, mats: [] },
+      { c: "W2.3", d: "Fri 13 Nov", h: "13:30–15:30", room: "E2", t: "Main dimensions and form coefficients · Law and Regulations introduction", st: "Containers, securing and hatch covers", rd: "§2.3–2.12; §2.7.1", ex: "Exercise 2.3 · Choose L, B, T, D, CB and check them against the book's ranges", dl: "D3",
+        mats: [m("L", "2.3a Main Dimensions and Form Coefficients", "week2/L2.3a.pdf"), m("L", "2.3b Law and Regulations: an Introduction", "week2/L2.3b.pdf"), m("S", "Containers, Securing and Hatch Covers", "week2/ST2.3.pdf")] },
+      { c: "W2.4", d: "Fri 13 Nov", h: "15:30–17:00", room: "E1", t: "Preliminary power estimate", st: "Multi-purpose vessels", rd: "§2.14; §5.1", ex: "Exercise 2.4 · Power by Admiralty and Holtrop–Mennen; compare", dl: "D3",
+        mats: [m("L", "2.4 Preliminary Power Estimate", "week2/L2.4.pdf"), m("X", "Holtrop–Mennen power calculator", "week2/tool_holtrop_mennen.html"), m("S", "Multipurpose Vessels", "week2/ST2.4.pdf"), m("Q", "Quiz 2", "week2/quiz2.html")] }
+    ] },
+    { n: 3, days: "18–20 Nov", rel: "11 Nov", sessions: [
+      { c: "W3.1", d: "Wed 18 Nov", h: "13:00–15:00", room: "E2", t: "Weights, centroids and the displacement check", st: "Bulk carriers 1", rd: "§2.15–2.16", ex: "Exercise 3.1 · Lightship by two methods; close the weight balance", dl: "D3",
+        mats: [m("L", "3.1 Weights, Centroids and the Displacement Check", "week3/L3.1.pdf"), m("S", "Bulk Carriers 1", "week3/ST3.1.pdf")] },
+      { c: "W3.2", d: "Wed 18 Nov", h: "15:00–16:30", room: "E2", t: "Hold capacity", st: "Bulk carriers 2", rd: "§2.17", ex: "Exercise 3.2 · Hold volume or TEU slots against the target", dl: "D3",
+        mats: [m("L", "3.2 Hold Capacity", "week3/L3.2.pdf"), m("S", "Bulk Carriers 2", "week3/ST3.2.pdf"), m("Q", "Quiz 3", "week3/quiz3.html")] },
+      { c: "W3.3", d: "Fri 20 Nov", h: "13:30–15:30", room: "E2", t: "Main machinery and propeller", st: "RoRo ships", rd: "§5.2–5.3", ex: "Exercise 3.3 · An engine and a propeller for your ship", dl: "D3",
+        mats: [m("L", "3.3 Main Machinery and Propeller", "week3/L3.3.pdf"), m("S", "RoRo Ships", "week3/ST3.3.pdf"), m("H", "H2 Main Dimensions, Power and Weights", "notebooks/H2_Main_Dimensions_Power_Weights.ipynb", "optional")] },
+      { c: "W3.4", d: "Fri 20 Nov", h: "15:30–17:00", room: "E1", t: "The voyage model", st: "RoRo cargo and equipment", rd: "§1.2.1; voyage notes", ex: "Exercise 3.4 · Round-trip time and fuel on your route", dl: "D4",
+        mats: [m("L", "3.4 The Voyage Model", "week3/L3.4.pdf"), m("N", "Voyage and Finance Notes, Part A", "week3/Notes_A.pdf"), m("S", "RoRo Cargo and Equipment", "week3/ST3.4.pdf")] }
+    ] },
+    { n: 4, days: "25–27 Nov", rel: "18 Nov", sessions: [
+      { c: "W4.1", d: "Wed 25 Nov", h: "13:00–15:00", room: "E2", t: "Building cost", st: "Oil tankers 1", rd: "§6.2–6.5", ex: "Exercise 4.1 · Newbuilding cost by weight group", dl: "D4",
+        mats: [m("L", "4.1 Building Cost", "week4/L4.1.pdf"), m("S", "Oil Tankers 1", "week4/ST4.1.pdf")] },
+      { c: "W4.2", d: "Wed 25 Nov", h: "15:00–16:30", room: "E2", t: "Financing, operating costs and the required freight rate", st: "Oil tankers 2", rd: "Finance notes; Reading 4.2", ex: "Exercise 4.2 · RFR and NPV; sensitivity to speed", dl: "D4",
+        mats: [m("L", "4.2 Financing, Operating Costs and the RFR", "week4/L4.2.pdf"), m("N", "Voyage and Finance Notes, Part B", "week4/Notes_B.pdf"), m("R", "Reading 4.2 How to Finance a Ship", "week4/Reading_4.2.pdf"), m("S", "Oil Tankers 2", "week4/ST4.2.pdf"), m("H", "H3 Cost and Required Freight Rate", "notebooks/H3_Cost_and_Required_Freight_Rate.ipynb", "optional"), m("Q", "Quiz 4", "week4/quiz4.html")] },
+      { c: "W4.3", d: "Fri 27 Nov", h: "13:30–15:30", room: "E2", t: "Stability, trim, freeboard and EEDI", st: "Product and chemical carriers", rd: "§2.18–2.19; §1.2.2", ex: "Exercise 4.3 · GM, freeboard and attained EEDI for your ship", dl: "D5, D7",
+        mats: [m("L", "4.3 Stability, Trim, Freeboard and EEDI", "week4/L4.3.pdf"), m("S", "Product and Chemical Carriers", "week4/ST4.3.pdf"), m("H", "H4 Stability and EEDI Check", "notebooks/H4_Stability_and_EEDI_Check.ipynb", "optional")] },
+      { c: "W4.4", d: "Fri 27 Nov", h: "15:30–17:00", room: "E1", fixed: true, t: "Evaluation Test (20 %)", st: "Design process and the Law and Regulations reading", mats: [] }
+    ] },
+    { n: 5, days: "2–4 Dec", rel: "25 Nov", sessions: [
+      { c: "W5.1", d: "Wed 2 Dec", h: "13:00–15:00", room: "E2", t: "The ship design optimization problem and the synthesis model", st: "General cargo ships and reefers", rd: "§6.1; App. F", ex: "Exercise 5.1 · Link your models, state the problem, draw the tornado", dl: "D6",
+        mats: [m("L", "5.1 The Optimization Problem and the Synthesis Model", "week5/L5.1.pdf"), m("S", "General Cargo Ships and Reefers", "week5/ST5.1.pdf")] },
+      { c: "W5.2", d: "Wed 2 Dec", h: "15:00–16:30", room: "E2", t: "Single-objective optimization", st: "RoPax ferries", rd: "§6.1; App. F", ex: "Exercise 5.2 · Optimize your ship in Solver or SciPy", dl: "D6",
+        mats: [m("L", "5.2 Single-Objective Optimization", "week5/L5.2.pdf"), m("D", "Demo 5 Synthesis Model", "notebooks/Demo5_Synthesis_Model.ipynb"), m("S", "RoPax Ferries", "week5/ST5.2.pdf"), m("Q", "Quiz 5", "week5/quiz5.html")] },
+      { c: "W5.3", d: "Fri 4 Dec", h: "13:30–15:30", room: "E2", t: "Multi-objective optimization and decision making", st: "Fast ferries and catamarans", rd: "App. F", ex: "Exercise 5.3 · Pareto front RFR against EEDI; pick one design with TOPSIS", dl: "D6",
+        mats: [m("L", "5.3 Multi-Objective Optimization and MADM", "week5/L5.3.pdf"), m("S", "Fast Ferries and Catamarans", "week5/ST5.3.pdf")] },
+      { c: "W5.4", d: "Fri 4 Dec", h: "15:30–17:00", room: "E1", t: "Hull form 1: displacement distribution and waterlines", st: "Passenger and cruise ships", rd: "§3.1–3.2", ex: "Exercise 5.4 · Sectional area curve and LCB for your ship", dl: "D8",
+        mats: [m("L", "5.4 Hull Form 1", "week5/L5.4.pdf"), m("S", "Passenger and Cruise Ships", "week5/ST5.4.pdf"), m("H", "H5 Sectional Area Curve and LCB", "notebooks/H5_Sectional_Area_Curve_and_LCB.ipynb", "optional")] }
+    ] },
+    { n: 6, days: "9–11 Dec", rel: "2 Dec", sessions: [
+      { c: "W6.1", d: "Wed 9 Dec", h: "13:00–15:00", room: "E2", t: "Hull form 2: sections, bow, bulb and stern; hull series", st: "Offshore tug and supply vessels", rd: "§3.3–3.5; App. B", ex: "Exercise 6.1 · Sections, bow and stern for your ship", dl: "D8",
+        mats: [m("L", "6.1 Hull Form 2", "week6/L6.1.pdf"), m("S", "Offshore Tug and Supply Vessels", "week6/ST6.1.pdf")] },
+      { c: "W6.2", d: "Wed 9 Dec", h: "15:00–16:30", room: "E2", t: "Lines plan, general arrangement and capacity plan", st: "Fishing vessels", rd: "§4.1–4.6; §2.7.1", ex: "Exercise 6.2 · A first GA and capacity plan for your ship", dl: "D8",
+        mats: [m("L", "6.2 Lines Plan, GA and Capacity Plan", "week6/L6.2.pdf"), m("S", "Fishing Vessels", "week6/ST6.2.pdf"), m("Q", "Quiz 6", "week6/quiz6.html")] },
+      { c: "W6.3–6.4", d: "Fri 11 Dec", h: "13:30–17:00", room: "E2/E1", fixed: true, t: "Project clinics", st: "Review of each group's model and report", mats: [] }
+    ] },
+    { n: 7, days: "16–18 Dec", rel: "9 Dec", sessions: [
+      { c: "W7.1", d: "Wed 16 Dec", h: "13:00–15:00", room: "E2", t: "Ship design in the digital transition", st: "OBO carriers", rd: "App. G §G.2–G.6", ex: "Exercise 7.1 · Two hundred digital siblings of your ship", dl: "check",
+        mats: [m("L", "7.1 Ship Design in the Digital Transition", "week7/L7.1.pdf"), m("S", "OBO Carriers", "week7/ST7.1.pdf")] },
+      { c: "W7.2", d: "Wed 16 Dec", h: "15:00–16:30", room: "E2", t: "Artificial intelligence in ship design", st: "Our ships side by side", rd: "App. G §G.7–G.8", ex: "Exercise 7.2 · A surrogate model of your ship, checked", dl: "check",
+        mats: [m("L", "7.2 Artificial Intelligence in Ship Design", "week7/L7.2.pdf"), m("D", "Demo 7 Digital Siblings and a Surrogate Model", "notebooks/Demo7_Digital_Siblings_and_a_Surrogate_Model.ipynb"), m("S", "Our Ships Side by Side", "week7/ST7.2.pdf"), m("Q", "Quiz 7", "week7/quiz7.html")] },
+      { c: "W7.3–7.4", d: "Fri 18 Dec", h: "13:30–17:00", room: "E2/E1", fixed: true, t: "Project presentations (20 %)", st: "15 minutes per group, then discussion", mats: [] }
+    ] }
+  ];
+  var DATES = { "W1": "2026-11-04", "W2": "2026-11-11", "W3": "2026-11-18", "W4": "2026-11-25", "W5": "2026-12-02", "W6": "2026-12-09", "W7": "2026-12-16" };
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) for (var k in attrs) { if (attrs[k] == null) continue; if (k === "text") n.textContent = attrs[k]; else if (k === "cls") n.className = attrs[k]; else n.setAttribute(k, attrs[k]); }
+    (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function released(n) { return RELEASED.indexOf(n) >= 0; }
+
+  var cal = document.getElementById("calendar");
+  WEEKS.forEach(function (w) {
+    var on = released(w.n);
+    var rail = el("div", { cls: "rail" }, [el("b", { text: "Week " + w.n }), el("span", { text: w.days }),
+      el("span", { cls: "state" + (on ? " on" : ""), text: on ? "Released" : "From " + w.rel })]);
+    var list = el("div", { cls: "sessions" });
+    w.sessions.forEach(function (s) {
+      var head = el("div", { cls: "head" }, [
+        el("div", { cls: "when" }, [el("b", { text: s.c }), " · " + s.d + " · " + s.h + " · " + s.room]),
+        el("h3", { text: s.t }),
+        s.st ? el("div", { cls: "meta" }, [el("em", { text: s.guest || s.fixed ? "" : "Ship types" }), s.st]) : null,
+        s.rd ? el("div", { cls: "meta" }, [el("em", { text: "Reading" }), s.rd]) : null,
+        s.ex ? el("div", { cls: "ex" }, [el("b", { text: s.ex.split(" · ")[0] }), " · " + s.ex.split(" · ").slice(1).join(" · ") + (s.dl ? "  →  " + s.dl : "")]) : null
+      ]);
+      var mats = el("div", { cls: "mats" });
+      if (!s.mats.length) mats.appendChild(el("div", { cls: "none", text: s.guest ? "Material from the guest lecturer." : "No materials for this session." }));
+      s.mats.forEach(function (x) {
+        var kids = [el("span", { cls: "k", text: K[x.k] }), el("span", { cls: "t" }, [x.t, x.note ? el("small", { text: " · " + x.note }) : null])];
+        if (on) {
+          var href = x.file;
+          if (/\.ipynb$/.test(x.file)) href = "https://colab.research.google.com/github/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/" + x.file;
+          mats.appendChild(el("a", { cls: "mat", href: href, target: "_blank", rel: "noopener" }, kids));
+        } else {
+          mats.appendChild(el("div", { cls: "mat later" }, kids));
+        }
+      });
+      list.appendChild(el("div", { cls: "session" + (s.fixed ? " fixed" : "") }, [head, mats]));
+    });
+    cal.appendChild(el("div", { cls: "week", id: "week" + w.n }, [rail, list]));
+  });
+
+  // This week: the first week whose Friday is today or later
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  var cur = WEEKS[0];
+  for (var i = 0; i < WEEKS.length; i++) {
+    var fri = new Date(DATES["W" + WEEKS[i].n] + "T00:00:00"); fri.setDate(fri.getDate() + 2);
+    if (fri >= today) { cur = WEEKS[i]; break; }
+    cur = WEEKS[WEEKS.length - 1];
+  }
+  var first = new Date(DATES.W1 + "T00:00:00");
+  document.getElementById("now-label").textContent = (today < first ? "First week · " : "This week · ") + "Week " + cur.n + ", " + cur.days;
+  var nl = document.getElementById("now-list");
+  cur.sessions.forEach(function (s) { nl.appendChild(el("li", {}, [el("b", { text: s.c }), el("span", { text: s.d.split(" ")[0] + " · " + s.t })])); });
+  var j = document.getElementById("now-jump"); j.href = "#week" + cur.n; j.textContent = "Week " + cur.n + " materials";
+
+  document.getElementById("stamp").textContent = PREVIEW ? "Preview · week 1 shown as released; files are placeholders" : (RELEASED.length ? "Released: week " + RELEASED.join(", ") : "Materials are released about a week before each session");
+})();
+</script>
+
+</body>
+</html>
