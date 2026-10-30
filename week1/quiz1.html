@@ -1,0 +1,155 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Quiz 1 · Ship Design</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single reading column of numbered question cards under a sticky score bar, like an answer sheet. */
+:root {
+  --bg: #f4f7f9; --surface: #fcfdfe; --ink: #1e2b34; --muted: #4f606b; --line: #d5dee5;
+  --accent: #0079ad; --accent-soft: #e3f1f8; --good: #1d7a46; --good-soft: #e3f3ea; --bad: #b4421c; --bad-soft: #fbe9e2;
+  --sans: 'IBM Plex Sans', Arial, sans-serif; --mono: 'IBM Plex Mono', 'Courier New', monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121a20; --surface: #1a252d; --ink: #e6edf2; --muted: #a3b2bc; --line: #2e3d48;
+  --accent: #5cc3ef; --accent-soft: #1b3442; --good: #6fd39a; --good-soft: #17332a; --bad: #f29a78; --bad-soft: #3a2219; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121a20; --surface: #1a252d; --ink: #e6edf2; --muted: #a3b2bc; --line: #2e3d48;
+  --accent: #5cc3ef; --accent-soft: #1b3442; --good: #6fd39a; --good-soft: #17332a; --bad: #f29a78; --bad-soft: #3a2219; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 56px; display: flex; flex-direction: column; gap: 18px; }
+header { display: flex; flex-direction: column; gap: 6px; }
+.eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+h1 { font-size: clamp(26px, 5vw, 36px); line-height: 1.15; margin: 0; text-wrap: balance; }
+.lede { color: var(--muted); margin: 0; max-width: 62ch; }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.score { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 18px; }
+.track { flex: 1 1 160px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; min-width: 0; }
+.fill { height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+button.reset { font: inherit; font-size: 14px; color: var(--accent); background: none; border: 1px solid var(--accent); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+ol.qs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; counter-reset: q; }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.qhead { display: flex; gap: 12px; align-items: baseline; }
+.num { font-family: var(--mono); color: var(--accent); font-size: 15px; flex: none; }
+.stem { font-weight: 600; margin: 0; }
+.opts { display: grid; gap: 8px; }
+.opt { font: inherit; text-align: left; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; display: flex; gap: 10px; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:focus-visible, button.reset:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .k { font-family: var(--mono); color: var(--muted); flex: none; }
+.opt:disabled { cursor: default; }
+.opt.right { background: var(--good-soft); border-color: var(--good); }
+.opt.wrong { background: var(--bad-soft); border-color: var(--bad); }
+.fb { border-left: 4px solid var(--line); padding: 4px 0 4px 12px; color: var(--muted); font-size: 15px; }
+.fb b { color: var(--ink); }
+.fb.ok { border-color: var(--good); } .fb.no { border-color: var(--bad); }
+.src { display: block; margin-top: 4px; font-size: 13px; color: var(--muted); }
+footer { color: var(--muted); font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Ship and Ocean Systems Design 2026 · Week 1 · Self-assessment</span>
+    <h1>Quiz 1: Design Process, First Numbers and the Design Equation</h1>
+    <p class="lede">Twelve questions on Lectures 1.2 to 1.5. Pick an answer to see whether it is right and why. Nothing is recorded or graded.</p>
+  </header>
+  <div class="bar" role="status" aria-live="polite">
+    <span class="score" id="score">0 / 0 answered</span>
+    <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+    <button class="reset" id="reset" type="button">Start again</button>
+  </div>
+  <ol class="qs" id="qs"></ol>
+  <footer>Sources: Papanikolaou (2026) Ship Design, §1.3, §2.1–2.2, §2.13, Appendices A and C; Lectures 1.2–1.5.</footer>
+</div>
+
+<script>
+const QUIZ = [
+  { q: "Which phases make up basic design, the subject of this course?",
+    o: ["Concept and preliminary design", "Contract and detailed design", "Preliminary and contract design", "Concept design only"], a: 0,
+    e: "Basic design is phases A and B: the first turns of the spiral, ending in the basis of the contract.", s: "§1.3.2 · Lecture 1.2" },
+  { q: "Why does ship design iterate instead of running once from start to end?",
+    o: ["Class societies require three design loops", "Software can only solve one step at a time", "Owners change their requirements every week", "The main quantities depend on each other, so a change in one changes the others"], a: 3,
+    e: "Dimensions set the weight, the weight sets the draught, the draught the power, the power the machinery weight: change one and the loop runs again.", s: "§1.3.4 · Lecture 1.2" },
+  { q: "At delivery the deadweight is 6% below the contract value. What may the owner do?",
+    o: ["Nothing: deadweight is not guaranteed", "Ask only for a small price reduction", "Reject the ship", "Ask the yard to lengthen the ship"], a: 2,
+    e: "Up to about 2% short: no penalty; up to about 5%: price reduced in proportion; more than 5%: the owner may reject the ship.", s: "§1.3.5, after Schneekluth · Lecture 1.2" },
+  { q: "Owners often name the engine type and maker. Why do they usually not specify the engine power?",
+    o: ["Class rules fix the power", "Power is a result of the design: it follows from hull, speed and displacement", "Power is chosen by the flag state", "Power does not affect cost"], a: 1,
+    e: "The owner fixes speed; the power needed to reach it comes out of the design.", s: "§1.3.5 · Lecture 1.2" },
+  { q: "In the book’s categories, a cellular container ship is…",
+    o: ["a deadweight carrier", "a special-purpose ship", "a deadweight carrier with excess freeboard", "a volume carrier, and also a linear-dimension ship"], a: 3,
+    e: "The slots fill before the load line (volume carrier), and beam and depth step with container rows and tiers (linear dimension).", s: "§1.3.6.2 · Ship types 1.2" },
+  { q: "For a volume carrier such as a container ship, the first step of the dimensioning sequence is…",
+    o: ["Length from the required cargo space or number of TEU", "Displacement from deadweight", "Draught from port limits", "Block coefficient from the Froude number"], a: 0,
+    e: "Table 1.9 starts from hold volume or TEU; displacement and draught come near the end. Table 1.8, for deadweight carriers, starts from Δ.", s: "§1.3.7.2, Table 1.9 · Lecture 1.4" },
+  { q: "Which DWT/Δ range does Table 2.1 give for container ships?",
+    o: ["0.16–0.33", "0.50–0.60", "0.65–0.76", "0.78–0.88"], a: 2,
+    e: "0.78–0.88 is crude tankers, 0.50–0.60 Ro-Ro cargo, 0.16–0.33 Ro-Pax ferries.", s: "§2.1, Table 2.1 · Lecture 1.4" },
+  { q: "On an Appendix A diagram marked with an asterisk, what do the outer purple curves show?",
+    o: ["The 95% confidence interval of the mean regression line", "The 95% prediction interval: where 95% of the ships lie", "The minimum and maximum ship in the data", "The fit for ships built after 2005"], a: 1,
+    e: "The inner curves are the confidence band of the line itself; the outer ones are the prediction band, the one to judge a design with.", s: "Appendix A, notes · Lecture 1.4" },
+  { q: "A regression in Appendix A has R² = 0.45. According to the book…",
+    o: ["It can be used like any other", "It is invalid and must not be used", "It is valid only above 100,000 t DWT", "It should be used with great caution"], a: 3,
+    e: "Formulas with R² below about 0.60 should be used with great caution.", s: "Appendix A, notes · Lecture 1.4" },
+  { q: "The Azores Feeder (130 TEU) gives a draught of about 3 m from the logarithmic fit of Fig. A.34. What is the best reading?",
+    o: ["The fit is outside its data range; use another family or similar ships", "The Feeder will have a 3 m draught", "The draught fit is wrong for all container ships", "Draught does not matter for a feeder"], a: 0,
+    e: "The container fits are drawn from about 4,000 t DWT; below that a formula still returns a number, not an answer.", s: "§1.3.6.4 (b2) · Lecture 1.4" },
+  { q: "In Normand’s method for small deviations, how does the machinery weight scale with displacement Δ?",
+    o: ["With Δ", "With Δ^(2/3)", "It does not depend on Δ", "With Δ²"], a: 1,
+    e: "Machinery follows the Admiralty power, P = Δ^(2/3)·V³/C, so its exponent is 2/3; steel and outfit go with Δ, payload with Δ⁰.", s: "Appendix C.1 · Lecture 1.5" },
+  { q: "The fixed-point iteration Δₖ₊₁ = g(Δₖ) for the displacement equation converges when…",
+    o: ["g(Δ) is larger than Δ", "the start value is above the solution", "|g′(Δ)| < 1 in the region of the solution", "the lightship is larger than the deadweight"], a: 2,
+    e: "g′ is the extra lightship each extra tonne of displacement costs; below 1 the error shrinks every pass.", s: "Lecture 1.5 · Exercise 1.5, Q5" },
+];
+
+const qs = document.getElementById("qs"), scoreEl = document.getElementById("score"), fill = document.getElementById("fill");
+let answered = 0, right = 0;
+
+function update() {
+  scoreEl.textContent = answered ? `${right} / ${answered} right · ${QUIZ.length - answered} to go` : `0 / ${QUIZ.length} answered`;
+  fill.style.width = (100 * answered / QUIZ.length) + "%";
+}
+
+function render() {
+  qs.innerHTML = ""; answered = 0; right = 0;
+  QUIZ.forEach((item, i) => {
+    const li = document.createElement("li"); li.className = "q";
+    li.innerHTML = `<div class="qhead"><span class="num">Q${String(i + 1).padStart(2, "0")}</span><p class="stem" id="stem-${i}"></p></div><div class="opts" role="group" aria-labelledby="stem-${i}"></div>`;
+    li.querySelector(".stem").textContent = item.q;
+    const box = li.querySelector(".opts");
+    item.o.forEach((text, j) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "opt"; b.id = `q${i}o${j}`;
+      b.innerHTML = `<span class="k">${"ABCD"[j]}</span><span></span>`;
+      b.lastChild.textContent = text;
+      b.addEventListener("click", () => answer(li, item, j));
+      box.appendChild(b);
+    });
+    qs.appendChild(li);
+  });
+  update();
+}
+
+function answer(li, item, j) {
+  const btns = li.querySelectorAll(".opt");
+  btns.forEach((b, k) => { b.disabled = true; if (k === item.a) b.classList.add("right"); });
+  const ok = j === item.a;
+  if (!ok) btns[j].classList.add("wrong");
+  answered++; if (ok) right++;
+  const fb = document.createElement("div");
+  fb.className = "fb " + (ok ? "ok" : "no");
+  fb.innerHTML = `<b></b> <span></span><span class="src"></span>`;
+  fb.querySelector("b").textContent = ok ? "Right." : `Not quite: the answer is ${"ABCD"[item.a]}.`;
+  fb.querySelector("span").textContent = item.e;
+  fb.querySelector(".src").textContent = item.s;
+  li.appendChild(fb);
+  update();
+}
+
+document.getElementById("reset").addEventListener("click", render);
+render();
+</script>
+
+</body></html>
