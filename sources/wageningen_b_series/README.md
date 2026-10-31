@@ -8,4 +8,4 @@ The polynomials are from Oosterveld and van Oossanen (1975), as tabulated by Ber
 
 The file comes unchanged from the MSS toolbox by Thor I. Fossen (https://github.com/cybergalactic/MSS, file `LIBRARY/modeling/utiles/WageningData.txt`). MSS is released under the MIT licence, copied here in `LICENSE`.
 
-Used in homework H2b (Propeller Selection in the Wageningen B-series) and specialization SP02.
+Used in homework H2b (Propeller Selection in the Wageningen B-series) and specialization SP04.
