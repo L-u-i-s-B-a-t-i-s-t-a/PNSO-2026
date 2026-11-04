@@ -356,7 +356,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
           mats.appendChild(el("div", { cls: "mat later" }, kids));
         }
       });
-      list.appendChild(el("div", { cls: "session" + (s.fixed ? " fixed" : "") }, [head, mats]));
+      list.appendChild(el("div", { cls: "session" }, [head, mats]));
     });
     cal.appendChild(el("div", { cls: "week", id: "week" + w.n }, [rail, list]));
   });
