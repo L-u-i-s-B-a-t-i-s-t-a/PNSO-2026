@@ -95,6 +95,9 @@ section { scroll-margin-top: 56px; display: flex; flex-direction: column; gap: 1
 .session .plan a:hover { text-decoration: underline; }
 .session .plan b { color: var(--accent); font-weight: 600; }
 .session.fixed .head h3 { color: var(--fixed); }
+.session.later .head > *:not(.plan) { opacity: 0.45; }
+.week.later .rail { opacity: 0.45; }
+.mat.later > *, .session.later .none { opacity: 0.5; }
 .session.fixed { background: linear-gradient(90deg, var(--accent-soft), transparent 75%); padding-inline: 10px; }
 .mats { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .mat { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 10px; align-items: baseline; font-size: 14px; padding: 6px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); text-decoration: none; color: var(--ink); }
@@ -330,6 +333,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
     var on = released(w.n);
     var rail = el("div", { cls: "rail" }, [el("b", { text: "Week " + w.n }), el("span", { text: w.days })]);
     var list = el("div", { cls: "sessions" });
+    var weekReady = false;
     w.sessions.forEach(function (s) {
       var head = el("div", { cls: "head" }, [
         el("div", { cls: "when" }, [el("b", { text: s.c }), " · " + s.d + " · " + s.h + " · " + s.room]),
@@ -343,12 +347,14 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
         return el("div", { cls: "ex" }, [el("b", { text: x.split(" · ")[0] }), " · " + x.split(" · ").slice(1).join(" · ") + (dl ? "  ·  practice for " + dl : "")]);
       })));
       var mats = el("div", { cls: "mats" });
+      var ready = false;
       if (!s.mats.length) mats.appendChild(el("div", { cls: "none", text: s.guest ? "Material from the guest lecturer." : "No materials for this session." }));
       s.mats.forEach(function (x) {
         var kids = [el("span", { cls: "k", text: K[x.k] }), el("span", { cls: "t" }, [x.t, x.note ? el("small", { text: " · " + x.note }) : null])];
         // Answer sheets are never released with their week: list them in RELEASED_FILES after the sessions.
         var live = x.k === "A" ? RELEASED_FILES.indexOf(x.file) >= 0 : (on || RELEASED_FILES.indexOf(x.file) >= 0);
         if (live) {
+          ready = true;
           var href = x.file;
           if (/\.ipynb$/.test(x.file)) href = "https://colab.research.google.com/github/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/" + x.file;
           mats.appendChild(el("a", { cls: "mat", href: href, target: "_blank", rel: "noopener" }, kids));
@@ -356,9 +362,12 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
           mats.appendChild(el("div", { cls: "mat later" }, kids));
         }
       });
-      list.appendChild(el("div", { cls: "session" }, [head, mats]));
+      // A session is greyed out until its materials are released (or, with none, until its day has come).
+      if (!s.mats.length) ready = new Date(s.d.replace(/^\w+ /, "") + " 2026") <= new Date();
+      if (ready) weekReady = true;
+      list.appendChild(el("div", { cls: "session" + (ready ? "" : " later") }, [head, mats]));
     });
-    cal.appendChild(el("div", { cls: "week", id: "week" + w.n }, [rail, list]));
+    cal.appendChild(el("div", { cls: "week" + (weekReady ? "" : " later"), id: "week" + w.n }, [rail, list]));
   });
 
   document.getElementById("stamp").textContent = PREVIEW ? "Preview · week 1 shown as released; files are placeholders" : (RELEASED.length ? "Released: week " + RELEASED.join(", ") : RELEASED_FILES.length ? "First materials are out; the rest are released about a week before each session" : "Materials are released about a week before each session");
