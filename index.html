@@ -335,8 +335,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
   var cal = document.getElementById("calendar");
   WEEKS.forEach(function (w) {
     var on = released(w.n);
-    var rail = el("div", { cls: "rail" }, [el("b", { text: "Week " + w.n }), el("span", { text: w.days }),
-      el("span", { cls: "state" + (on ? " on" : ""), text: on ? "Released" : "From " + w.rel })]);
+    var rail = el("div", { cls: "rail" }, [el("b", { text: "Week " + w.n }), el("span", { text: w.days })]);
     var list = el("div", { cls: "sessions" });
     w.sessions.forEach(function (s) {
       var head = el("div", { cls: "head" }, [
