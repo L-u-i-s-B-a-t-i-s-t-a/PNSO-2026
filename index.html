@@ -150,11 +150,6 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
         <a href="https://calendly.com/vnsd-luisbatista/meetme" target="_blank" rel="noopener">Book office hours</a>
       </div>
     </div>
-    <div class="now" id="now" aria-live="polite">
-      <div class="label" id="now-label">This week</div>
-      <ol id="now-list"></ol>
-      <a class="jump" id="now-jump" href="#week1">All materials for this week</a>
-    </div>
   </div>
 </header>
 
@@ -365,20 +360,6 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
     });
     cal.appendChild(el("div", { cls: "week", id: "week" + w.n }, [rail, list]));
   });
-
-  // This week: the first week whose Friday is today or later
-  var today = new Date(); today.setHours(0, 0, 0, 0);
-  var cur = WEEKS[0];
-  for (var i = 0; i < WEEKS.length; i++) {
-    var fri = new Date(DATES["W" + WEEKS[i].n] + "T00:00:00"); fri.setDate(fri.getDate() + 2);
-    if (fri >= today) { cur = WEEKS[i]; break; }
-    cur = WEEKS[WEEKS.length - 1];
-  }
-  var first = new Date(DATES.W1 + "T00:00:00");
-  document.getElementById("now-label").textContent = (today < first ? "First week · " : "This week · ") + "Week " + cur.n + ", " + cur.days;
-  var nl = document.getElementById("now-list");
-  cur.sessions.forEach(function (s) { nl.appendChild(el("li", {}, [el("b", { text: s.c }), el("span", { text: s.d.split(" ")[0] + " · " + s.t })])); });
-  var j = document.getElementById("now-jump"); j.href = "#week" + cur.n; j.textContent = "Week " + cur.n + " materials";
 
   document.getElementById("stamp").textContent = PREVIEW ? "Preview · week 1 shown as released; files are placeholders" : (RELEASED.length ? "Released: week " + RELEASED.join(", ") : RELEASED_FILES.length ? "First materials are out; the rest are released about a week before each session" : "Materials are released about a week before each session");
 })();
