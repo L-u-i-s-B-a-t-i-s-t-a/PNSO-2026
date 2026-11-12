@@ -25,16 +25,16 @@ var GROUPS = {
     ],
     "inputs": [
       {
-        "t": "Project Scope Sheet",
-        "x": "your deliverables, specializations and dates",
-        "file": "groups/G1/Project_Scope_Sheet_G1.pdf",
+        "t": "0.5 Project Scope Sheet",
+        "x": "your deliverables, studies and drawings, and specializations",
+        "file": "groups/G1/0.5_Project_Scope_Sheet_G1.pdf",
         "released": true
       },
       {
-        "t": "Statement of Work, your specializations",
-        "x": "what each of your two specializations must contain",
-        "file": "groups/G1/Statement_of_Work_G1.pdf",
-        "released": true
+        "t": "0.4 Datasheet Template",
+        "x": "the one-page A4 datasheet of your ship (D10)",
+        "file": "groups/common/0.4_Datasheet_Template.pdf",
+        "released": false
       },
       {
         "t": "Owner's requirements, Baseline B",
@@ -43,14 +43,7 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": [
-      {
-        "d": "2026-11-12",
-        "t": "SP01 Longitudinal Strength: requirements",
-        "x": "The documents your longitudinal strength calculation note (D9) must present, in the order of the calculation, with a checklist.",
-        "file": "groups/G1/SP01_Requirements.pdf"
-      }
-    ],
+    "notes": [],
     "name": "Fernão de Oliveira"
   },
   "G2": {
@@ -66,15 +59,15 @@ var GROUPS = {
     ],
     "inputs": [
       {
-        "t": "Project Scope Sheet",
-        "x": "your deliverables, specializations and dates",
-        "file": "groups/G2/Project_Scope_Sheet_G2.pdf",
+        "t": "0.5 Project Scope Sheet",
+        "x": "your deliverables, studies and drawings, and specializations",
+        "file": "groups/G2/0.5_Project_Scope_Sheet_G2.pdf",
         "released": false
       },
       {
-        "t": "Statement of Work, your specializations",
-        "x": "what each of your two specializations must contain",
-        "file": "groups/G2/Statement_of_Work_G2.pdf",
+        "t": "0.4 Datasheet Template",
+        "x": "the one-page A4 datasheet of your ship (D10)",
+        "file": "groups/common/0.4_Datasheet_Template.pdf",
         "released": false
       },
       {
@@ -99,15 +92,15 @@ var GROUPS = {
     ],
     "inputs": [
       {
-        "t": "Project Scope Sheet",
-        "x": "your deliverables, specializations and dates",
-        "file": "groups/G3/Project_Scope_Sheet_G3.pdf",
+        "t": "0.5 Project Scope Sheet",
+        "x": "your deliverables, studies and drawings, and specializations",
+        "file": "groups/G3/0.5_Project_Scope_Sheet_G3.pdf",
         "released": false
       },
       {
-        "t": "Statement of Work, your specializations",
-        "x": "what each of your two specializations must contain",
-        "file": "groups/G3/Statement_of_Work_G3.pdf",
+        "t": "0.4 Datasheet Template",
+        "x": "the one-page A4 datasheet of your ship (D10)",
+        "file": "groups/common/0.4_Datasheet_Template.pdf",
         "released": false
       },
       {
@@ -117,14 +110,7 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": [
-      {
-        "d": "2026-11-12",
-        "t": "SP01 Longitudinal Strength: requirements",
-        "x": "The documents your longitudinal strength calculation note (D9) must present, in the order of the calculation, with a checklist.",
-        "file": "groups/G3/SP01_Requirements.pdf"
-      }
-    ]
+    "notes": []
   },
   "G4": {
     "ids": [
@@ -139,15 +125,15 @@ var GROUPS = {
     ],
     "inputs": [
       {
-        "t": "Project Scope Sheet",
-        "x": "your deliverables, specializations and dates",
-        "file": "groups/G4/Project_Scope_Sheet_G4.pdf",
+        "t": "0.5 Project Scope Sheet",
+        "x": "your deliverables, studies and drawings, and specializations",
+        "file": "groups/G4/0.5_Project_Scope_Sheet_G4.pdf",
         "released": false
       },
       {
-        "t": "Statement of Work, your specializations",
-        "x": "what each of your two specializations must contain",
-        "file": "groups/G4/Statement_of_Work_G4.pdf",
+        "t": "0.4 Datasheet Template",
+        "x": "the one-page A4 datasheet of your ship (D10)",
+        "file": "groups/common/0.4_Datasheet_Template.pdf",
         "released": false
       },
       {
@@ -172,15 +158,15 @@ var GROUPS = {
     ],
     "inputs": [
       {
-        "t": "Project Scope Sheet",
-        "x": "your deliverables, specializations and dates",
-        "file": "groups/G5/Project_Scope_Sheet_G5.pdf",
+        "t": "0.5 Project Scope Sheet",
+        "x": "your deliverables, studies and drawings, and specializations",
+        "file": "groups/G5/0.5_Project_Scope_Sheet_G5.pdf",
         "released": false
       },
       {
-        "t": "Statement of Work, your specializations",
-        "x": "what each of your two specializations must contain",
-        "file": "groups/G5/Statement_of_Work_G5.pdf",
+        "t": "0.4 Datasheet Template",
+        "x": "the one-page A4 datasheet of your ship (D10)",
+        "file": "groups/common/0.4_Datasheet_Template.pdf",
         "released": false
       },
       {
@@ -190,14 +176,7 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": [
-      {
-        "d": "2026-11-12",
-        "t": "SP01 Longitudinal Strength: requirements",
-        "x": "The documents your longitudinal strength calculation note (D9) must present, in the order of the calculation, with a checklist.",
-        "file": "groups/G5/SP01_Requirements.pdf"
-      }
-    ]
+    "notes": []
   },
   "G6": {
     "ids": [
@@ -212,15 +191,15 @@ var GROUPS = {
     ],
     "inputs": [
       {
-        "t": "Project Scope Sheet",
-        "x": "your deliverables, specializations and dates",
-        "file": "groups/G6/Project_Scope_Sheet_G6.pdf",
+        "t": "0.5 Project Scope Sheet",
+        "x": "your deliverables, studies and drawings, and specializations",
+        "file": "groups/G6/0.5_Project_Scope_Sheet_G6.pdf",
         "released": false
       },
       {
-        "t": "Statement of Work, your specializations",
-        "x": "what each of your two specializations must contain",
-        "file": "groups/G6/Statement_of_Work_G6.pdf",
+        "t": "0.4 Datasheet Template",
+        "x": "the one-page A4 datasheet of your ship (D10)",
+        "file": "groups/common/0.4_Datasheet_Template.pdf",
         "released": false
       },
       {
@@ -245,15 +224,15 @@ var GROUPS = {
     ],
     "inputs": [
       {
-        "t": "Project Scope Sheet",
-        "x": "your deliverables, specializations and dates",
-        "file": "groups/G7/Project_Scope_Sheet_G7.pdf",
+        "t": "0.5 Project Scope Sheet",
+        "x": "your deliverables, studies and drawings, and specializations",
+        "file": "groups/G7/0.5_Project_Scope_Sheet_G7.pdf",
         "released": false
       },
       {
-        "t": "Statement of Work, your specializations",
-        "x": "what each of your two specializations must contain",
-        "file": "groups/G7/Statement_of_Work_G7.pdf",
+        "t": "0.4 Datasheet Template",
+        "x": "the one-page A4 datasheet of your ship (D10)",
+        "file": "groups/common/0.4_Datasheet_Template.pdf",
         "released": false
       },
       {
@@ -278,15 +257,15 @@ var GROUPS = {
     ],
     "inputs": [
       {
-        "t": "Project Scope Sheet",
-        "x": "your deliverables, specializations and dates",
-        "file": "groups/G8/Project_Scope_Sheet_G8.pdf",
+        "t": "0.5 Project Scope Sheet",
+        "x": "your deliverables, studies and drawings, and specializations",
+        "file": "groups/G8/0.5_Project_Scope_Sheet_G8.pdf",
         "released": false
       },
       {
-        "t": "Statement of Work, your specializations",
-        "x": "what each of your two specializations must contain",
-        "file": "groups/G8/Statement_of_Work_G8.pdf",
+        "t": "0.4 Datasheet Template",
+        "x": "the one-page A4 datasheet of your ship (D10)",
+        "file": "groups/common/0.4_Datasheet_Template.pdf",
         "released": false
       },
       {
