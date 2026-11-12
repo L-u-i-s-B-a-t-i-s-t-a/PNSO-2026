@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz 1 · Ship and Ocean Systems Design 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root { --bg:#f6f8f9; --surface:#fff; --ink:#16243a; --muted:#56647a; --line:#d6dee5; --accent:#007eb5; --accent-soft:#e2f1f8; --ok:#1e7a4c; --ok-soft:#e3f4ea; --no:#b4521c; --no-soft:#fbefe5;
+  --display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif; --body:"IBM Plex Sans",Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0e1522; --surface:#151f31; --ink:#e6ecf3; --muted:#9aa8bb; --line:#2a3850; --accent:#55b9ea; --accent-soft:#13324a; --ok:#5fd09a; --ok-soft:#14352a; --no:#f0965f; --no-soft:#3a2619; color-scheme:dark; } }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.55 var(--body); }
+.wrap { max-width:760px; margin:0 auto; padding:28px 16px 48px; }
+.label { font:12px var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+h1 { font:700 34px/1.05 var(--display); margin:6px 0 10px; }
+.lead { color:var(--muted); margin:0 0 20px; }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:18px 18px 14px; margin:0 0 14px; }
+.card .top { display:flex; justify-content:space-between; gap:12px; margin-bottom:6px; }
+.calc { font:12px var(--mono); color:var(--accent); background:var(--accent-soft); border-radius:4px; padding:1px 6px; white-space:nowrap; }
+.card h2 { font:600 17px/1.35 var(--body); margin:0 0 10px; }
+.opt { display:flex; gap:10px; align-items:flex-start; padding:8px 10px; border:1px solid var(--line); border-radius:8px; margin:6px 0; cursor:pointer; }
+.opt input { margin-top:4px; }
+.opt.right { border-color:var(--ok); background:var(--ok-soft); }
+.opt.wrong { border-color:var(--no); background:var(--no-soft); }
+button { font:600 14px var(--body); color:#fff; background:var(--accent); border:0; border-radius:6px; padding:7px 14px; cursor:pointer; margin-top:6px; }
+button:disabled { opacity:.45; cursor:default; }
+.why { display:none; margin-top:10px; padding:10px 12px; border-left:3px solid var(--accent); background:var(--accent-soft); border-radius:0 6px 6px 0; }
+.why b { display:block; margin-bottom:2px; }
+.score { position:sticky; bottom:0; background:var(--surface); border-top:1px solid var(--line); padding:10px 16px; text-align:center; font-weight:600; }
+footer { color:var(--muted); font-size:13px; margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="label">Week 1 · Quiz 1 · not graded</div>
+  <h1>Quiz 1: From the Brief to a First Ship</h1>
+  <p class="lead">Owner's requirements, design stages, deadweight and volume carriers, regressions and the design equation (Lectures 1.2 to 1.5, Ship types 1.2). Questions marked <span class="calc">calculator</span> need a short calculation. Choose an answer, then check it: each answer comes with the working.</p>
+  <div id="quiz"></div>
+  <footer>T. Santos, L. Batista · Ship and Ocean Systems Design 2026 · Papanikolaou (2026) §1.3, §2.1–2.3, §2.13, App. A and C</footer>
+</div>
+<div class="score" id="score"></div>
+<script>
+// Quiz 1 questions. a = index of the correct option. calc = needs a calculator.
+var Q = [
+{ t: "Owner's requirements · L1.2", q: "Which item of a new ship is normally left to the designer, not fixed in the owner's brief?",
+  o: ["The trial speed at the design draught", "The range, in miles or days without bunkering", "The classification society", "The main dimensions, except where a canal or a port limits them"], a: 3,
+  e: "The owner sets the what: capacity, speed, range and class, values that can be checked at delivery. The designer finds the how: main dimensions, power and form. A canal or port limit is the exception, because it comes with the brief." },
+{ t: "Owner's requirements · L1.2", q: "Which split between owner and designer is right?",
+  o: ["Owner: deadweight, service speed, class · Designer: L, B, T, D, installed power", "Owner: L, B, T, D · Designer: deadweight and range", "Owner: installed power, block coefficient · Designer: class and speed", "Owner: everything; the designer only draws it"], a: 0,
+  e: "Capacity (deadweight, TEU), speed, range and class come from the owner; the dimensions and the power that meet them come from the designer. Owners often add the engine type, but not its power." },
+{ t: "Design stages · L1.3", q: "In the classical four stages of the textbook, which order is right?",
+  o: ["Concept · Contract · Preliminary · Detailed", "Concept · Preliminary · Contract · Detailed", "Preliminary · Concept · Detailed · Contract", "Contract · Concept · Preliminary · Detailed"], a: 1,
+  e: "A Concept, B Preliminary, C Contract, D Detailed (Papanikolaou §1.3.2). A and B together are the basic design, the part this course and your project cover." },
+{ t: "Design stages · L1.3", q: "A general arrangement sketch, the propulsive power, the lightship weight and a first cost are delivered in which stage?",
+  o: ["Concept", "Preliminary", "Contract", "Detailed"], a: 1,
+  e: "Concept gives ship type, deadweight, propulsion and speed with a first L, B, D, T. Preliminary turns that into a GA sketch, power, lightship and cost: after A and B the yard can price the ship." },
+{ t: "Design stages · L1.3", q: "Faired lines for tank tests, stability and structural computations, and the specification signed with the contract belong to which stage?",
+  o: ["Concept", "Preliminary", "Contract", "Detailed"], a: 2,
+  e: "That is the Contract stage (C), the fifth loop of the spiral. Detail (D) then produces the 3D model, all class drawings, parts lists and workshop data." },
+{ t: "Design equation · L1.5", q: "With L/B, B/T and C_B taken from similar ships, Δ = ρ C_B L B T can be solved for the draught. Which expression is right?",
+  o: ["T = [Δ / (ρ C_B (L/B) (B/T))]^(1/3)", "T = [Δ / (ρ C_B (L/B) (B/T)²)]^(1/3)", "T = Δ / (ρ C_B (L/B) (B/T)²)", "T = [Δ (L/B) (B/T)² / (ρ C_B)]^(1/3)"], a: 1,
+  e: "Write B = (B/T)·T and L = (L/B)·B = (L/B)(B/T)·T. Then Δ = ρ C_B (L/B)(B/T)·T · (B/T)·T · T = ρ C_B (L/B)(B/T)² T³, and T is its cube root. B/T appears squared because it enters through both L and B." },
+{ t: "Design equation · L1.5", calc: true, q: "Δ = 20,000 t, ρ = 1.025 t/m³, C_B = 0.70, L/B = 6.0 and B/T = 2.5. What draught does the design equation give?",
+  o: ["T ≈ 9.06 m", "T ≈ 12.29 m", "T ≈ 7.36 m", "T ≈ 27.3 m"], a: 0,
+  e: "ρ C_B (L/B)(B/T)² = 1.025 · 0.70 · 6.0 · 6.25 = 26.91. T = (20,000 / 26.91)^(1/3) = 743.3^(1/3) = 9.06 m. Then B = 2.5 · 9.06 = 22.65 m and L = 6.0 · 22.65 = 135.9 m. 12.29 m comes from forgetting the square on B/T." },
+{ t: "Scaling a hull · L1.4 and L1.5", q: "A hull displaces Δ. You need a target Δ_t with the same L/B, B/T, C_B and ρ. By which factor λ must every length (L, B, T and D) be multiplied?",
+  o: ["λ = Δ_t / Δ", "λ = (Δ_t / Δ)^(1/2)", "λ = (Δ_t / Δ)^(1/3)", "λ = (Δ / Δ_t)^(1/3)"], a: 2,
+  e: "Δ = ρ C_B L B T: each length multiplies Δ once, so scaling all three by λ multiplies Δ by λ³. λ³ = Δ_t / Δ gives the cube root. Stretching only L by Δ_t/Δ also reaches Δ_t, but changes the shape." },
+{ t: "Scaling a hull · L1.4 and L1.5", calc: true, q: "A design of L = 150 m displaces 18,000 t; the weights need 20,000 t. Keeping the shape, what is the new length?",
+  o: ["166.7 m", "158.1 m", "155.4 m", "150.0 m, only the draught changes"], a: 2,
+  e: "λ = (20,000 / 18,000)^(1/3) = 1.1111^(1/3) = 1.0357, so L = 150 · 1.0357 = 155.4 m, and B, T, D grow by the same 3.6 %. 166.7 m is the linear ratio, which would give 1.11³ = 1.37 times the displacement." },
+{ t: "Regressions · L1.4", q: "Why do L, B, T and C_B read from separate regressions not, in general, satisfy Δ = ρ C_B L B T?",
+  o: ["Because the regressions use the wrong density of sea water", "Because each fit is made on its own: the product of averages is not the average of products, so the set need not close", "Because regressions are only valid for volume carriers", "Because the 95 % band is too narrow"], a: 1,
+  e: "Each curve is the average ship for one quantity. Multiplying the average L, B, T and C_B does not give the average Δ, so buoyancy and weight miss by a few percent (−0.7 % for the bulk carrier, −4.7 % for the reference ship). The design equation closes that gap." },
+{ t: "Regressions · L1.4", calc: true, q: "Two box barges (C_B = 1, ρ = 1.025 t/m³): A is 80 × 14 × 5 m and B is 120 × 18 × 7 m. A barge built from their average dimensions displaces how much, compared with the average of their two displacements?",
+  o: ["The same: averaging is linear", "About 7 % less", "About 7 % more", "About 37 % less"], a: 1,
+  e: "Δ_A = 1.025 · 5,600 = 5,740 t; Δ_B = 1.025 · 15,120 = 15,498 t; average 10,619 t. The barge from the averages, 100 × 16 × 6 m, displaces 1.025 · 9,600 = 9,840 t: 7.3 % less. This is why regressions do not close the design equation." },
+{ t: "Regressions · L1.4", calc: true, q: "A container ship of 20,000 t deadweight; similar ships have DWT/Δ = 0.72. What are the first displacement and lightship?",
+  o: ["Δ ≈ 27,780 t, lightship ≈ 7,780 t", "Δ ≈ 14,400 t, lightship ≈ 5,600 t", "Δ ≈ 27,780 t, lightship ≈ 14,400 t", "Δ ≈ 20,000 t, lightship ≈ 5,600 t"], a: 0,
+  e: "Δ = DWT / 0.72 = 27,778 t and lightship = Δ − DWT = 7,778 t. Multiplying instead of dividing (14,400 t) gives a ship lighter than its own cargo." },
+{ t: "Design categories · ST1.2", q: "What drives the design of a deadweight carrier and of a volume carrier?",
+  o: ["Deadweight carrier: hold volume first · Volume carrier: deadweight first", "Deadweight carrier: the deadweight, so Δ comes first and the load line is reached with space left · Volume carrier: the cargo volume (or TEU), so the hull volume comes first and Δ and T come last", "Both start from the speed", "Both start from the length the port allows"], a: 1,
+  e: "Heavy cargo (stowage factor below about 1.3 m³/t) fills the deadweight before the holds: tankers, bulk carriers. Light cargo (above about 2.0 m³/t) fills the holds first, with freeboard to spare: container ships, Ro-Ro, cruise ships. Tables 1.8 and 1.9 of the textbook follow the two routes." },
+{ t: "Design categories · ST1.2", calc: true, q: "A ship has 45,000 m³ of hold volume and 30,000 t of deadweight for cargo. It loads grain at a stowage factor of 1.3 m³/t. How much does it carry, and what runs out first?",
+  o: ["34,615 t; the holds run out first", "30,000 t; the deadweight runs out first", "34,615 t; the deadweight runs out first", "23,077 t; the holds run out first"], a: 1,
+  e: "The holds would take 45,000 / 1.3 = 34,615 t, but only 30,000 t of deadweight is available: W = min(30,000; 34,615) = 30,000 t. The switch-over is SF* = 45,000 / 30,000 = 1.5 m³/t; grain at 1.3 is below it, so the deadweight runs out first." },
+{ t: "Owner's brief check · Activity 1.2", calc: true, q: "28,000 t of a product at 0.85 t/m³ must be carried with the tanks filled to 98 %. What tank volume is needed?",
+  o: ["32,941 m³", "32,282 m³", "33,613 m³", "24,286 m³"], a: 2,
+  e: "Volume of cargo = 28,000 / 0.85 = 32,941 m³. At 98 % filling the tanks must hold 32,941 / 0.98 = 33,613 m³. Multiplying by 0.98 (32,282 m³) would leave the cargo without room." },
+{ t: "Iteration · L1.5", calc: true, q: "Solve Δ = g(Δ) = 20,000 + 100 √Δ by fixed-point iteration from Δ₀ = 20,000 t. What is Δ₂?",
+  o: ["34,142 t", "38,478 t", "40,000 t", "54,142 t"], a: 1,
+  e: "Δ₁ = 20,000 + 100 √20,000 = 20,000 + 14,142 = 34,142 t. Δ₂ = 20,000 + 100 √34,142 = 20,000 + 18,478 = 38,478 t. The root is 40,000 t (√Δ = 200); it is approached step by step, never in one jump." },
+{ t: "Iteration · L1.5", calc: true, q: "For the same g(Δ) = 20,000 + 100 √Δ, with root Δ* = 40,000 t: what is g′(Δ*), and what does it say?",
+  o: ["g′ = 0.25 < 1: it converges, each error about a quarter of the one before", "g′ = 0.25: it diverges", "g′ = 4: it converges in four steps", "g′ = 0.005: it converges in one step"], a: 0,
+  e: "g′(Δ) = 50 / √Δ = 50 / 200 = 0.25. With |g′| < 1 the iteration converges, and the error shrinks by about g′ each pass: linear convergence. Physically: each extra tonne of displacement costs only 0.25 t of lightship." },
+{ t: "Iteration · L1.5", q: "Compared with fixed-point iteration, Newton–Raphson on f(Δ) = Δ − g(Δ):",
+  o: ["converges linearly and needs only g", "converges quadratically near the root, but needs f′ and a good start", "always needs more evaluations", "cannot be used for the design equation"], a: 1,
+  e: "Fixed point multiplies the error by about g′ each pass (linear). Newton squares it once close (quadratic): 1,650 → 9.7 → 0.0004 t in the lecture example. The price is the derivative, and a start close enough to the root." },
+{ t: "Exercise 1.5, by calculator", calc: true, q: "Use the Exercise 1.5 models: T = 0.3110 Δ^(1/3), L = 5.92 · 2.69 · T, E = 0.2509 L², steel = 0.032 E^1.36, outfit = 0.025 Δ, machinery = 0.6775 Δ^(2/3). For a deadweight of 30,000 t, start at Δ₀ = 30,000 t. What is Δ₁ = DWT + lightship(Δ₀)?",
+  o: ["About 30,750 t", "About 35,750 t", "About 36,880 t", "About 41,700 t"], a: 1,
+  e: "T = 0.3110 · 31.07 = 9.66 m; L = 15.925 · 9.66 = 153.9 m; E = 0.2509 · 153.9² = 5,941; steel = 0.032 · 5,941^1.36 = 4,342 t; outfit 750 t; machinery 0.6775 · 30,000^(2/3) = 654 t. Lightship 5,746 t, so Δ₁ = 35,746 t. Two more passes give 36,718 and 36,881 t. 0.3110 itself is (ρ C_B (L/B)(B/T)²)^(−1/3) = (1.025 · 0.757 · 5.92 · 2.69²)^(−1/3)." }
+];
+
+(function () {
+  var root = document.getElementById("quiz"), done = 0, right = 0;
+  function upd() { document.getElementById("score").textContent = "Answered " + done + " of " + Q.length + " · correct " + right; }
+  Q.forEach(function (x, i) {
+    var c = document.createElement("div"); c.className = "card";
+    c.innerHTML = '<div class="top"><span class="label">' + (i + 1) + " · " + x.t + "</span>" + (x.calc ? '<span class="calc">calculator</span>' : "") + "</div><h2></h2>";
+    c.querySelector("h2").textContent = x.q;
+    var opts = [];
+    x.o.forEach(function (t, j) {
+      var l = document.createElement("label"); l.className = "opt";
+      var r = document.createElement("input"); r.type = "radio"; r.name = "q" + i; r.value = j;
+      var s = document.createElement("span"); s.textContent = String.fromCharCode(65 + j) + ". " + t;
+      l.appendChild(r); l.appendChild(s); c.appendChild(l); opts.push(l);
+    });
+    var b = document.createElement("button"); b.textContent = "Check"; c.appendChild(b);
+    var w = document.createElement("div"); w.className = "why"; c.appendChild(w);
+    b.onclick = function () {
+      var sel = c.querySelector("input:checked"); if (!sel) return;
+      var k = +sel.value, ok = k === x.a;
+      opts[x.a].classList.add("right"); if (!ok) opts[k].classList.add("wrong");
+      c.querySelectorAll("input").forEach(function (r) { r.disabled = true; });
+      b.disabled = true; done++; if (ok) right++;
+      w.innerHTML = "<b>" + (ok ? "Right." : "Not quite: the answer is " + String.fromCharCode(65 + x.a) + ".") + "</b>";
+      w.appendChild(document.createTextNode(x.e)); w.style.display = "block"; upd();
+    };
+    root.appendChild(c);
+  });
+  upd();
+})();
+</script>
+</body>
+</html>
