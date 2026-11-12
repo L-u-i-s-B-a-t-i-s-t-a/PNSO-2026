@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PNSO 2026 · Group</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #f6f8f9;
+  --surface: #ffffff;
+  --ink: #16243a;
+  --muted: #56647a;
+  --line: #d6dee5;
+  --rule: #e7ecf0;
+  --accent: #007eb5;
+  --accent-soft: #e2f1f8;
+  --exercise: #b4521c;
+  --exercise-soft: #fbefe5;
+  --fixed: #16243a;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", Arial, sans-serif;
+  --body: "IBM Plex Sans", Arial, Helvetica, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1522; --surface: #151f31; --ink: #e6ecf3; --muted: #9aa8bb; --line: #2a3850; --rule: #1d2840;
+    --accent: #55b9ea; --accent-soft: #13324a; --exercise: #f0965f; --exercise-soft: #3a2619; --fixed: #e6ecf3;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1522; --surface: #151f31; --ink: #e6ecf3; --muted: #9aa8bb; --line: #2a3850; --rule: #1d2840;
+  --accent: #55b9ea; --accent-soft: #13324a; --exercise: #f0965f; --exercise-soft: #3a2619; --fixed: #e6ecf3;
+  color-scheme: dark;
+}
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 32px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 28px; }
+a { color: var(--accent); }
+.back { font-size: 14px; }
+.label { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--display); font-size: clamp(30px, 5vw, 44px); margin: 4px 0 0; line-height: 1.1; }
+h2 { font-family: var(--display); font-size: 22px; margin: 0; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.facts div { padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; font-size: 14px; color: var(--muted); }
+.facts b { display: block; color: var(--ink); font-size: 16px; font-weight: 600; }
+.ids { font-family: var(--mono); }
+section { display: flex; flex-direction: column; gap: 10px; }
+.lead { margin: 0; color: var(--muted); max-width: 74ch; }
+.mats { display: flex; flex-direction: column; gap: 6px; }
+.mat { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 10px; align-items: baseline; font-size: 14px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); text-decoration: none; color: var(--ink); }
+a.mat:hover { border-color: var(--accent); }
+.mat .k { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.mat .t { min-width: 0; overflow-wrap: anywhere; }
+.mat small { color: var(--muted); font-size: 12px; }
+.mat.later { border-style: dashed; background: transparent; color: var(--muted); }
+.note { padding: 12px 14px; border-left: 4px solid var(--accent); background: var(--accent-soft); display: flex; flex-direction: column; gap: 4px; }
+.note .d { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.note b { font-size: 15px; }
+.note p { margin: 0; }
+.none { font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="index.html#groups">← Groups</a>
+  <div><div class="label">Ship Design Project · group page</div><h1 id="title">Group</h1></div>
+  <div class="facts" id="facts"></div>
+  <section><h2>Instructor project inputs</h2><p class="lead">The three base documents for your project. A dashed one is not released yet.</p><div class="mats" id="inputs"></div></section>
+  <section><h2>Instructor notes</h2><p class="lead">Information the instructor adds for your group during the project, newest first. Notes for all groups are also in the reference documents and the Bibliography.</p><div id="notes" style="display:flex;flex-direction:column;gap:10px"></div></section>
+  <section><h2>For all groups</h2><p class="lead">The common instructions, the project documents and the reference documents are on the <a href="index.html#groups">Groups</a> section of the course site.</p></section>
+</div>
+<script src="groups/groups.js"></script>
+<script>
+(function () {
+  function el(tag, attrs, kids) { var n = document.createElement(tag); attrs = attrs || {}; for (var k in attrs) { if (k === "cls") n.className = attrs[k]; else if (k === "text") n.textContent = attrs[k]; else n.setAttribute(k, attrs[k]); } (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); }); return n; }
+  var m = /[?&]g=(G\d+)/.exec(location.search), id = m ? m[1] : null, g = id && GROUPS[id];
+  if (!g) { document.getElementById("title").textContent = "Group not found"; return; }
+  document.title = "PNSO 2026 · " + id;
+  document.getElementById("title").textContent = id + " · Baseline " + g.baseline;
+  var f = document.getElementById("facts");
+  f.appendChild(el("div", {}, [el("b", { cls: "ids", text: g.ids.join(" · ") }), "student numbers"]));
+  f.appendChild(el("div", {}, [el("b", { text: g.baseline === "A" ? "Azores Express" : "Azores Feeder" }), "Baseline " + g.baseline]));
+  f.appendChild(el("div", {}, [el("b", { text: g.sps.join(" · ") }), "specializations"]));
+  var ins = document.getElementById("inputs");
+  g.inputs.forEach(function (x, i) {
+    var kids = [el("span", { cls: "k", text: "Input " + (i + 1) }), el("span", { cls: "t" }, [x.t, el("small", { text: " · " + x.x + (x.released ? "" : " · to be released") })])];
+    ins.appendChild(x.released ? el("a", { cls: "mat", href: x.file, target: "_blank", rel: "noopener" }, kids) : el("div", { cls: "mat later" }, kids));
+  });
+  var nb = document.getElementById("notes");
+  if (!g.notes.length) nb.appendChild(el("div", { cls: "none", text: "No notes yet." }));
+  g.notes.forEach(function (n) {
+    nb.appendChild(el("div", { cls: "note" }, [el("span", { cls: "d", text: n.d }), el("b", { text: n.t }), el("p", { text: n.x }), n.file ? el("a", { href: n.file, target: "_blank", rel: "noopener", text: "Open the document" }) : null]));
+  });
+})();
+</script>
+</body>
+</html>

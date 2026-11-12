@@ -135,6 +135,11 @@ a.mat:hover .t { color: var(--accent); }
 .grade b { font-family: var(--display); font-size: 36px; line-height: 1; font-variant-numeric: tabular-nums; }
 .grade span { font-weight: 600; }
 .grade p { font-size: 14px; color: var(--muted); }
+.gbox { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.gbox > div { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); min-width: 0; }
+.gbox h3 { margin: 0; }
+.gbox .mats { display: flex; flex-direction: column; gap: 6px; }
+.gbox .none { font-size: 14px; color: var(--muted); }
 .rules { display: flex; flex-direction: column; gap: 8px; max-width: 74ch; font-size: 14px; color: var(--muted); padding-left: 18px; margin: 0; }
 .rules b { color: var(--ink); }
 .help { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
@@ -227,38 +232,51 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
         <div><b>D9</b><span>Two specialization documents</span></div>
         <div><b>D10</b><span>Datasheet and presentation</span></div>
       </div>
-      <p class="lead" style="margin-top:8px">The report template (0.3), the datasheet template (0.4) and your group's Project Scope Sheet (0.5) are delivered to each group directly; they are not on this site.</p>
+      <p class="lead" style="margin-top:8px">Your group's Project Scope Sheet (0.5) is on your group page, under Groups. The report template (0.3) and the datasheet template (0.4) are delivered to each group directly.</p>
     </section>
 
     <section id="groups">
       <div class="label">Ship Design Project · groups</div>
       <h2>Groups</h2>
+      <h3 style="margin-top:4px">For all groups</h3>
+      <ol class="rules">
+        <li><b>Read the brief</b> in 0.2 Ship Design Project: the <a href="week1/0.2_Ship_Design_Project.pdf#page=6" target="_blank" rel="noopener">common deliverables D1–D10</a> and the <a href="week1/0.2_Ship_Design_Project.pdf#page=7" target="_blank" rel="noopener">specialization content</a>. Deck 0.2 numbers the specializations differently; the codes in the table below and on your group page are the current ones.</li>
+        <li><b>Open your group page</b> (click your group in the table): it holds the three instructor inputs for your ship and the instructor's notes. Check it every week.</li>
+        <li><b>Use the reference documents</b> below for consultation; the general ones are also in the Bibliography.</li>
+        <li><b>Book office hours</b> as a group: one 30-minute slot per group per week, with your questions stated.</li>
+        <li><b>Deliver</b> one ZIP file by e-mail (e.g. Group1_Project.zip) by Sun 13 Dec. Clinics on Fri 11 Dec; presentations, 15 minutes per group, on Fri 18 Dec.</li>
+        <li><b>Declare AI tools</b> where you used them in the report.</li>
+      </ol>
+      <div class="gbox" style="margin-top:8px">
+        <div><h3>Project documents</h3><div class="mats" id="proj-docs"></div></div>
+        <div><h3>Reference documents from the instructor</h3><div class="mats" id="proj-refs"></div></div>
+      </div>
       <div style="overflow-x:auto">
       <table class="groups" style="min-width:640px">
         <thead><tr><th style="width:80px">Group</th><th style="width:120px">Student ID</th><th style="width:100px">Baseline</th><th>Specializations Proposed by Group</th><th style="width:170px">Status</th></tr></thead>
         <tbody>
-          <tr class="first"><td class="g" rowspan="3">G1</td><td class="id">106238</td><td rowspan="3">B</td><td rowspan="3">SP04 Hull–Propeller–Engine Matching<br>SP09 Longitudinal Strength Calculation</td><td rowspan="3">Under evaluation</td></tr>
+          <tr class="first"><td class="g" rowspan="3"><a href="group.html?g=G1">G1</a></td><td class="id">106238</td><td rowspan="3">B</td><td rowspan="3">SP01 Longitudinal Strength<br>SP02 Propulsion Matching</td><td rowspan="3">Under evaluation</td></tr>
           <tr><td class="id">107304</td></tr>
           <tr><td class="id">106645</td></tr>
-          <tr class="first"><td class="g" rowspan="3">G2</td><td class="id">120960</td><td rowspan="3">A</td><td rowspan="3">SP06 Alternative Fuel and Energy Storage<br>SP07 Detailed Emissions Calculation</td><td rowspan="3">Under evaluation</td></tr>
+          <tr class="first"><td class="g" rowspan="3"><a href="group.html?g=G2">G2</a></td><td class="id">120960</td><td rowspan="3">A</td><td rowspan="3">SP10 Emissions<br>SP12 Alternative Fuel</td><td rowspan="3">Under evaluation</td></tr>
           <tr><td class="id">120562</td></tr>
           <tr><td class="id">120565</td></tr>
-          <tr class="first"><td class="g" rowspan="3">G3</td><td class="id">116025</td><td rowspan="3">A</td><td rowspan="3">SP09 Longitudinal Strength Calculation<br>SP10 Preliminary Stability Calculation</td><td rowspan="3">Under evaluation</td></tr>
+          <tr class="first"><td class="g" rowspan="3"><a href="group.html?g=G3">G3</a></td><td class="id">116025</td><td rowspan="3">A</td><td rowspan="3">SP01 Longitudinal Strength<br>SP07 Stability</td><td rowspan="3">Under evaluation</td></tr>
           <tr><td class="id">116366</td></tr>
           <tr><td class="id">116084</td></tr>
-          <tr class="first"><td class="g" rowspan="3">G4</td><td class="id">96720</td><td rowspan="3">A</td><td rowspan="3">SP01 Advanced Dimensional Analysis<br>SP02 Parametric Hull Shape Generation</td><td rowspan="3">Under evaluation</td></tr>
+          <tr class="first"><td class="g" rowspan="3"><a href="group.html?g=G4">G4</a></td><td class="id">96720</td><td rowspan="3">A</td><td rowspan="3">SP05 Parametric Hull<br>SP11 Dimensional Analysis</td><td rowspan="3">Under evaluation</td></tr>
           <tr><td class="id">105343</td></tr>
           <tr><td class="id">121344</td></tr>
-          <tr class="first"><td class="g" rowspan="3">G5</td><td class="id">117328</td><td rowspan="3">A</td><td rowspan="3">SP09 Longitudinal Strength Calculation<br>SP10 Preliminary Stability Calculation</td><td rowspan="3">Under evaluation</td></tr>
+          <tr class="first"><td class="g" rowspan="3"><a href="group.html?g=G5">G5</a></td><td class="id">117328</td><td rowspan="3">A</td><td rowspan="3">SP01 Longitudinal Strength<br>SP07 Stability</td><td rowspan="3">Under evaluation</td></tr>
           <tr><td class="id">116303</td></tr>
           <tr><td class="id">107276</td></tr>
-          <tr class="first"><td class="g" rowspan="3">G6</td><td class="id">106053</td><td rowspan="3">A</td><td rowspan="3">SP04 Hull–Propeller–Engine Matching<br>SP05 Electrical Load Balance</td><td rowspan="3">Under evaluation</td></tr>
+          <tr class="first"><td class="g" rowspan="3"><a href="group.html?g=G6">G6</a></td><td class="id">106053</td><td rowspan="3">A</td><td rowspan="3">SP02 Propulsion Matching<br>SP03 Electrical Load Balance</td><td rowspan="3">Under evaluation</td></tr>
           <tr><td class="id">107234</td></tr>
           <tr><td class="id">116330</td></tr>
-          <tr class="first"><td class="g" rowspan="3">G7</td><td class="id">116316</td><td rowspan="3">A</td><td rowspan="3">SP02 Parametric Hull Shape Generation<br>SP10 Preliminary Stability Calculation</td><td rowspan="3">Under evaluation</td></tr>
+          <tr class="first"><td class="g" rowspan="3"><a href="group.html?g=G7">G7</a></td><td class="id">116316</td><td rowspan="3">A</td><td rowspan="3">SP05 Parametric Hull<br>SP07 Stability</td><td rowspan="3">Under evaluation</td></tr>
           <tr><td class="id">106140</td></tr>
           <tr><td class="id">76941</td></tr>
-          <tr class="first"><td class="g" rowspan="3">G8</td><td class="id">121529</td><td rowspan="3">A</td><td rowspan="3">SP04 Hull–Propeller–Engine Matching<br>SP10 Preliminary Stability Calculation</td><td rowspan="3">Under evaluation</td></tr>
+          <tr class="first"><td class="g" rowspan="3"><a href="group.html?g=G8">G8</a></td><td class="id">121529</td><td rowspan="3">A</td><td rowspan="3">SP02 Propulsion Matching<br>SP07 Stability</td><td rowspan="3">Under evaluation</td></tr>
           <tr><td class="id">121534</td></tr>
           <tr><td class="id">97439</td></tr>
         </tbody>
@@ -296,6 +314,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       </ol>
       <h3 style="margin-top:8px">Container ships</h3>
       <p class="lead"><b style="color:var(--ink)">Alvariño, R., Azpíroz, J. J. and Meizoso, M. (1997). El proyecto básico del buque mercante.</b> Fondo Editorial de Ingeniería Naval, Colegio de Ingenieros Navales. The method of the container-ship design manual follows its chapter on container ships. <a href="week2/Alvarino_1997_Portacontenedores_Extract.pdf" target="_blank" rel="noopener">Extract</a>: chapter 2.9 <i>Portacontenedores</i>, section 3.8.6 on the number of containers, and the list of symbols (36 pages, in Spanish). For consultation, class use only, do not redistribute.</p>
+          <div id="bib-project" hidden><h3 style="margin-top:8px">Ship Design Project references</h3><div class="mats" id="bib-project-list" style="display:flex;flex-direction:column;gap:6px;max-width:74ch"></div></div>
     </section>
 
     <section id="help">
@@ -318,13 +337,14 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
   </div>
 </footer>
 
+<script src="groups/groups.js"></script>
 <script>
 (function () {
   // RELEASED: the weeks whose materials are out. Change this one line to release a week.
   var RELEASED = [];
   // RELEASED_FILES: single files released ahead of their week (for testing or early release).
   var RELEASED_FILES = ["week1/Plan_of_the_Day_W1.pdf", "week1/Consolidate_Day1_W1.pdf", "week1/Prepare_Friday_W1.pdf", "week1/0.1_Course_Presentation.pdf", "week1/0.2_Ship_Design_Project.pdf", "week1/0.6_Reference_Ship.pdf", "week1/Reading_1.1_Ship_Classification.pdf", "week1/ST1.1_Classification.pdf", "week1/StatCode5_Explorer.html", "week1/SFI_Explorer.html", "week1/Reading_1.2_Who_Buys_the_Ship.pdf", "week1/Reading_1.2B_Who_Owns_the_World_Fleet.pdf", "week1/L1.2.pdf", "week1/L1.3.pdf", "week1/ST1.2.pdf", "week1/L1.4.pdf", "week1/Reading_1.4_Sizing_by_Ratios.pdf", "week1/Papanikolaou_2026_Appendix_A.pdf", "week1/Plan_of_the_Day_W1_Day2.pdf", "week1/Consolidate_Day2_W1.pdf", "week1/Prepare_Wednesday_W2.pdf", "week1/L1.5.pdf", "week1/Reading_1.5_Fixed_Point_and_Newton_Raphson.pdf", "notebooks/H0_Reference_Ship_Database.ipynb", "notebooks/H1_Displacement_Equation.ipynb", "week1/quiz1.html"];
-  var SITE_VERSION = "12 Nov 2026, 10:40"; // shown in the footer; the lecturer's linksource copies it
+  var SITE_VERSION = "12 Nov 2026, 12:30"; // shown in the footer; the lecturer's linksource copies it
   var PREVIEW = false; // preview only: files are placeholders until they are uploaded
 
   var K = { L: "Lecture", S: "Ship types", E: "Exercise", Q: "Quiz", H: "Homework", D: "Demo", R: "Reading", N: "Notes", C: "Course", T: "Template", X: "Tool", A: "Answers" };
@@ -395,6 +415,32 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       { c: "W7.3–7.4", d: "Fri 18 Dec", h: "13:30–17:00", room: "VA3", fixed: true, t: "Project presentations (20 %)", st: "15 minutes per group, then discussion", mats: [] }
     ] }
   ];
+  // Groups: project documents, instructor references (groups/groups.js) and their Bibliography entries.
+  (function () {
+    function item(k, title, note, href, live) {
+      var kids = [el("span", { cls: "k", text: k }), el("span", { cls: "t" }, [title, note ? el("small", { text: " · " + note }) : null])];
+      return live ? el("a", { cls: "mat", href: href, target: "_blank", rel: "noopener" }, kids) : el("div", { cls: "mat later" }, kids);
+    }
+    var pd = document.getElementById("proj-docs");
+    if (pd) {
+      pd.appendChild(item("Course", "0.2 Common deliverables D1–D10", "deck 0.2, p. 6", "week1/0.2_Ship_Design_Project.pdf#page=6", true));
+      pd.appendChild(item("Course", "0.2 Specialization content", "deck 0.2, p. 7 · earlier numbering", "week1/0.2_Ship_Design_Project.pdf#page=7", true));
+      pd.appendChild(item("Course", "0.2 Owner's requirements, Baselines A and B", "deck 0.2, pp. 4–5", "week1/0.2_Ship_Design_Project.pdf#page=4", true));
+    }
+    var refs = (typeof PROJECT_REFS !== "undefined") ? PROJECT_REFS : [];
+    var pr = document.getElementById("proj-refs");
+    if (pr) {
+      if (!refs.length) pr.appendChild(el("div", { cls: "none", text: "None yet. The instructor adds documents here when they are useful to all groups." }));
+      refs.forEach(function (r) { pr.appendChild(item("Ref", r.t, [r.note, r.d].filter(Boolean).join(" · "), r.file, !!r.released)); });
+    }
+    var gen = refs.filter(function (r) { return r.general && r.released; });
+    if (gen.length) {
+      document.getElementById("bib-project").hidden = false;
+      var bl = document.getElementById("bib-project-list");
+      gen.forEach(function (r) { bl.appendChild(item("Ref", r.t, r.note, r.file, true)); });
+    }
+  })();
+
   // NEWS: announcements, newest first. Add one line at the top to post: d = date (YYYY-MM-DD), t = title, x = text, link optional.
   var NEWS = [
     { d: "2026-11-12", t: "Quiz 1 is out", x: "Quiz 1 covers week 1: owner's requirements, design stages, deadweight and volume carriers, regressions and the design equation, with calculations. It is not graded, but it is a fundamental part of your preparation for the Evaluation Test on Fri 27 Nov: work through it, and check the working given with each answer.", link: { t: "Open Quiz 1", href: "week1/quiz1.html" } },
