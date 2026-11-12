@@ -83,7 +83,7 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G3/0.5_Project_Scope_Sheet_G3.pdf?v=20261112-2122",
+        "file": "groups/G3/0.5_Project_Scope_Sheet_G3.pdf?v=20261112-2130",
         "released": true
       },
       {
@@ -139,7 +139,7 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G5/0.5_Project_Scope_Sheet_G5.pdf?v=20261112-2122",
+        "file": "groups/G5/0.5_Project_Scope_Sheet_G5.pdf?v=20261112-2130",
         "released": true
       },
       {
@@ -194,7 +194,7 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G7/0.5_Project_Scope_Sheet_G7.pdf?v=20261112-2122",
+        "file": "groups/G7/0.5_Project_Scope_Sheet_G7.pdf?v=20261112-2130",
         "released": true
       },
       {
@@ -221,7 +221,7 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G8/0.5_Project_Scope_Sheet_G8.pdf?v=20261112-2122",
+        "file": "groups/G8/0.5_Project_Scope_Sheet_G8.pdf?v=20261112-2130",
         "released": true
       },
       {
