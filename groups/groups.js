@@ -43,7 +43,14 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": [],
+    "notes": [
+      {
+        "d": "2026-11-12",
+        "t": "SP01 Longitudinal Strength: requirements",
+        "x": "The documents your longitudinal strength calculation note (D9) must present, in the order of the calculation, with a checklist.",
+        "file": "groups/G1/SP01_Requirements.pdf"
+      }
+    ],
     "name": "Fernão de Oliveira"
   },
   "G2": {
@@ -110,7 +117,14 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": []
+    "notes": [
+      {
+        "d": "2026-11-12",
+        "t": "SP01 Longitudinal Strength: requirements",
+        "x": "The documents your longitudinal strength calculation note (D9) must present, in the order of the calculation, with a checklist.",
+        "file": "groups/G3/SP01_Requirements.pdf"
+      }
+    ]
   },
   "G4": {
     "ids": [
@@ -176,7 +190,14 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": []
+    "notes": [
+      {
+        "d": "2026-11-12",
+        "t": "SP01 Longitudinal Strength: requirements",
+        "x": "The documents your longitudinal strength calculation note (D9) must present, in the order of the calculation, with a checklist.",
+        "file": "groups/G5/SP01_Requirements.pdf"
+      }
+    ]
   },
   "G6": {
     "ids": [
