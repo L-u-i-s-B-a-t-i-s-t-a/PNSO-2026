@@ -281,6 +281,8 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
         <li><b>If Springer asks you to log in,</b> choose <a href="https://wayf.springernature.com/?redirect_uri=https%3A%2F%2Flink.springer.com%2Fbook%2F10.1007%2F978-94-017-8751-2" target="_blank" rel="noopener">Access through your institution</a>, then <i>ULisboa - Instituto Superior Técnico</i>. If it sends you back to the start, check step 1.</li>
         <li><b>Download</b> the book as PDF or EPUB, for your own use. If it does not work, tell the lecturer.</li>
       </ol>
+      <h3 style="margin-top:8px">Container ships</h3>
+      <p class="lead"><b style="color:var(--ink)">Alvariño, R., Azpíroz, J. J. and Meizoso, M. (1997). El proyecto básico del buque mercante.</b> Fondo Editorial de Ingeniería Naval, Colegio de Ingenieros Navales. The method of the container-ship design manual follows its chapter on container ships. <a href="week2/Alvarino_1997_Portacontenedores_Extract.pdf" target="_blank" rel="noopener">Extract</a>: chapter 2.9 <i>Portacontenedores</i>, section 3.8.6 on the number of containers, and the list of symbols (36 pages, in Spanish). For consultation, class use only, do not redistribute.</p>
     </section>
 
     <section id="help">
@@ -309,11 +311,13 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
   var RELEASED = [];
   // RELEASED_FILES: single files released ahead of their week (for testing or early release).
   var RELEASED_FILES = ["week1/Plan_of_the_Day_W1.pdf", "week1/Consolidate_Day1_W1.pdf", "week1/Prepare_Friday_W1.pdf", "week1/0.1_Course_Presentation.pdf", "week1/0.2_Ship_Design_Project.pdf", "week1/0.6_Reference_Ship.pdf", "week1/Reading_1.1_Ship_Classification.pdf", "week1/ST1.1_Classification.pdf", "week1/StatCode5_Explorer.html", "week1/SFI_Explorer.html", "week1/Reading_1.2_Who_Buys_the_Ship.pdf", "week1/Reading_1.2B_Who_Owns_the_World_Fleet.pdf", "week1/L1.2.pdf", "week1/L1.3.pdf", "week1/ST1.2.pdf", "week1/L1.4.pdf", "week1/Reading_1.4_Sizing_by_Ratios.pdf", "week1/Papanikolaou_2026_Appendix_A.pdf", "week1/Plan_of_the_Day_W1_Day2.pdf", "week1/Consolidate_Day2_W1.pdf", "week1/Prepare_Wednesday_W2.pdf", "week1/L1.5.pdf", "week1/Reading_1.5_Fixed_Point_and_Newton_Raphson.pdf", "notebooks/H0_Reference_Ship_Database.ipynb", "notebooks/H1_Displacement_Equation.ipynb"];
-  var SITE_VERSION = "10 Nov 2026, 15:20"; // shown in the footer; the lecturer's linksource copies it
+  var SITE_VERSION = "12 Nov 2026, 08:30"; // shown in the footer; the lecturer's linksource copies it
   var PREVIEW = false; // preview only: files are placeholders until they are uploaded
 
   var K = { L: "Lecture", S: "Ship types", E: "Exercise", Q: "Quiz", H: "Homework", D: "Demo", R: "Reading", N: "Notes", C: "Course", T: "Template", X: "Tool", A: "Answers" };
   function m(k, t, file, note) { return { k: k, t: t, file: file, note: note }; }
+  // mh: like m, but held: shown greyed out even when its week is released, until its file is listed in RELEASED_FILES.
+  function mh(k, t, file, note) { var x = m(k, t, file, note); x.hold = true; return x; }
 
   var WEEKS = [
     { n: 1, days: "4–6 Nov", rel: "28 Oct", sessions: [
@@ -329,7 +333,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
     { n: 2, days: "11–13 Nov", rel: "4 Nov", sessions: [
       { c: "W2.1–2.2", d: "Wed 11 Nov", h: "13:00–16:30", room: "no class", t: "No class · Human factors in ship design moved to Wed 18 Nov", stl: "Change", st: "The guest lecture is one week later, Wed 18 Nov, same times and rooms (see Week 3)", fixed: true, mats: [] },
       { c: "W2.3", d: "Fri 13 Nov", h: "13:30–15:30", room: "VA3", t: "Main dimensions and form coefficients · Law and Regulations introduction", st: "General cargo, multi-purpose and heavy-lift ships, reefers · container ships (moved from 6 Nov, date TBC)", rd: "§2.3–2.12; §2.7.1", ex: ["Exercise 2.3 · Check L, B, T, D, CB against the book's ranges; redo at 15 kn"], dl: ["D3"],
-        mats: [m("L", "2.3a Main Dimensions and Form Coefficients", "week2/L2.3a.pdf"), m("L", "2.3b Law and Regulations: an Introduction", "week2/L2.3b.pdf"), m("S", "General Cargo, Multi-purpose and Heavy-lift Ships, Reefers", "week2/ST2.3.pdf"), m("S", "Container Ships · moved from Fri 6 Nov, date TBC", "week1/ST1.3.pdf")] },
+        mats: [m("L", "2.3a Main Dimensions and Form Coefficients", "week2/L2.3a.pdf"), m("L", "2.3b Law and Regulations: an Introduction", "week2/L2.3b.pdf"), m("S", "General Cargo, Multi-purpose and Heavy-lift Ships, Reefers", "week2/ST2.3.pdf"), m("S", "Container Ships · moved from Fri 6 Nov, date TBC", "week1/ST1.3.pdf"), mh("N", "Design Manual · Container Ships: Sizing from Bays, Rows and Tiers", "week2/Design_Manual_Container_Sizing.pdf", "self-study, released later")] },
       { c: "W2.4", d: "Fri 13 Nov", h: "15:30–17:00", room: "VA3", t: "Preliminary power estimate", st: "Ro-Ro ships and vehicle carriers · bulk carriers (moved from 6 Nov, date TBC)", rd: "§2.14; §5.1", ex: ["Exercise 2.4 · Power by Admiralty and Holtrop–Mennen; compare"], dl: ["D3"],
         mats: [m("L", "2.4 Preliminary Power Estimate", "week2/L2.4.pdf"), m("X", "Holtrop–Mennen power calculator", "week2/tool_holtrop_mennen.html"), m("S", "Ro-Ro Ships and Vehicle Carriers", "week2/ST2.4.pdf"), m("S", "Bulk Carriers · moved from Fri 6 Nov, date TBC", "week1/ST1.4.pdf"), m("Q", "Quiz 2", "week2/quiz2.html"), m("A", "Exercise answers, week 2 (reference ship)", "week2/Answers_Week2.pdf", "after the week")] }
     ] },
@@ -413,7 +417,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
         var nb = /\.ipynb$/.test(x.file);
         var kids = [el("span", { cls: "k", text: K[x.k] }), el("span", { cls: "t" }, [x.t, (x.note || nb) ? el("small", { text: " · " + [x.note, nb ? "opens in Google Colab" : null].filter(Boolean).join(" · ") }) : null])];
         // Answer sheets are never released with their week: list them in RELEASED_FILES after the sessions.
-        var live = x.k === "A" ? RELEASED_FILES.indexOf(x.file) >= 0 : (on || RELEASED_FILES.indexOf(x.file) >= 0);
+        var live = (x.k === "A" || x.hold) ? RELEASED_FILES.indexOf(x.file) >= 0 : (on || RELEASED_FILES.indexOf(x.file) >= 0);
         if (live) {
           ready = true;
           var href = x.file;
