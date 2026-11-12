@@ -27,7 +27,7 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G1/0.5_Project_Scope_Sheet_G1.pdf?v=20261112-1925",
+        "file": "groups/G1/0.5_Project_Scope_Sheet_G1.pdf?v=20261112-1927",
         "released": true
       },
       {
