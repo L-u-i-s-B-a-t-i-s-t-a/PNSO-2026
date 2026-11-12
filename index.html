@@ -324,7 +324,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
   var RELEASED = [];
   // RELEASED_FILES: single files released ahead of their week (for testing or early release).
   var RELEASED_FILES = ["week1/Plan_of_the_Day_W1.pdf", "week1/Consolidate_Day1_W1.pdf", "week1/Prepare_Friday_W1.pdf", "week1/0.1_Course_Presentation.pdf", "week1/0.2_Ship_Design_Project.pdf", "week1/0.6_Reference_Ship.pdf", "week1/Reading_1.1_Ship_Classification.pdf", "week1/ST1.1_Classification.pdf", "week1/StatCode5_Explorer.html", "week1/SFI_Explorer.html", "week1/Reading_1.2_Who_Buys_the_Ship.pdf", "week1/Reading_1.2B_Who_Owns_the_World_Fleet.pdf", "week1/L1.2.pdf", "week1/L1.3.pdf", "week1/ST1.2.pdf", "week1/L1.4.pdf", "week1/Reading_1.4_Sizing_by_Ratios.pdf", "week1/Papanikolaou_2026_Appendix_A.pdf", "week1/Plan_of_the_Day_W1_Day2.pdf", "week1/Consolidate_Day2_W1.pdf", "week1/Prepare_Wednesday_W2.pdf", "week1/L1.5.pdf", "week1/Reading_1.5_Fixed_Point_and_Newton_Raphson.pdf", "notebooks/H0_Reference_Ship_Database.ipynb", "notebooks/H1_Displacement_Equation.ipynb", "week1/quiz1.html"];
-  var SITE_VERSION = "12 Nov 2026, 10:35"; // shown in the footer; the lecturer's linksource copies it
+  var SITE_VERSION = "12 Nov 2026, 10:40"; // shown in the footer; the lecturer's linksource copies it
   var PREVIEW = false; // preview only: files are placeholders until they are uploaded
 
   var K = { L: "Lecture", S: "Ship types", E: "Exercise", Q: "Quiz", H: "Homework", D: "Demo", R: "Reading", N: "Notes", C: "Course", T: "Template", X: "Tool", A: "Answers" };
@@ -397,6 +397,8 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
   ];
   // NEWS: announcements, newest first. Add one line at the top to post: d = date (YYYY-MM-DD), t = title, x = text, link optional.
   var NEWS = [
+    { d: "2026-11-12", t: "Quiz 1 is out", x: "Quiz 1 covers week 1: owner's requirements, design stages, deadweight and volume carriers, regressions and the design equation, with calculations. It is not graded, but it is a fundamental part of your preparation for the Evaluation Test on Fri 27 Nov: work through it, and check the working given with each answer.", link: { t: "Open Quiz 1", href: "week1/quiz1.html" } },
+    { d: "2026-11-12", t: "New in the Bibliography: container ships", x: "An extract of Alvariño, Azpíroz and Meizoso (1997), El proyecto básico del buque mercante, is now in the Bibliography: chapter 2.9 on container ships, section 3.8.6 on the number of containers, and the list of symbols (in Spanish). For consultation, class use only.", link: { t: "Go to the Bibliography", href: "#bibliography" } },
   ];
   (function () {
     if (!NEWS.length) return;
@@ -406,7 +408,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       var it = el("div", { cls: "item" }, [
         el("div", { cls: "when" }, [new Date(n.d + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }), age <= 7 ? el("span", { cls: "new", text: "new" }) : null]),
         el("h3", { text: n.t }), el("p", { text: n.x }),
-        n.link ? el("p", {}, [el("a", { href: n.link.href, target: "_blank", rel: "noopener", text: n.link.t })]) : null]);
+        n.link ? el("p", {}, [el("a", n.link.href.charAt(0) === "#" ? { href: n.link.href, text: n.link.t } : { href: n.link.href, target: "_blank", rel: "noopener", text: n.link.t })]) : null]);
       if (i >= 3) it.hidden = true;
       box.appendChild(it);
     });
