@@ -64,7 +64,8 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": []
+    "notes": [],
+    "name": "Manuel Fernandes"
   },
   "G3": {
     "ids": [
@@ -91,7 +92,8 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": []
+    "notes": [],
+    "name": "João Baptista Lavanha"
   },
   "G4": {
     "ids": [
@@ -118,7 +120,8 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": []
+    "notes": [],
+    "name": "Bartolomeu Dias"
   },
   "G5": {
     "ids": [
@@ -145,7 +148,8 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": []
+    "notes": [],
+    "name": "Infante Dom Henrique"
   },
   "G6": {
     "ids": [
