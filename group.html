@@ -76,8 +76,8 @@ a.mat:hover { border-color: var(--accent); }
   function el(tag, attrs, kids) { var n = document.createElement(tag); attrs = attrs || {}; for (var k in attrs) { if (k === "cls") n.className = attrs[k]; else if (k === "text") n.textContent = attrs[k]; else n.setAttribute(k, attrs[k]); } (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); }); return n; }
   var m = /[?&]g=(G\d+)/.exec(location.search), id = m ? m[1] : null, g = id && GROUPS[id];
   if (!g) { document.getElementById("title").textContent = "Group not found"; return; }
-  document.title = "PNSO 2026 · " + id;
-  document.getElementById("title").textContent = id + " · Baseline " + g.baseline;
+  document.title = "PNSO 2026 · " + id + (g.name ? " " + g.name : "");
+  document.getElementById("title").textContent = id + (g.name ? " · " + g.name : "") + " · Baseline " + g.baseline;
   var f = document.getElementById("facts");
   f.appendChild(el("div", {}, [el("b", { cls: "ids", text: g.ids.join(" · ") }), "student numbers"]));
   f.appendChild(el("div", {}, [el("b", { text: g.baseline === "A" ? "Azores Express" : "Azores Feeder" }), "Baseline " + g.baseline]));

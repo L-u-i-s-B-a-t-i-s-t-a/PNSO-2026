@@ -43,7 +43,8 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": []
+    "notes": [],
+    "name": "Fernão de Oliveira"
   },
   "G2": {
     "ids": [
