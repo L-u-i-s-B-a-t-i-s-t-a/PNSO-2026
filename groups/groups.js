@@ -40,7 +40,7 @@ var GROUPS = {
         "t": "Owner's requirements, Baseline B",
         "x": "the brief of your ship, deck 0.2",
         "file": "week1/0.2_Ship_Design_Project.pdf#page=5",
-        "released": true
+        "released": false
       }
     ],
     "notes": []
@@ -73,7 +73,7 @@ var GROUPS = {
         "t": "Owner's requirements, Baseline A",
         "x": "the brief of your ship, deck 0.2",
         "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
-        "released": true
+        "released": false
       }
     ],
     "notes": []
@@ -106,7 +106,7 @@ var GROUPS = {
         "t": "Owner's requirements, Baseline A",
         "x": "the brief of your ship, deck 0.2",
         "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
-        "released": true
+        "released": false
       }
     ],
     "notes": []
@@ -139,7 +139,7 @@ var GROUPS = {
         "t": "Owner's requirements, Baseline A",
         "x": "the brief of your ship, deck 0.2",
         "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
-        "released": true
+        "released": false
       }
     ],
     "notes": []
@@ -172,7 +172,7 @@ var GROUPS = {
         "t": "Owner's requirements, Baseline A",
         "x": "the brief of your ship, deck 0.2",
         "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
-        "released": true
+        "released": false
       }
     ],
     "notes": []
@@ -205,7 +205,7 @@ var GROUPS = {
         "t": "Owner's requirements, Baseline A",
         "x": "the brief of your ship, deck 0.2",
         "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
-        "released": true
+        "released": false
       }
     ],
     "notes": []
@@ -238,7 +238,7 @@ var GROUPS = {
         "t": "Owner's requirements, Baseline A",
         "x": "the brief of your ship, deck 0.2",
         "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
-        "released": true
+        "released": false
       }
     ],
     "notes": []
@@ -271,7 +271,7 @@ var GROUPS = {
         "t": "Owner's requirements, Baseline A",
         "x": "the brief of your ship, deck 0.2",
         "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
-        "released": true
+        "released": false
       }
     ],
     "notes": []
