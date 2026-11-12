@@ -5,6 +5,7 @@
 // file: a site path (groups/common/...) or a web link (https://...); leave it out for an information-only item.
 // released: true to show the link; general: true also lists it in the Bibliography.
 var PROJECT_REFS = [
+  { d: "2026-11-12", t: "Planning (advised)", note: "A work plan is not a deliverable, but plan inside your group: a rough approach and a split of the tasks, so that the work, the presentation and the knowledge of the whole project are shared evenly by every member. You are welcome to share the plan and discuss it with the instructor." },
   { d: "2026-11-12", t: "0.3 Report Template", file: "groups/common/0.3_Report_Template.pdf", note: "the template of your project report", released: false }
 ];
 
