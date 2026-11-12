@@ -49,6 +49,12 @@ h2 { font-size: 28px; font-weight: 700; line-height: 1.1; }
 h3 { font-size: 18px; font-weight: 600; line-height: 1.25; }
 p { margin: 0; }
 
+/* Announcements: newest first, the last 7 days marked new */
+#news .item { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 8px; padding: 12px 16px; margin-top: 10px; }
+#news .item .when { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+#news .item .new { font-family: var(--mono); font-size: 11px; color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 1px 6px; margin-left: 8px; }
+#news .item h3 { margin: 2px 0 4px; }
+#news .older { color: var(--muted); font-size: 14px; margin-top: 8px; cursor: pointer; }
 /* Header */
 header.top { background: var(--surface); border-bottom: 1px solid var(--line); }
 header.top .wrap { padding-block: 32px 28px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 28px 40px; align-items: start; }
@@ -164,6 +170,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
 
 <nav class="jump" aria-label="Sections">
   <div class="wrap">
+    <a href="#news" id="newsnav" hidden>News</a>
     <a href="#weeks">Weeks</a>
     <a href="#week1">W1</a><a href="#week2">W2</a><a href="#week3">W3</a><a href="#week4">W4</a><a href="#week5">W5</a><a href="#week6">W6</a><a href="#week7">W7</a>
     <a href="#project">Project</a>
@@ -176,6 +183,12 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
 
 <main>
   <div class="wrap">
+
+    <section id="news" hidden>
+      <div class="label">Announcements</div>
+      <h2>News</h2>
+      <div id="newslist"></div>
+    </section>
 
     <section id="weeks">
       <div class="label">Course plan</div>
@@ -382,6 +395,24 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       { c: "W7.3–7.4", d: "Fri 18 Dec", h: "13:30–17:00", room: "VA3", fixed: true, t: "Project presentations (20 %)", st: "15 minutes per group, then discussion", mats: [] }
     ] }
   ];
+  // NEWS: announcements, newest first. Add one line at the top to post: d = date (YYYY-MM-DD), t = title, x = text, link optional.
+  var NEWS = [
+  ];
+  (function () {
+    if (!NEWS.length) return;
+    var box = document.getElementById("newslist"), now = new Date();
+    NEWS.forEach(function (n, i) {
+      var age = (now - new Date(n.d + "T12:00:00")) / 864e5;
+      var it = el("div", { cls: "item" }, [
+        el("div", { cls: "when" }, [new Date(n.d + "T12:00:00").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }), age <= 7 ? el("span", { cls: "new", text: "new" }) : null]),
+        el("h3", { text: n.t }), el("p", { text: n.x }),
+        n.link ? el("p", {}, [el("a", { href: n.link.href, target: "_blank", rel: "noopener", text: n.link.t })]) : null]);
+      if (i >= 3) it.hidden = true;
+      box.appendChild(it);
+    });
+    if (NEWS.length > 3) { var more = el("div", { cls: "older", text: "Show " + (NEWS.length - 3) + " older" }); more.onclick = function () { box.querySelectorAll(".item").forEach(function (e) { e.hidden = false; }); more.remove(); }; box.appendChild(more); }
+    document.getElementById("news").hidden = false; document.getElementById("newsnav").hidden = false;
+  })();
   var DATES = { "W1": "2026-11-04", "W2": "2026-11-11", "W3": "2026-11-18", "W4": "2026-11-25", "W5": "2026-12-02", "W6": "2026-12-09", "W7": "2026-12-16" };
 
   function el(tag, attrs, kids) {
