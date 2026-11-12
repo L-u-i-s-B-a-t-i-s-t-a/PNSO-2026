@@ -1,10 +1,12 @@
 // groups.js: the Ship Design Project data shared by the Groups section (index.html) and the group pages (group.html).
 // To publish a file: put it in the folder shown and set released: true. Nothing else changes.
 
-// REFS: reference documents the instructor transfers to the groups (folder groups/common/).
-// general: true also lists the document in the Bibliography.
+// PROJECT_REFS: links, documents and information for all groups (Groups tab, "Links and information from the instructor").
+// file: a site path (groups/common/...) or a web link (https://...); leave it out for an information-only item.
+// released: true to show the link; general: true also lists it in the Bibliography.
 var PROJECT_REFS = [
-  // { d: "2026-11-12", t: "Title of the document", file: "groups/common/File.pdf", note: "one line on what it is for", general: true, released: false }
+  // { d: "2026-11-12", t: "Title", file: "groups/common/File.pdf" or "https://...", note: "one line on what it is for", general: true, released: true }
+  // { d: "2026-11-12", t: "Information for all groups", note: "the text" }
 ];
 
 // GROUPS: members (student numbers), Baseline, specializations, the three instructor inputs and the instructor's notes.

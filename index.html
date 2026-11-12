@@ -242,13 +242,13 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       <ol class="rules">
         <li><b>Read the brief</b> in 0.2 Ship Design Project: the <a href="week1/0.2_Ship_Design_Project.pdf#page=6" target="_blank" rel="noopener">common deliverables D1–D10</a> and the <a href="week1/0.2_Ship_Design_Project.pdf#page=7" target="_blank" rel="noopener">specialization content</a>. Deck 0.2 numbers the specializations differently; the codes in the table below and on your group page are the current ones.</li>
         <li><b>Open your group page</b> (click your group in the table): it holds the three instructor inputs for your ship and the instructor's notes. Check it every week.</li>
-        <li><b>Use the reference documents</b> below for consultation; the general ones are also in the Bibliography.</li>
+        <li><b>Check the links and information</b> below, shared with all groups; general references are also in the Bibliography.</li>
         <li><b>Book office hours</b> as a group: one 30-minute slot per group per week, with your questions stated.</li>
         <li><b>Deliver</b> one ZIP file by e-mail (e.g. Group1_Project.zip) by Sun 13 Dec. Clinics on Fri 11 Dec; presentations, 15 minutes per group, on Fri 18 Dec.</li>
         <li><b>Declare AI tools</b> where you used them in the report.</li>
       </ol>
       <div class="gbox" style="margin-top:8px">
-        <div><h3>Reference documents from the instructor</h3><div class="mats" id="proj-refs"></div></div>
+        <div><h3>Links and information from the instructor</h3><div class="mats" id="proj-refs"></div></div>
       </div>
       <div style="overflow-x:auto">
       <table class="groups" style="min-width:640px">
@@ -429,8 +429,8 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
     var refs = (typeof PROJECT_REFS !== "undefined") ? PROJECT_REFS : [];
     var pr = document.getElementById("proj-refs");
     if (pr) {
-      if (!refs.length) pr.appendChild(el("div", { cls: "none", text: "None yet. The instructor adds documents here when they are useful to all groups." }));
-      refs.forEach(function (r) { pr.appendChild(item("Ref", r.t, [r.note, r.d].filter(Boolean).join(" · "), r.file, !!r.released)); });
+      if (!refs.length) pr.appendChild(el("div", { cls: "none", text: "None yet. The instructor adds links, documents and information here for all groups." }));
+      refs.forEach(function (r) { var k = r.file ? (/^https?:/.test(r.file) ? "Link" : "Document") : "Info"; pr.appendChild(r.file ? item(k, r.t, [r.note, r.d].filter(Boolean).join(" · "), r.file, !!r.released) : el("div", { cls: "mat" }, [el("span", { cls: "k", text: k }), el("span", { cls: "t" }, [r.t, r.note ? el("small", { text: " · " + r.note }) : null, r.d ? el("small", { text: " · " + r.d }) : null])])); });
     }
     var gen = refs.filter(function (r) { return r.general && r.released; });
     if (gen.length) {
