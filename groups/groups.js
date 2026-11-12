@@ -5,8 +5,7 @@
 // file: a site path (groups/common/...) or a web link (https://...); leave it out for an information-only item.
 // released: true to show the link; general: true also lists it in the Bibliography.
 var PROJECT_REFS = [
-  // { d: "2026-11-12", t: "Title", file: "groups/common/File.pdf" or "https://...", note: "one line on what it is for", general: true, released: true }
-  // { d: "2026-11-12", t: "Information for all groups", note: "the text" }
+  { d: "2026-11-12", t: "0.3 Report Template", file: "groups/common/0.3_Report_Template.pdf", note: "the template of your project report", released: false }
 ];
 
 // GROUPS: members (student numbers), Baseline, specializations, the three instructor inputs and the instructor's notes.
@@ -32,14 +31,8 @@ var GROUPS = {
       },
       {
         "t": "0.4 Datasheet Template",
-        "x": "the one-page A4 datasheet of your ship (D10)",
-        "file": "groups/common/0.4_Datasheet_Template.pdf",
-        "released": false
-      },
-      {
-        "t": "Owner's requirements, Baseline B",
-        "x": "the brief of your ship, deck 0.2",
-        "file": "week1/0.2_Ship_Design_Project.pdf#page=5",
+        "x": "the one-page A4 datasheet of your ship, part of D10",
+        "file": "groups/G1/0.4_Datasheet_Template_G1.pdf",
         "released": false
       }
     ],
@@ -66,14 +59,8 @@ var GROUPS = {
       },
       {
         "t": "0.4 Datasheet Template",
-        "x": "the one-page A4 datasheet of your ship (D10)",
-        "file": "groups/common/0.4_Datasheet_Template.pdf",
-        "released": false
-      },
-      {
-        "t": "Owner's requirements, Baseline A",
-        "x": "the brief of your ship, deck 0.2",
-        "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
+        "x": "the one-page A4 datasheet of your ship, part of D10",
+        "file": "groups/G2/0.4_Datasheet_Template_G2.pdf",
         "released": false
       }
     ],
@@ -99,14 +86,8 @@ var GROUPS = {
       },
       {
         "t": "0.4 Datasheet Template",
-        "x": "the one-page A4 datasheet of your ship (D10)",
-        "file": "groups/common/0.4_Datasheet_Template.pdf",
-        "released": false
-      },
-      {
-        "t": "Owner's requirements, Baseline A",
-        "x": "the brief of your ship, deck 0.2",
-        "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
+        "x": "the one-page A4 datasheet of your ship, part of D10",
+        "file": "groups/G3/0.4_Datasheet_Template_G3.pdf",
         "released": false
       }
     ],
@@ -132,14 +113,8 @@ var GROUPS = {
       },
       {
         "t": "0.4 Datasheet Template",
-        "x": "the one-page A4 datasheet of your ship (D10)",
-        "file": "groups/common/0.4_Datasheet_Template.pdf",
-        "released": false
-      },
-      {
-        "t": "Owner's requirements, Baseline A",
-        "x": "the brief of your ship, deck 0.2",
-        "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
+        "x": "the one-page A4 datasheet of your ship, part of D10",
+        "file": "groups/G4/0.4_Datasheet_Template_G4.pdf",
         "released": false
       }
     ],
@@ -165,14 +140,8 @@ var GROUPS = {
       },
       {
         "t": "0.4 Datasheet Template",
-        "x": "the one-page A4 datasheet of your ship (D10)",
-        "file": "groups/common/0.4_Datasheet_Template.pdf",
-        "released": false
-      },
-      {
-        "t": "Owner's requirements, Baseline A",
-        "x": "the brief of your ship, deck 0.2",
-        "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
+        "x": "the one-page A4 datasheet of your ship, part of D10",
+        "file": "groups/G5/0.4_Datasheet_Template_G5.pdf",
         "released": false
       }
     ],
@@ -198,14 +167,8 @@ var GROUPS = {
       },
       {
         "t": "0.4 Datasheet Template",
-        "x": "the one-page A4 datasheet of your ship (D10)",
-        "file": "groups/common/0.4_Datasheet_Template.pdf",
-        "released": false
-      },
-      {
-        "t": "Owner's requirements, Baseline A",
-        "x": "the brief of your ship, deck 0.2",
-        "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
+        "x": "the one-page A4 datasheet of your ship, part of D10",
+        "file": "groups/G6/0.4_Datasheet_Template_G6.pdf",
         "released": false
       }
     ],
@@ -231,14 +194,8 @@ var GROUPS = {
       },
       {
         "t": "0.4 Datasheet Template",
-        "x": "the one-page A4 datasheet of your ship (D10)",
-        "file": "groups/common/0.4_Datasheet_Template.pdf",
-        "released": false
-      },
-      {
-        "t": "Owner's requirements, Baseline A",
-        "x": "the brief of your ship, deck 0.2",
-        "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
+        "x": "the one-page A4 datasheet of your ship, part of D10",
+        "file": "groups/G7/0.4_Datasheet_Template_G7.pdf",
         "released": false
       }
     ],
@@ -264,14 +221,8 @@ var GROUPS = {
       },
       {
         "t": "0.4 Datasheet Template",
-        "x": "the one-page A4 datasheet of your ship (D10)",
-        "file": "groups/common/0.4_Datasheet_Template.pdf",
-        "released": false
-      },
-      {
-        "t": "Owner's requirements, Baseline A",
-        "x": "the brief of your ship, deck 0.2",
-        "file": "week1/0.2_Ship_Design_Project.pdf#page=4",
+        "x": "the one-page A4 datasheet of your ship, part of D10",
+        "file": "groups/G8/0.4_Datasheet_Template_G8.pdf",
         "released": false
       }
     ],
