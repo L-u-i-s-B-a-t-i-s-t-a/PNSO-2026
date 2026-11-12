@@ -28,13 +28,13 @@ var GROUPS = {
         "t": "Project Scope Sheet",
         "x": "your deliverables, specializations and dates",
         "file": "groups/G1/Project_Scope_Sheet_G1.pdf",
-        "released": false
+        "released": true
       },
       {
         "t": "Statement of Work, your specializations",
         "x": "what each of your two specializations must contain",
         "file": "groups/G1/Statement_of_Work_G1.pdf",
-        "released": false
+        "released": true
       },
       {
         "t": "Owner's requirements, Baseline B",
