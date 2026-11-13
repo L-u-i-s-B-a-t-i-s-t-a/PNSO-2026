@@ -68,11 +68,10 @@ a.mat:hover { border-color: var(--accent); }
   <div><div class="label">Ship Design Project · group page</div><h1 id="title">Group</h1></div>
   <div class="facts" id="facts"></div>
   <section><h2>Instructor project inputs</h2><p class="lead">The base documents for your project. A dashed one is not released yet.</p><div class="mats" id="inputs"></div></section>
-  <section id="spsec" style="display:none"><h2>Tools and resources</h2><p class="lead">Material for all groups, in the order of use. The same material is in the <a href="index.html#tools">Groups</a> section of the course site.</p><div id="spres" style="display:flex;flex-direction:column;gap:14px"></div></section>
   <section><h2>Instructor notes</h2><p class="lead">Information the instructor adds for your group during the project, newest first. Notes for all groups are also in the reference documents and the Bibliography.</p><div id="notes" style="display:flex;flex-direction:column;gap:10px"></div></section>
   <section><h2>For all groups</h2><p class="lead">The common instructions, the project documents and the reference documents are on the <a href="index.html#groups">Groups</a> section of the course site.</p></section>
 </div>
-<script src="groups/groups.js?v=20261113-1006"></script>
+<script src="groups/groups.js?v=20261113-1015"></script>
 <script>
 (function () {
   function el(tag, attrs, kids) { var n = document.createElement(tag); attrs = attrs || {}; for (var k in attrs) { if (k === "cls") n.className = attrs[k]; else if (k === "text") n.textContent = attrs[k]; else n.setAttribute(k, attrs[k]); } (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); }); return n; }
@@ -88,17 +87,6 @@ a.mat:hover { border-color: var(--accent); }
   g.inputs.forEach(function (x, i) {
     var kids = [el("span", { cls: "k", text: "Input " + (i + 1) }), el("span", { cls: "t" }, [x.t, el("small", { text: " · " + x.x + (x.released ? "" : " · to be released") })])];
     ins.appendChild(x.released ? el("a", { cls: "mat", href: x.file, target: "_blank", rel: "noopener" }, kids) : el("div", { cls: "mat later" }, kids));
-  });
-  var spr = ((typeof SP_RESOURCES !== "undefined") ? SP_RESOURCES : []).filter(function (r) { return !r.hidden; }), sw = document.getElementById("spres");
-  spr.forEach(function (r) {
-    var list = el("div", { cls: "mats" + (r.stamp ? " stampwrap" : "") });
-    r.items.forEach(function (x) {
-      var kids = [el("span", { cls: "k", text: x.k }), el("span", { cls: "t" }, [x.t, el("small", { text: " · " + x.note + (x.released ? "" : " · to be released") })])];
-      list.appendChild(x.released ? el("a", { cls: "mat", href: x.file, target: "_blank", rel: "noopener" }, kids) : el("div", { cls: "mat later" }, kids));
-    });
-    if (r.stamp) list.appendChild(el("div", { cls: "stamp", "aria-hidden": "true" }, [el("span", { text: r.stamp })]));
-    sw.appendChild(el("div", { style: "display:flex;flex-direction:column;gap:6px" }, [el("b", { text: r.t }), el("p", { cls: "lead", text: r.x }), list]));
-    document.getElementById("spsec").style.display = "flex";
   });
   var nb = document.getElementById("notes");
   if (!g.notes.length) nb.appendChild(el("div", { cls: "none", text: "No notes yet." }));

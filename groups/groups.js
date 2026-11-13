@@ -9,7 +9,7 @@ var PROJECT_REFS = [
   { d: "2026-11-12", t: "0.3 Report Template", file: "groups/common/0.3_Report_Template.pdf", note: "the template of your project report", released: false }
 ];
 
-// SP_RESOURCES: tools and resources for all groups, shown in the Groups section (Tools and resources) and on every group page; hidden: true keeps an entry off the site; stamp: "..." writes a stamp across its items, which stay clickable.
+// SP_RESOURCES: tools and resources for all groups, shown in the Groups section (Tools and resources) only; hidden: true keeps an entry off the site; stamp: "..." writes a stamp across its items, which stay clickable.
 var SP_RESOURCES = [
   { id: "hull", stamp: "Under development", t: "Hull Form from a Parent (Demo 8)",
     x: "For all groups, Baseline A or B, optional: generate your hull from the KCS parent by the Lackenby section shift and a stretch of L, B, T and D, for D8 (hydrostatics check, container count on your own lines, 3D hull). Read first, then run the notebook with the guide at hand.",
@@ -119,8 +119,8 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G4/0.5_Project_Scope_Sheet_G4.pdf",
-        "released": false
+        "file": "groups/G4/0.5_Project_Scope_Sheet_G4.pdf?v=20261113-1015",
+        "released": true
       },
       {
         "t": "0.4 Datasheet Template",
