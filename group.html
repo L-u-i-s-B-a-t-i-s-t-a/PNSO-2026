@@ -59,6 +59,7 @@ a.mat:hover { border-color: var(--accent); }
 .note b { font-size: 15px; }
 .note p { margin: 0; }
 .none { font-size: 14px; color: var(--muted); }
+.stampwrap{position:relative}.stamp{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;z-index:2}.stamp span{transform:rotate(-8deg);border:3px solid rgba(196,30,30,.6);color:rgba(196,30,30,.6);font:700 clamp(18px,4.2vw,36px)/1.15 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:4px 20px;border-radius:6px;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -71,7 +72,7 @@ a.mat:hover { border-color: var(--accent); }
   <section><h2>Instructor notes</h2><p class="lead">Information the instructor adds for your group during the project, newest first. Notes for all groups are also in the reference documents and the Bibliography.</p><div id="notes" style="display:flex;flex-direction:column;gap:10px"></div></section>
   <section><h2>For all groups</h2><p class="lead">The common instructions, the project documents and the reference documents are on the <a href="index.html#groups">Groups</a> section of the course site.</p></section>
 </div>
-<script src="groups/groups.js?v=20261113-0929"></script>
+<script src="groups/groups.js?v=20261113-1006"></script>
 <script>
 (function () {
   function el(tag, attrs, kids) { var n = document.createElement(tag); attrs = attrs || {}; for (var k in attrs) { if (k === "cls") n.className = attrs[k]; else if (k === "text") n.textContent = attrs[k]; else n.setAttribute(k, attrs[k]); } (kids || []).forEach(function (c) { if (c != null) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); }); return n; }
@@ -90,11 +91,12 @@ a.mat:hover { border-color: var(--accent); }
   });
   var spr = ((typeof SP_RESOURCES !== "undefined") ? SP_RESOURCES : []).filter(function (r) { return !r.hidden; }), sw = document.getElementById("spres");
   spr.forEach(function (r) {
-    var list = el("div", { cls: "mats" });
+    var list = el("div", { cls: "mats" + (r.stamp ? " stampwrap" : "") });
     r.items.forEach(function (x) {
       var kids = [el("span", { cls: "k", text: x.k }), el("span", { cls: "t" }, [x.t, el("small", { text: " · " + x.note + (x.released ? "" : " · to be released") })])];
       list.appendChild(x.released ? el("a", { cls: "mat", href: x.file, target: "_blank", rel: "noopener" }, kids) : el("div", { cls: "mat later" }, kids));
     });
+    if (r.stamp) list.appendChild(el("div", { cls: "stamp", "aria-hidden": "true" }, [el("span", { text: r.stamp })]));
     sw.appendChild(el("div", { style: "display:flex;flex-direction:column;gap:6px" }, [el("b", { text: r.t }), el("p", { cls: "lead", text: r.x }), list]));
     document.getElementById("spsec").style.display = "flex";
   });

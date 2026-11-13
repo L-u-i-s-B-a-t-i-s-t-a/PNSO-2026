@@ -156,6 +156,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
   .mat { grid-template-columns: 80px minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+.stampwrap{position:relative}.stamp{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;z-index:2}.stamp span{transform:rotate(-8deg);border:3px solid rgba(196,30,30,.6);color:rgba(196,30,30,.6);font:700 clamp(18px,4.2vw,36px)/1.15 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:4px 20px;border-radius:6px;white-space:nowrap}
 </style>
 
 </head>
@@ -340,7 +341,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
   </div>
 </footer>
 
-<script src="groups/groups.js?v=20261113-0929"></script>
+<script src="groups/groups.js?v=20261113-1006"></script>
 <script>
 (function () {
   // RELEASED: the weeks whose materials are out. Change this one line to release a week.
@@ -441,8 +442,9 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       document.getElementById("tools-wrap").hidden = false;
       spr.forEach(function (r) {
         var box = el("div", {}, [el("h3", { text: r.t }), el("small", { cls: "none", text: r.x })]);
-        var list = el("div", { cls: "mats" });
+        var list = el("div", { cls: "mats" + (r.stamp ? " stampwrap" : "") });
         r.items.forEach(function (x) { list.appendChild(item(x.k, x.t, x.note + (x.released ? "" : " · to be released"), x.file, !!x.released)); });
+        if (r.stamp) list.appendChild(el("div", { cls: "stamp", "aria-hidden": "true" }, [el("span", { text: r.stamp })]));
         box.appendChild(list); sb.appendChild(box);
       });
     }
