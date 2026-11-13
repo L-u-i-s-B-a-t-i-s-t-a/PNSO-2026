@@ -500,7 +500,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       var head = el("div", { cls: "head" }, [
         el("div", { cls: "when" }, [el("b", { text: s.c }), " · " + s.d + " · " + s.h + " · " + s.room]),
         el("h3", { text: s.t }),
-        s.st ? el("div", { cls: "meta" }, [el("em", { text: s.stl != null ? s.stl : (s.guest || s.fixed ? "" : "Ship types") }), s.st]) : null,
+        (s.st && (s.stl != null ? s.stl : (s.guest || s.fixed ? "" : "Ship types")) !== "Ship types") ? el("div", { cls: "meta" }, [el("em", { text: s.stl != null ? s.stl : "" }), s.st]) : null,
         s.rd ? el("div", { cls: "meta" }, [el("em", { text: "Reading" }), s.rd]) : null,
       ].concat((s.notes || []).filter(function (n) { return RELEASED_FILES.indexOf(n.file) >= 0; }).map(function (n) {
         return el("div", { cls: "plan" }, [el("a", { href: n.file, target: "_blank", rel: "noopener" }, [el("b", { text: n.lab }), " · " + n.t])]);
