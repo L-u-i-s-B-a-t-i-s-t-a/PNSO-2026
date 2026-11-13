@@ -41,7 +41,7 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G1/0.5_Project_Scope_Sheet_G1.pdf?v=20261112-2005",
+        "file": "groups/G1/0.5_Project_Scope_Sheet_G1.pdf?v=20261113-0915",
         "released": true
       },
       {
@@ -51,8 +51,7 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": [],
-    "name": "Fernão de Oliveira"
+    "notes": []
   },
   "G2": {
     "ids": [
@@ -69,7 +68,7 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G2/0.5_Project_Scope_Sheet_G2.pdf?v=20261112-2117",
+        "file": "groups/G2/0.5_Project_Scope_Sheet_G2.pdf?v=20261113-0915",
         "released": true
       },
       {
@@ -79,8 +78,7 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": [],
-    "name": "Manuel Fernandes"
+    "notes": []
   },
   "G3": {
     "ids": [
@@ -97,7 +95,7 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G3/0.5_Project_Scope_Sheet_G3.pdf?v=20261112-2130",
+        "file": "groups/G3/0.5_Project_Scope_Sheet_G3.pdf?v=20261113-0915",
         "released": true
       },
       {
@@ -107,8 +105,7 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": [],
-    "name": "João Baptista Lavanha"
+    "notes": []
   },
   "G4": {
     "ids": [
@@ -135,8 +132,7 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": [],
-    "name": "Bartolomeu Dias"
+    "notes": []
   },
   "G5": {
     "ids": [
@@ -153,7 +149,7 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G5/0.5_Project_Scope_Sheet_G5.pdf?v=20261112-2130",
+        "file": "groups/G5/0.5_Project_Scope_Sheet_G5.pdf?v=20261113-0915",
         "released": true
       },
       {
@@ -163,8 +159,7 @@ var GROUPS = {
         "released": false
       }
     ],
-    "notes": [],
-    "name": "Infante Dom Henrique"
+    "notes": []
   },
   "G6": {
     "ids": [
