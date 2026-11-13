@@ -6,10 +6,22 @@
 // released: true to show the link; general: true also lists it in the Bibliography.
 var PROJECT_REFS = [
   { d: "2026-11-12", t: "Planning (advised)", note: "A work plan is not a deliverable, but plan inside your group: a rough approach and a split of the tasks, so that the work, the presentation and the knowledge of the whole project are shared evenly by every member. You are welcome to share the plan and discuss it with the instructor." },
-  { d: "2026-11-13", t: "Reading SP05 · Hull Form Variation from a Parent", file: "groups/common/Reading_SP05_Hull_Form_Variation.pdf", note: "SP05: a hull from the KCS by the Lackenby section shift and a stretch, with two worked examples", released: true, general: true },
-  { d: "2026-11-13", t: "User Guide · Demo 8 Hull Generator", file: "groups/common/User_Guide_Demo8_Hull_Generator.pdf", note: "SP05: how to use the Demo 8 notebook: quick start, functions, use in your design model, STEP file for CAD", released: true, general: true },
-  { d: "2026-11-13", t: "Demo 8 · Hull Form Variation from a Parent (notebook)", file: "https://colab.research.google.com/github/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/notebooks/Demo8_Hull_Form_Variation_Lackenby.ipynb", note: "SP05: the support code of the reading, runs in Colab; one call per hull, lines plan, 3D view, offsets and STEP export", released: true, general: true },
   { d: "2026-11-12", t: "0.3 Report Template", file: "groups/common/0.3_Report_Template.pdf", note: "the template of your project report", released: false }
+];
+
+// SP_RESOURCES: material for one specialization, shown in the Groups section and on the pages of the groups that have it.
+// Items in the order of use. k: the step label; file: a site path or a web link; released: true to show the link.
+var SP_RESOURCES = [
+  { sp: "SP05", t: "SP05 · Parametric Hull Shape Generation",
+    x: "Generate your hull from the KCS parent by the Lackenby section shift and a stretch of L, B, T and D. Read first, then run the notebook with the guide at hand.",
+    items: [
+      { k: "1 · Read", t: "Reading SP05 · Hull Form Variation from a Parent", file: "groups/specializations/SP05/Reading_SP05_Hull_Form_Variation.pdf", note: "the method, with two worked examples", released: true },
+      { k: "2 · Guide", t: "User Guide · Demo 8 Hull Generator", file: "groups/specializations/SP05/User_Guide_Demo8_Hull_Generator.pdf", note: "how to use the notebook: quick start, functions, use in your design model, STEP file", released: true },
+      { k: "3 · Run", t: "Demo 8 · Hull Form Variation from a Parent (notebook)", file: "https://colab.research.google.com/github/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/notebooks/Demo8_Hull_Form_Variation_Lackenby.ipynb", note: "opens in Google Colab", released: true },
+      { k: "4 · Data", t: "KCS hull: table of offsets (CSV)", file: "sources/kcs_hull/KCS_offsets.csv", note: "half-breadths at 201 stations, every 0.1 m in height; the notebook loads it by itself", released: true },
+      { k: "4 · Data", t: "KCS hull: IGES surfaces", file: "sources/kcs_hull/KCS_hull_SVA.igs", note: "for CAD; Tokyo 2015 CFD workshop, NMRI", released: true },
+      { k: "4 · Data", t: "KCS hull: notes", file: "https://github.com/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/sources/kcs_hull/README.md", note: "main particulars, axes, layout of the offsets table and how to cite it", released: true }
+    ] }
 ];
 
 // GROUPS: members (student numbers), Baseline, specializations, the three instructor inputs and the instructor's notes.
