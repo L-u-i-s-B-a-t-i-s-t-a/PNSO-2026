@@ -6,6 +6,8 @@
 // released: true to show the link; general: true also lists it in the Bibliography.
 var PROJECT_REFS = [
   { d: "2026-11-12", t: "Planning (advised)", note: "A work plan is not a deliverable, but plan inside your group: a rough approach and a split of the tasks, so that the work, the presentation and the knowledge of the whole project are shared evenly by every member. You are welcome to share the plan and discuss it with the instructor." },
+  { d: "2026-11-13", t: "Reading SP05 · Hull Form Variation from a Parent", file: "groups/common/Reading_SP05_Hull_Form_Variation.pdf", note: "SP05: a hull from the KCS by the Lackenby section shift and a stretch, with two worked examples", released: true, general: true },
+  { d: "2026-11-13", t: "Demo 8 · Hull Form Variation from a Parent (notebook)", file: "https://colab.research.google.com/github/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/notebooks/Demo8_Hull_Form_Variation_Lackenby.ipynb", note: "SP05: the support code of the reading, runs in Colab", released: true, general: true },
   { d: "2026-11-12", t: "0.3 Report Template", file: "groups/common/0.3_Report_Template.pdf", note: "the template of your project report", released: false }
 ];
 
@@ -194,7 +196,7 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G7/0.5_Project_Scope_Sheet_G7.pdf?v=20261112-2130",
+        "file": "groups/G7/0.5_Project_Scope_Sheet_G7.pdf?v=20261113-0015",
         "released": true
       },
       {
