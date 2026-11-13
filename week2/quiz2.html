@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz 2 · Ship and Ocean Systems Design 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: a single reading column of numbered question cards under a sticky score bar, like an answer sheet. */
+:root {
+  --bg: #f4f7f9; --surface: #fcfdfe; --ink: #1e2b34; --muted: #4f606b; --line: #d5dee5;
+  --accent: #0079ad; --accent-soft: #e3f1f8; --good: #1d7a46; --good-soft: #e3f3ea; --bad: #b4421c; --bad-soft: #fbe9e2;
+  --sans: 'IBM Plex Sans', Arial, sans-serif; --mono: 'IBM Plex Mono', 'Courier New', monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121a20; --surface: #1a252d; --ink: #e6edf2; --muted: #a3b2bc; --line: #2e3d48;
+  --accent: #5cc3ef; --accent-soft: #1b3442; --good: #6fd39a; --good-soft: #17332a; --bad: #f29a78; --bad-soft: #3a2219; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121a20; --surface: #1a252d; --ink: #e6edf2; --muted: #a3b2bc; --line: #2e3d48;
+  --accent: #5cc3ef; --accent-soft: #1b3442; --good: #6fd39a; --good-soft: #17332a; --bad: #f29a78; --bad-soft: #3a2219; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+.wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 56px; display: flex; flex-direction: column; gap: 18px; }
+header { display: flex; flex-direction: column; gap: 6px; }
+.eyebrow { font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+h1 { font-size: clamp(26px, 5vw, 36px); line-height: 1.15; margin: 0; text-wrap: balance; }
+.lede { color: var(--muted); margin: 0; max-width: 62ch; }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.score { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 18px; }
+.track { flex: 1 1 160px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; min-width: 0; }
+.fill { height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+button.reset { font: inherit; font-size: 14px; color: var(--accent); background: none; border: 1px solid var(--accent); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+ol.qs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.qhead { display: flex; gap: 12px; align-items: baseline; }
+.num { font-family: var(--mono); color: var(--accent); font-size: 15px; flex: none; }
+.stem { font-weight: 600; margin: 0; }
+.opts { display: grid; gap: 8px; }
+.opt { font: inherit; text-align: left; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; display: flex; gap: 10px; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:focus-visible, button.reset:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.opt .k { font-family: var(--mono); color: var(--muted); flex: none; }
+.opt:disabled { cursor: default; }
+.opt.right { background: var(--good-soft); border-color: var(--good); }
+.opt.wrong { background: var(--bad-soft); border-color: var(--bad); }
+.fb { border-left: 4px solid var(--line); padding: 4px 0 4px 12px; color: var(--muted); font-size: 15px; }
+.fb b { color: var(--ink); }
+.fb.ok { border-color: var(--good); } .fb.no { border-color: var(--bad); }
+.src { display: block; margin-top: 4px; font-size: 13px; color: var(--muted); }
+footer { color: var(--muted); font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Ship and Ocean Systems Design 2026 · Week 2 · Self-assessment</span>
+    <h1>Quiz 2: Main Dimensions, Rules and Power</h1>
+    <p class="lede">Twelve questions on Lectures 2.3a and 2.4; question 11 looks ahead to Lecture 2.3b, to be scheduled. Pick an answer to see whether it is right and why. Nothing is recorded or graded.</p>
+  </header>
+  <div class="bar" role="status" aria-live="polite">
+    <span class="score" id="score">0 / 0 answered</span>
+    <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+    <button class="reset" id="reset" type="button">Start again</button>
+  </div>
+  <ol class="qs" id="qs"></ol>
+  <footer>T. Santos, L. Batista · Ship and Ocean Systems Design 2026 · Papanikolaou (2026) §2.3–2.14, §2.19, §5.1; Holtrop and Mennen (1982); Lectures 2.3a and 2.4</footer>
+</div>
+
+<script>
+const QUIZ = [
+  { q: "For the same displacement, which main dimension is the most expensive to increase?",
+    o: ["Length", "Depth", "Draught", "Beam"], a: 0,
+    e: "A longer ship needs more steel (bending moment grows with L), more outfit and a higher building price. Depth is the cheapest.", s: "§2.3, §2.7 · Lecture 2.3a" },
+  { q: "Depth is raised by 10% on a ship with L/D = 10. About how much hold volume does it gain?",
+    o: ["2%", "8%", "15%", "30%"], a: 1,
+    e: "About 8% at L/D = 10 and 4% at L/D = 14, for a small rise in steel weight: the book's reason to raise depth first when volume is short.", s: "§2.7, after Schneekluth · Lecture 2.3a" },
+  { q: "Without other limits, which B/T ratio gives the least resistance?",
+    o: ["About 1.5", "About 2.5", "About 3.5", "About 4.5"], a: 1,
+    e: "B/T of 2.0–2.5 minimizes the wetted surface, and tests show about 2.5 also suits wave resistance. Twin-screw ships run higher.", s: "§2.5, §2.8.1 · Lecture 2.3a" },
+  { q: "Displacement, draught and length stay the same while the beam grows by 10%. About how much does the metacentric radius BM grow?",
+    o: ["3%", "10%", "20%", "30%"], a: 3,
+    e: "With ∇, T and L fixed, BM ∝ B³, so δBM/BM ≈ 3·δB/B (Eq. 2.54). With KG unchanged GM gains the same metres, δGM ≈ 3·BM·δB/B (Eq. 2.55): +30% of GM only when GM ≈ BM. Beam is the designer's stability lever.", s: "§2.5, Eqs. 2.53–2.55 · Lecture 2.3a" },
+  { q: "Why does the book add about 10% to Schneekluth's length of least building cost?",
+    o: ["To fit more containers", "To meet the class L/D limit", "To account for operating cost: a longer ship needs less power and fuel", "To leave room for a bulbous bow"], a: 2,
+    e: "The formula optimizes building cost only; the owner also pays for fuel, which a somewhat longer hull reduces.", s: "§2.3.7 (B) · Lecture 2.3a" },
+  { q: "For a slow ship (Fn ≤ 0.24), how is the prismatic coefficient usually chosen?",
+    o: ["Above the hydrodynamic optimum: cost and space decide", "Exactly at the hydrodynamic optimum", "As low as possible to cut wave resistance", "It does not matter at all"], a: 0,
+    e: "Friction dominates and wave resistance is small, so a fuller hull costs little power and saves building cost and space.", s: "§2.10.1 · Lecture 2.3a" },
+  { q: "Which relation between the form coefficients is always true?",
+    o: ["CB = CP + CM", "CB = CP · CM", "CP = CB · CM", "CWP = CB · CM"], a: 1,
+    e: "CB = ∇/(LBT), CP = ∇/(AM·L), CM = AM/(BT), so CB = CP·CM.", s: "§2.10 · Lecture 2.3a" },
+  { q: "Above which L/D do class societies usually ask for a special longitudinal strength check?",
+    o: ["About 6–8", "About 10–12", "About 14–16", "About 25"], a: 2,
+    e: "The usual class limit is L/D of 14–16; ships in sheltered waters have been approved up to about 20.", s: "§2.7.1 · Lecture 2.3a" },
+  { q: "When does the Admiralty formula C = Δ^(2/3)·V³/P give a reliable power?",
+    o: ["Always, with C = 500", "Only for ships faster than 25 knots", "When the ship has a bulbous bow", "When C comes from a parent ship of similar form, length and speed"], a: 3,
+    e: "C carries the parent's efficiency; it holds only for similar Reynolds and Froude numbers. Holtrop–Mennen showed it drifting from about 490 to 370 over 12–16 kn.", s: "§2.14, Eq. 2.104 · Lecture 2.4" },
+  { q: "By Holtrop–Mennen, which part dominates the resistance of a full cargo ship at Fn ≈ 0.20?",
+    o: ["Friction with form, RF(1 + k1)", "Wave-making resistance", "Bulb resistance", "Transom resistance"], a: 0,
+    e: "About 65% of the total on the reference ship at 14 kn; the wave share grows quickly above Fn 0.22.", s: "Holtrop and Mennen (1982) · Lecture 2.4" },
+  { q: "Which convention fixes the minimum freeboard, and so ties draught to depth?",
+    o: ["SOLAS", "MARPOL", "The Load Line Convention (ILLC)", "COLREG"], a: 2,
+    e: "ILLC sets the minimum freeboard; SOLAS covers subdivision and stability, MARPOL pollution, COLREG lights and signals.", s: "§2.7.1, §2.19 · Lecture 2.3b" },
+  { q: "Why does the battery-electric Feeder have no attained EEDI to meet?",
+    o: ["It is below 400 GT", "It sails only inside an ECA", "Container ships are exempt from the EEDI", "Its electric propulsion is non-conventional, so no EEDI is required"], a: 3,
+    e: "The EEDI is not required for non-conventional (electric) propulsion. In normal service the Feeder runs on batteries; its generators are for the mainland transit and emergencies. The dual-fuel Express has an EEDI; the Feeder reports energy per TEU-mile instead.", s: "§5.1 · Lecture 2.4; 0.2 scope slide 11" },
+];
+
+const qs = document.getElementById("qs"), scoreEl = document.getElementById("score"), fill = document.getElementById("fill");
+let answered = 0, right = 0;
+function update() {
+  scoreEl.textContent = answered ? `${right} / ${answered} right · ${QUIZ.length - answered} to go` : `0 / ${QUIZ.length} answered`;
+  fill.style.width = (100 * answered / QUIZ.length) + "%";
+}
+function render() {
+  qs.innerHTML = ""; answered = 0; right = 0;
+  QUIZ.forEach((item, i) => {
+    const li = document.createElement("li"); li.className = "q";
+    li.innerHTML = `<div class="qhead"><span class="num">Q${String(i + 1).padStart(2, "0")}</span><p class="stem" id="stem-${i}"></p></div><div class="opts" role="group" aria-labelledby="stem-${i}"></div>`;
+    li.querySelector(".stem").textContent = item.q;
+    const box = li.querySelector(".opts");
+    item.o.forEach((text, j) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "opt"; b.id = `q${i}o${j}`;
+      b.innerHTML = `<span class="k">${"ABCD"[j]}</span><span></span>`;
+      b.lastChild.textContent = text;
+      b.addEventListener("click", () => answer(li, item, j));
+      box.appendChild(b);
+    });
+    qs.appendChild(li);
+  });
+  update();
+}
+function answer(li, item, j) {
+  const btns = li.querySelectorAll(".opt");
+  btns.forEach((b, k) => { b.disabled = true; if (k === item.a) b.classList.add("right"); });
+  const ok = j === item.a;
+  if (!ok) btns[j].classList.add("wrong");
+  answered++; if (ok) right++;
+  const fb = document.createElement("div");
+  fb.className = "fb " + (ok ? "ok" : "no");
+  fb.innerHTML = `<b></b> <span></span><span class="src"></span>`;
+  fb.querySelector("b").textContent = ok ? "Right." : `Not quite: the answer is ${"ABCD"[item.a]}.`;
+  fb.querySelector("span").textContent = item.e;
+  fb.querySelector(".src").textContent = item.s;
+  li.appendChild(fb);
+  update();
+}
+document.getElementById("reset").addEventListener("click", render);
+render();
+</script>
+</body>
+</html>

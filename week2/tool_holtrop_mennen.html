@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Holtrop–Mennen Power · Ship and Ocean Systems Design 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an engineer's worksheet. Inputs in grouped columns on the left, the speed table on the right; stacks on phones. */
+:root {
+  --bg: #f4f7f9; --surface: #fcfdfe; --ink: #1e2b34; --muted: #4f606b; --line: #d5dee5;
+  --accent: #0079ad; --accent-soft: #e3f1f8; --fric: #0079ad; --wave: #d9692a; --other: #8a9aa5; --hl: #fdf1e7;
+  --sans: 'IBM Plex Sans', Arial, sans-serif; --mono: 'IBM Plex Mono', 'Courier New', monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121a20; --surface: #1a252d; --ink: #e6edf2; --muted: #a3b2bc; --line: #2e3d48;
+  --accent: #5cc3ef; --accent-soft: #1b3442; --fric: #5cc3ef; --wave: #f29a62; --other: #6d7f8b; --hl: #3a2a1d; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121a20; --surface: #1a252d; --ink: #e6edf2; --muted: #a3b2bc; --line: #2e3d48;
+  --accent: #5cc3ef; --accent-soft: #1b3442; --fric: #5cc3ef; --wave: #f29a62; --other: #6d7f8b; --hl: #3a2a1d; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-block: 24px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 20px; }
+header { display: flex; flex-direction: column; gap: 6px; }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); line-height: 1.15; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 75ch; }
+.grid { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+form { display: flex; flex-direction: column; gap: 14px; }
+fieldset { margin: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 12px 14px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 12px; min-width: 0; }
+legend { font-weight: 600; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding: 0 6px; }
+label { display: flex; flex-direction: column; gap: 3px; font-size: 13px; color: var(--muted); min-width: 0; }
+label > span { display: block; }
+label.wide { grid-column: span 2; }
+input, select { font: 500 15px var(--mono); color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; width: 100%; box-sizing: border-box; font-variant-numeric: tabular-nums; }
+input:focus-visible, select:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+.hint { font-size: 12px; color: var(--muted); grid-column: span 2; margin: 0; }
+.out { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; min-width: 0; }
+.summary { display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 14px; color: var(--muted); }
+.summary b { font-family: var(--mono); font-weight: 500; color: var(--ink); }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+th, td { padding: 6px 8px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { font-size: 12px; font-weight: 600; color: var(--muted); vertical-align: bottom; }
+th:first-child, td:first-child { text-align: left; }
+td { font-family: var(--mono); }
+tr.design td { background: var(--hl); }
+td.big { font-weight: 600; color: var(--ink); }
+th:first-child, td:first-child { position: sticky; left: 0; background: var(--surface); }
+tr.design td:first-child { background: var(--hl); }
+@media (max-width: 600px) { table { font-size: 12px; } th { font-size: 11px; } th, td { padding: 5px 4px; } .panel { padding: 12px 10px; } }
+.bar { display: flex; height: 10px; width: 120px; border-radius: 3px; overflow: hidden; background: var(--line); }
+.bar span { display: block; height: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+button { font: 500 14px var(--sans); color: var(--accent); background: none; border: 1px solid var(--accent); border-radius: 6px; padding: 6px 12px; cursor: pointer; }
+.status { font-size: 13px; color: var(--muted); }
+.notes { font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 6px; }
+.notes p { margin: 0; max-width: 90ch; }
+.warn { color: var(--wave); }
+footer { color: var(--muted); font-size: 14px; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="eyebrow">Ship and Ocean Systems Design 2026 · Tool 2.4 · Exercise 2.4</span>
+    <h1>Holtrop–Mennen Power</h1>
+    <p class="lede">Calm-water resistance and propulsion factors by Holtrop and Mennen (1982), then installed power with your margins. It opens on the reference ship of Lectures 2.3a and 2.4 (the 10,000 t general cargo ship), used in Exercise 2.4. For your group's project, replace the inputs with your project ship's hull.</p>
+  </header>
+  <div class="grid">
+    <form id="f" novalidate>
+      <fieldset><legend>Hull</legend>
+        <label><span>LPP [m]</span><input id="L" type="number" step="0.1" value="124.8"></label>
+        <label><span>LWL / LPP</span><input id="lwl" type="number" step="0.01" value="1.02"></label>
+        <label><span>Beam B [m]</span><input id="B" type="number" step="0.01" value="20.0"></label>
+        <label><span>Draught T [m]</span><input id="T" type="number" step="0.01" value="6.89"></label>
+        <label><span>CB on LPP</span><input id="CB" type="number" step="0.001" value="0.7489"></label>
+        <label><span>CM</span><input id="CM" type="number" step="0.001" value="0.985"></label>
+        <label><span>CWP (blank: (1+2CB)/3)</span><input id="CWP" type="number" step="0.001" value=""></label>
+        <label><span>lcb [% L, + fwd]</span><input id="lcb" type="number" step="0.1" value="1.0"></label>
+        <label><span>Stern shape</span><select id="Cstern"><option value="-25">Pram, gondola (−25)</option><option value="-10">V sections (−10)</option><option value="0" selected>Normal (0)</option><option value="10">U, Hogner stern (+10)</option></select></label>
+        <label><span>Sea water ρ [t/m³]</span><input id="rho" type="number" step="0.001" value="1.025"></label>
+      </fieldset>
+      <fieldset><legend>Bulb, transom, appendages</legend>
+        <label><span>Bulb area ABT [m²]</span><input id="ABT" type="number" step="0.1" value="8"></label>
+        <label><span>Bulb centre hB [m]</span><input id="hB" type="number" step="0.1" value="2.2"></label>
+        <label><span>Immersed transom AT [m²]</span><input id="AT" type="number" step="0.1" value="0"></label>
+        <label><span>Appendage area SAPP [m²]</span><input id="SAPP" type="number" step="0.5" value="30"></label>
+        <label class="wide"><span>Appendage factor 1+k₂</span><input id="k2" type="number" step="0.1" value="1.5"></label>
+        <p class="hint">1+k₂: rudder behind skeg 1.5–2.0; twin-screw balanced rudders 2.8; shaft brackets 3.0; shafts 2.0–4.0.</p>
+      </fieldset>
+      <fieldset><legend>Propulsion and margins</legend>
+        <label><span>Screws</span><select id="twin"><option value="0" selected>Single</option><option value="1">Twin</option></select></label>
+        <label><span>Propeller DP [m]</span><input id="Dp" type="number" step="0.01" value="4.82"></label>
+        <label><span>Open-water η₀ (assumed, baseline 0.60)</span><input id="eta0" type="number" step="0.01" value="0.60"></label>
+        <label><span>Shaft ηS</span><input id="etaS" type="number" step="0.01" value="0.99"></label>
+        <label><span>AE/A₀ (single)</span><input id="AE" type="number" step="0.01" value="0.55"></label>
+        <label><span>P/D (twin)</span><input id="PD" type="number" step="0.05" value="1.0"></label>
+        <label><span>Sea margin [%]</span><input id="sm" type="number" step="1" value="15"></label>
+        <label><span>Engine load [% MCR]</span><input id="el" type="number" step="1" value="90"></label>
+      </fieldset>
+      <fieldset><legend>Speeds and parent ship</legend>
+        <label class="wide"><span>Speeds [kn], comma separated</span><input id="V" type="text" value="12, 13, 14, 15, 16"></label>
+        <label><span>Design speed [kn]</span><input id="Vd" type="number" step="0.1" value="14"></label>
+        <label><span>Admiralty C (optional)</span><input id="C" type="number" step="10" value="400"></label>
+        <p class="hint">Admiralty column: Δ^(2/3)·V³/C with Δ in t, V in kn, P in kW. Take C from a parent ship of similar form and speed (in the project, from your D2 database).</p>
+      </fieldset>
+      <div class="row"><button type="button" id="reset">Load the example ship</button><span class="status" id="saved"></span></div>
+    </form>
+    <section class="out" aria-live="polite">
+      <div class="panel summary" id="sum"></div>
+      <div class="panel">
+        <div class="scroll"><table id="tab"></table></div>
+      </div>
+      <div class="panel row">
+        <div class="legend"><span><i style="background:var(--fric)"></i>Friction with form RF(1+k₁)</span><span><i style="background:var(--wave)"></i>Wave-making RW</span><span><i style="background:var(--other)"></i>Correlation, appendages, bulb, transom</span></div>
+        <button type="button" id="copy">Copy table</button>
+      </div>
+      <div class="panel notes" id="notes">
+        <p>Chain: PE = RT·V; ηD = η₀·ηH·ηR with ηH = (1−t)/(1−w); PB = PE/(ηD·ηS); SMCR = PB·(1 + sea margin)/engine load. η₀ is a fixed assumption in the baseline design (0.60, or a justified 0.60–0.65); the optimum Wageningen B-series propeller is selected in specialization SP02 (see homework H2b).</p>
+        <p>Use the method inside its data range: Holtrop (1984) gives the range per ship type. Outside it, compare with a second method (Lecture 2.4).</p>
+        <p>Source: Holtrop, J. and Mennen, G.G.J. (1982) An approximate power prediction method, International Shipbuilding Progress 29(335); Papanikolaou (2026) §2.14, footnote 34. The formulas reproduce the paper’s worked example (RT 1,792 kN at 25 kn).</p>
+      </div>
+    </section>
+  </div>
+  <footer>T. Santos, L. Batista · Ship and Ocean Systems Design 2026 · Holtrop and Mennen (1982); Holtrop (1984); Papanikolaou (2026) §2.14</footer>
+</div>
+
+<script>
+// Holtrop & Mennen (1982) resistance and propulsion factors. Same formulas as the course's Python check (hm.py).
+function holtropMennen(p) {
+  const RHO = 1000 * (p.rho || 1.025), G = 9.81, NU = 1.1883e-6;
+  const { Vkn, L, B, T, vol, lcb = 0, CM = 0.98, ABT = 0, hB = 0, AT = 0, SAPP = 0, k2 = 1.5,
+          Cstern = 0, twin = false, AE = 0.6, PD = 1.0 } = p;
+  const TF = T, TA = T;
+  const Dp = p.Dp || 0.65 * T;
+  const V = Vkn * 0.514444;
+  const CB = vol / (L * B * T), CP = CB / CM;
+  const CWP = p.CWP || (1 + 2 * CB) / 3;
+  const Fn = V / Math.sqrt(G * L);
+  const S = L * (2 * T + B) * Math.sqrt(CM) * (0.453 + 0.4425 * CB - 0.2862 * CM - 0.003467 * B / T + 0.3696 * CWP) + 2.38 * ABT / CB;
+  const Rn = V * L / NU, CF = 0.075 / Math.pow(Math.log10(Rn) - 2, 2);
+  const LR = L * (1 - CP + 0.06 * CP * lcb / (4 * CP - 1));
+  const TL = T / L;
+  const c12 = TL > 0.05 ? Math.pow(TL, 0.2228446) : TL > 0.02 ? 48.20 * Math.pow(TL - 0.02, 2.078) + 0.479948 : 0.479948;
+  const c13 = 1 + 0.003 * Cstern;
+  const k1 = c13 * (0.93 + c12 * Math.pow(B / LR, 0.92497) * Math.pow(0.95 - CP, -0.521448) * Math.pow(1 - CP + 0.0225 * lcb, 0.6906));
+  const q = 0.5 * RHO * V * V;
+  const RF = q * S * CF, RAPP = q * SAPP * k2 * CF;
+  const BL = B / L;
+  const c7 = BL < 0.11 ? 0.229577 * Math.pow(BL, 0.33333) : BL < 0.25 ? BL : 0.5 - 0.0625 / BL;
+  const iE = 1 + 89 * Math.exp(-Math.pow(L / B, 0.80856) * Math.pow(1 - CWP, 0.30484) * Math.pow(1 - CP - 0.0225 * lcb, 0.6367)
+            * Math.pow(LR / B, 0.34574) * Math.pow(100 * vol / (L * L * L), 0.16302));
+  const c1 = 2223105 * Math.pow(c7, 3.78613) * Math.pow(T / B, 1.07961) * Math.pow(90 - iE, -1.37565);
+  const c3 = ABT > 0 ? 0.56 * Math.pow(ABT, 1.5) / (B * T * (0.31 * Math.sqrt(ABT) + TF - hB)) : 0;
+  const c2 = Math.exp(-1.89 * Math.sqrt(c3));
+  const c5 = 1 - 0.8 * AT / (B * T * CM);
+  const lam = L / B < 12 ? 1.446 * CP - 0.03 * L / B : 1.446 * CP - 0.36;
+  const c16 = CP < 0.8 ? 8.07981 * CP - 13.8673 * CP * CP + 6.984388 * CP * CP * CP : 1.73014 - 0.7067 * CP;
+  const m1 = 0.0140407 * L / T - 1.75254 * Math.cbrt(vol) / L - 4.79323 * B / L - c16;
+  const L3V = L * L * L / vol;
+  const c15 = L3V < 512 ? -1.69385 : L3V < 1727 ? -1.69385 + (L / Math.cbrt(vol) - 8.0) / 2.36 : 0;
+  const m2 = c15 * CP * CP * Math.exp(-0.1 / (Fn * Fn));
+  const RW = c1 * c2 * c5 * vol * RHO * G * Math.exp(m1 * Math.pow(Fn, -0.9) + m2 * Math.cos(lam / (Fn * Fn)));
+  let RB = 0;
+  if (ABT > 0) {
+    const PB = 0.56 * Math.sqrt(ABT) / (TF - 1.5 * hB);
+    const Fni = V / Math.sqrt(G * (TF - hB - 0.25 * Math.sqrt(ABT)) + 0.15 * V * V);
+    RB = 0.11 * Math.exp(-3 * Math.pow(PB, -2)) * Math.pow(Fni, 3) * Math.pow(ABT, 1.5) * RHO * G / (1 + Fni * Fni);
+  }
+  let RTR = 0;
+  if (AT > 0) {
+    const FnT = V / Math.sqrt(2 * G * AT / (B + B * CWP));
+    RTR = FnT < 5 ? q * AT * 0.2 * (1 - 0.2 * FnT) : 0;
+  }
+  const c4 = TF / L <= 0.04 ? TF / L : 0.04;
+  const CA = 0.006 * Math.pow(L + 100, -0.16) - 0.00205 + 0.003 * Math.sqrt(L / 7.5) * Math.pow(CB, 4) * c2 * (0.04 - c4);
+  const RA = q * S * CA;
+  const RT = RF * k1 + RAPP + RW + RB + RTR + RA;
+  const kTot = k1 + (k2 - k1) * SAPP / (S + SAPP);
+  const CV = kTot * CF + CA;
+  const CP1 = 1.45 * CP - 0.315 - 0.0225 * lcb;
+  let w, t, etaR;
+  if (twin) {
+    w = 0.3095 * CB + 10 * CV * CB - 0.23 * Dp / Math.sqrt(B * T);
+    t = 0.325 * CB - 0.1885 * Dp / Math.sqrt(B * T);
+    etaR = 0.9737 + 0.111 * (CP - 0.0225 * lcb) - 0.06325 * PD;
+  } else {
+    const BTA = B / TA;
+    const c8 = BTA < 5 ? B * S / (L * Dp * TA) : S * (7 * BTA - 25) / (L * Dp * (BTA - 3));
+    const c9 = c8 < 28 ? c8 : 32 - 16 / (c8 - 24);
+    const c11 = TA / Dp < 2 ? TA / Dp : 0.0833333 * Math.pow(TA / Dp, 3) + 1.33333;
+    w = c9 * CV * L / TA * (0.0661875 + 1.21756 * c11 * CV / (1 - CP1)) + 0.24558 * Math.sqrt(B / (L * (1 - CP1)))
+        - 0.09726 / (0.95 - CP) + 0.11434 / (0.95 - CB) + 0.75 * Cstern * CV + 0.002 * Cstern;
+    const c10 = L / B > 5.2 ? B / L : 0.25 - 0.003328402 / (B / L - 0.134615385);
+    t = 0.001979 * L / (B - B * CP1) + 1.0585 * c10 - 0.00524 - 0.1418 * Dp * Dp / (B * T) + 0.0015 * Cstern;
+    etaR = 0.9922 - 0.05908 * AE + 0.07424 * (CP - 0.0225 * lcb);
+  }
+  return { Fn, CB, CP, CWP, S, k1, RF: RF / 1e3, RFk: RF * k1 / 1e3, RAPP: RAPP / 1e3, RW: RW / 1e3, RB: RB / 1e3,
+           RTR: RTR / 1e3, RA: RA / 1e3, RT: RT / 1e3, PE: RT * V / 1e3, w, t, etaR, etaH: (1 - t) / (1 - w) };
+}
+
+const ids = ["L","lwl","B","T","CB","CM","CWP","lcb","Cstern","rho","ABT","hB","AT","SAPP","k2","twin","Dp","eta0","etaS","AE","PD","sm","el","V","Vd","C"];
+const DEFAULTS = {}; ids.forEach(i => DEFAULTS[i] = document.getElementById(i).value);
+const KEY = "pnso-tool24";
+try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s) ids.forEach(i => { if (s[i] !== undefined) document.getElementById(i).value = s[i]; }); } catch (e) {}
+const num = i => parseFloat(document.getElementById(i).value);
+const fmt = (x, d = 0) => Number.isFinite(x) ? x.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d }) : "–";
+let lastRows = [];
+function run() {
+  const g = {}; ids.forEach(i => g[i] = document.getElementById(i).value);
+  try { localStorage.setItem(KEY, JSON.stringify(g)); } catch (e) {}
+  const L = num("L"), B = num("B"), T = num("T"), CB = num("CB"), rho = num("rho");
+  const LWL = L * num("lwl"), vol = CB * L * B * T, D = rho * vol;
+  const speeds = document.getElementById("V").value.split(/[ ,;]+/).map(parseFloat).filter(v => v > 0).sort((a, b) => a - b);
+  const Vd = num("Vd");
+  if (Vd > 0 && !speeds.includes(Vd)) { speeds.push(Vd); speeds.sort((a, b) => a - b); }
+  const twin = document.getElementById("twin").value === "1";
+  const p = { L: LWL, B, T, vol, lcb: num("lcb"), CM: num("CM"), CWP: num("CWP") || 0, ABT: num("ABT") || 0, hB: num("hB") || 0,
+              AT: num("AT") || 0, SAPP: num("SAPP") || 0, k2: num("k2") || 1.5, Cstern: +document.getElementById("Cstern").value,
+              Dp: num("Dp"), twin, AE: num("AE"), PD: num("PD"), rho: rho || 1.025 };
+  const eta0 = num("eta0"), etaS = num("etaS"), sm = num("sm") / 100, el = num("el") / 100, C = num("C");
+  const rows = [];
+  for (const V of speeds) {
+    const r = holtropMennen({ ...p, Vkn: V });
+    const etaD = eta0 * r.etaH * r.etaR, PB = r.PE / (etaD * etaS), SMCR = PB * (1 + sm) / el;
+    const adm = C > 0 ? Math.pow(D, 2 / 3) * V ** 3 / C : NaN;
+    rows.push({ V, r, etaD, PB, SMCR, adm, Cimp: Math.pow(D, 2 / 3) * V ** 3 / SMCR });
+  }
+  lastRows = rows;
+  const r0 = rows.length ? rows[0].r : null;
+  const warn = [];
+  if (r0) {
+    if (L / B < 3.9 || L / B > 9.5) warn.push("L/B outside 3.9–9.5");
+    if (r0.CP < 0.55 || r0.CP > 0.85) warn.push("CP outside 0.55–0.85");
+    if (rows.some(x => x.r.Fn > 0.45)) warn.push("Fn above 0.45");
+  }
+  document.getElementById("sum").innerHTML = r0 ? `<span>Δ <b>${fmt(D)} t</b></span><span>∇ <b>${fmt(vol)} m³</b></span><span>LWL <b>${fmt(LWL, 1)} m</b></span><span>CB(LWL) <b>${fmt(r0.CB, 3)}</b></span><span>CP <b>${fmt(r0.CP, 3)}</b></span><span>CWP <b>${fmt(r0.CWP, 3)}</b></span><span>S <b>${fmt(r0.S)} m²</b></span><span>1+k₁ <b>${fmt(r0.k1, 3)}</b></span><span>L/B <b>${fmt(L / B, 2)}</b></span><span>B/T <b>${fmt(B / T, 2)}</b></span>` + (warn.length ? `<span class="warn">Check: ${warn.join("; ")}</span>` : "") : "Enter at least one speed.";
+  let h = `<tr><th>V [kn]</th><th>Fn</th><th>RT [kN]</th><th>PE [kW]</th><th>PB [kW]</th><th>SMCR [kW]</th><th>Admiralty [kW]</th><th>Implied C</th><th>RF(1+k₁) [kN]</th><th>RW [kN]</th><th>Other [kN]</th><th>Split</th><th>w</th><th>t</th><th>ηR</th><th>ηD</th></tr>`;
+  for (const x of rows) {
+    const r = x.r, other = r.RT - r.RFk - r.RW;
+    const f = 100 * r.RFk / r.RT, wv = 100 * r.RW / r.RT;
+    h += `<tr class="${x.V === Vd ? "design" : ""}"><td>${fmt(x.V, 1)}</td><td>${fmt(r.Fn, 3)}</td><td>${fmt(r.RT, 1)}</td><td>${fmt(r.PE)}</td><td>${fmt(x.PB)}</td><td class="big">${fmt(x.SMCR)}</td><td>${fmt(x.adm)}</td><td>${fmt(x.Cimp)}</td>
+      <td>${fmt(r.RFk, 1)}</td><td>${fmt(r.RW, 1)}</td><td>${fmt(other, 1)}</td>
+      <td><div class="bar" title="friction ${fmt(f)}%, waves ${fmt(wv)}%"><span style="width:${f}%;background:var(--fric)"></span><span style="width:${wv}%;background:var(--wave)"></span><span style="flex:1;background:var(--other)"></span></div></td>
+      <td>${fmt(r.w, 3)}</td><td>${fmt(r.t, 3)}</td><td>${fmt(r.etaR, 3)}</td><td>${fmt(x.etaD, 3)}</td></tr>`;
+  }
+  document.getElementById("tab").innerHTML = h;
+}
+document.getElementById("f").addEventListener("input", run);
+document.getElementById("f").addEventListener("submit", e => e.preventDefault());
+document.getElementById("reset").addEventListener("click", () => { ids.forEach(i => document.getElementById(i).value = DEFAULTS[i]); run(); document.getElementById("saved").textContent = "Example ship loaded"; });
+document.getElementById("copy").addEventListener("click", async () => {
+  const head = "V_kn\tFn\tRFk_kN\tRW_kN\tRT_kN\tPE_kW\tw\tt\tetaR\tetaD\tPB_kW\tSMCR_kW\tAdmiralty_kW\tImplied_C";
+  const body = lastRows.map(x => [x.V, x.r.Fn.toFixed(3), x.r.RFk.toFixed(1), x.r.RW.toFixed(1), x.r.RT.toFixed(1), x.r.PE.toFixed(0), x.r.w.toFixed(3), x.r.t.toFixed(3), x.r.etaR.toFixed(3), x.etaD.toFixed(3), x.PB.toFixed(0), x.SMCR.toFixed(0), Number.isFinite(x.adm) ? x.adm.toFixed(0) : "", x.Cimp.toFixed(0)].join("\t")).join("\n");
+  const s = document.getElementById("saved");
+  try { await navigator.clipboard.writeText(head + "\n" + body); s.textContent = "Table copied: paste it into Excel or your notebook"; }
+  catch (e) { s.textContent = "Copy was blocked here: select the table and copy it by hand"; }
+});
+run();
+</script>
+</body>
+</html>
