@@ -88,7 +88,7 @@ a.mat:hover { border-color: var(--accent); }
     var kids = [el("span", { cls: "k", text: "Input " + (i + 1) }), el("span", { cls: "t" }, [x.t, el("small", { text: " · " + x.x + (x.released ? "" : " · to be released") })])];
     ins.appendChild(x.released ? el("a", { cls: "mat", href: x.file, target: "_blank", rel: "noopener" }, kids) : el("div", { cls: "mat later" }, kids));
   });
-  var spr = (typeof SP_RESOURCES !== "undefined") ? SP_RESOURCES : [], sw = document.getElementById("spres");
+  var spr = ((typeof SP_RESOURCES !== "undefined") ? SP_RESOURCES : []).filter(function (r) { return !r.hidden; }), sw = document.getElementById("spres");
   spr.forEach(function (r) {
     var list = el("div", { cls: "mats" });
     r.items.forEach(function (x) {

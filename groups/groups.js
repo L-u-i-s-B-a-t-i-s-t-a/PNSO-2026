@@ -9,9 +9,9 @@ var PROJECT_REFS = [
   { d: "2026-11-12", t: "0.3 Report Template", file: "groups/common/0.3_Report_Template.pdf", note: "the template of your project report", released: false }
 ];
 
-// SP_RESOURCES: tools and resources for all groups, shown in the Groups section (Tools and resources) and on every group page.
+// SP_RESOURCES: tools and resources for all groups, shown in the Groups section (Tools and resources) and on every group page; hidden: true keeps an entry off the site.
 var SP_RESOURCES = [
-  { id: "hull", t: "Hull Form from a Parent (Demo 8)",
+  { id: "hull", hidden: true, t: "Hull Form from a Parent (Demo 8)",
     x: "For all groups, Baseline A or B, optional: generate your hull from the KCS parent by the Lackenby section shift and a stretch of L, B, T and D, for D8 (hydrostatics check, container count on your own lines, 3D hull). Read first, then run the notebook with the guide at hand.",
     items: [
       { k: "1 · Read", t: "Reading · Hull Form Variation from a Parent", file: "resources/hull_form/Reading_Hull_Form_Variation_from_a_Parent.pdf", note: "the method, with two worked examples", released: true },
