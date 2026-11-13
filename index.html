@@ -244,13 +244,14 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
         <li><b>Check the links and information</b> below, shared with all groups; general references are also in the Bibliography.</li>
         <li><b>Book office hours</b> as a group: one 30-minute slot per group per week, with your questions stated.</li>
         <li><b>Deliver</b> one ZIP file by e-mail (e.g. Group1_Project.zip) by Sun 13 Dec. Clinics on Fri 11 Dec; presentations, 15 minutes per group, on Fri 18 Dec.</li>
+        <li><b>Hull form for D8 (optional, all groups):</b> you may generate your hull with Demo 8, from the KCS parent, for the hydrostatics check, the container count on your own lines and the 3D hull (STU-D8.1 to D8.3). Its material is under <a href="#sp-resources">Specialization resources › SP05</a>. If you use it, state its limits and the validity range (the tool warns when you are outside it), and cite the KCS geometry and the method. A Baseline B ship may fall outside the range of the KCS. For SP05 groups it is required, and SP05 goes further: hull families, coupling to the optimizer and the counted capacity.</li>
         <li><b>Declare AI tools</b> where you used them in the report.</li>
       </ol>
       <div class="gbox" style="margin-top:8px">
         <div><h3>Links and information from the instructor</h3><div class="mats" id="proj-refs"></div></div>
       </div>
       <h3 id="sp-resources" style="margin-top:8px">Specialization resources</h3>
-      <p class="lead" style="margin-top:0">Material for one specialization, in the order of use. It is also on the page of each group that has the specialization.</p>
+      <p class="lead" style="margin-top:0">Material for one specialization, in the order of use. It is also on the page of each group that has the specialization; where stated, other groups may use it too.</p>
       <div class="gbox" id="sp-res"></div>
       <div style="overflow-x:auto">
       <table class="groups" style="min-width:640px">
@@ -441,7 +442,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       if (!spr.length) sb.appendChild(el("div", {}, [el("div", { cls: "none", text: "None yet." })]));
       spr.forEach(function (r) {
         var who = Object.keys(GROUPS).filter(function (g) { return GROUPS[g].sps.some(function (x) { return x.indexOf(r.sp + " ") === 0; }); });
-        var box = el("div", {}, [el("h3", { text: r.t }), el("small", { cls: "none", text: "Groups " + who.join(", ") + " · " + r.x })]);
+        var box = el("div", {}, [el("h3", { text: r.t }), el("small", { cls: "none", text: "Required for " + who.join(", ") + (r.all ? "; optional for the other groups, for the hull of D8" : "") + " · " + r.x })]);
         var list = el("div", { cls: "mats" });
         r.items.forEach(function (x) { list.appendChild(item(x.k, x.t, x.note, x.file, !!x.released)); });
         box.appendChild(list); sb.appendChild(box);
@@ -457,7 +458,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
 
   // NEWS: announcements, newest first. Add one line at the top to post: d = date (YYYY-MM-DD), t = title, x = text, link optional.
   var NEWS = [
-    { d: "2026-11-13", t: "SP05: resources for the parametric hull", x: "For the groups with specialization SP05 (G4 and G7): a reading on generating a hull from the KCS by the Lackenby section shift and a stretch of L, B, T and D, with two worked examples; the Demo 8 notebook, which makes a hull in one call from six numbers and gives its hydrostatics, resistance, lines plan, 3D view, offsets and an optional STEP file for CAD; and a user guide for the notebook. All are in the Groups section, under Specialization resources, in the order of use. The SP05 part of the scope sheets was updated accordingly.", link: { t: "Go to the SP05 resources", href: "#sp-resources" } },
+    { d: "2026-11-13", t: "SP05: resources for the parametric hull", x: "For the groups with specialization SP05 (G4 and G7): a reading on generating a hull from the KCS by the Lackenby section shift and a stretch of L, B, T and D, with two worked examples; the Demo 8 notebook, which makes a hull in one call from six numbers and gives its hydrostatics, resistance, lines plan, 3D view, offsets and an optional STEP file for CAD; and a user guide for the notebook. All are in the Groups section, under Specialization resources, in the order of use. The SP05 part of the scope sheets was updated accordingly. All other groups may also use Demo 8 for the hull of D8, as an option: see the instructions for all groups.", link: { t: "Go to the SP05 resources", href: "#sp-resources" } },
     { d: "2026-11-12", t: "New in the Bibliography: the KCS hull", x: "The hull geometry of the KRISO Container Ship (KCS), a benchmark container-ship hull, is now in the Bibliography as an IGES file and a table of offsets (CSV): Lpp 230 m, B 32.2 m, T 10.8 m, block coefficient 0.6505, 24 kn. It comes from the Tokyo 2015 CFD workshop (NMRI); the notes give the main particulars, the axes, the layout of the offsets table and how to cite it.", link: { t: "Go to the Bibliography", href: "#bibliography" } },
     { d: "2026-11-12", t: "Quiz 1 is out", x: "Quiz 1 covers week 1: owner's requirements, design stages, deadweight and volume carriers, regressions and the design equation, with calculations. It is not graded, but it is a fundamental part of your preparation for the Evaluation Test on Fri 27 Nov: work through it, and check the working given with each answer.", link: { t: "Open Quiz 1", href: "week1/quiz1.html" } },
     { d: "2026-11-12", t: "New in the Bibliography: container ships", x: "An extract of Alvariño, Azpíroz and Meizoso (1997), El proyecto básico del buque mercante, is now in the Bibliography: chapter 2.9 on container ships, section 3.8.6 on the number of containers, and the list of symbols (in Spanish). For consultation, class use only.", link: { t: "Go to the Bibliography", href: "#bibliography" } },

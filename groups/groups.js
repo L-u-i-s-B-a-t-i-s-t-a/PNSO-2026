@@ -10,9 +10,9 @@ var PROJECT_REFS = [
 ];
 
 // SP_RESOURCES: material for one specialization, shown in the Groups section and on the pages of the groups that have it.
-// Items in the order of use. k: the step label; file: a site path or a web link; released: true to show the link.
+// all: true when other groups may use it too (shown as optional for all groups). Items in the order of use. k: the step label; file: a site path or a web link; released: true to show the link.
 var SP_RESOURCES = [
-  { sp: "SP05", t: "SP05 · Parametric Hull Shape Generation",
+  { sp: "SP05", t: "SP05 · Parametric Hull Shape Generation", all: true,
     x: "Generate your hull from the KCS parent by the Lackenby section shift and a stretch of L, B, T and D. Read first, then run the notebook with the guide at hand.",
     items: [
       { k: "1 · Read", t: "Reading SP05 · Hull Form Variation from a Parent", file: "groups/specializations/SP05/Reading_SP05_Hull_Form_Variation.pdf", note: "the method, with two worked examples", released: true },
