@@ -113,13 +113,13 @@ var GROUPS = {
     "baseline": "A",
     "sps": [
       "SP05 Parametric Hull",
-      "SP11 Dimensional Analysis"
+      "SP11 Neural Network Surrogate Model"
     ],
     "inputs": [
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G4/0.5_Project_Scope_Sheet_G4.pdf?v=20261113-1015",
+        "file": "groups/G4/0.5_Project_Scope_Sheet_G4.pdf?v=20261113-1025",
         "released": true
       },
       {
