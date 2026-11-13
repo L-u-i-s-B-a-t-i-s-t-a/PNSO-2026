@@ -442,7 +442,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
       spr.forEach(function (r) {
         var box = el("div", {}, [el("h3", { text: r.t }), el("small", { cls: "none", text: r.x })]);
         var list = el("div", { cls: "mats" });
-        r.items.forEach(function (x) { list.appendChild(item(x.k, x.t, x.note, x.file, !!x.released)); });
+        r.items.forEach(function (x) { list.appendChild(item(x.k, x.t, x.note + (x.released ? "" : " · to be released"), x.file, !!x.released)); });
         box.appendChild(list); sb.appendChild(box);
       });
     }

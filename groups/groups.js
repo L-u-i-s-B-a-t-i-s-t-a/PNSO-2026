@@ -11,15 +11,15 @@ var PROJECT_REFS = [
 
 // SP_RESOURCES: tools and resources for all groups, shown in the Groups section (Tools and resources) and on every group page; hidden: true keeps an entry off the site.
 var SP_RESOURCES = [
-  { id: "hull", hidden: true, t: "Hull Form from a Parent (Demo 8)",
+  { id: "hull", t: "Hull Form from a Parent (Demo 8)",
     x: "For all groups, Baseline A or B, optional: generate your hull from the KCS parent by the Lackenby section shift and a stretch of L, B, T and D, for D8 (hydrostatics check, container count on your own lines, 3D hull). Read first, then run the notebook with the guide at hand.",
     items: [
-      { k: "1 · Read", t: "Reading · Hull Form Variation from a Parent", file: "resources/hull_form/Reading_Hull_Form_Variation_from_a_Parent.pdf", note: "the method, with two worked examples", released: true },
-      { k: "2 · Guide", t: "User Guide · Demo 8 Hull Generator", file: "resources/hull_form/User_Guide_Demo8_Hull_Generator.pdf", note: "how to use the notebook: quick start, functions, use in your design model, STEP file", released: true },
-      { k: "3 · Run", t: "Demo 8 · Hull Form Variation from a Parent (notebook)", file: "https://colab.research.google.com/github/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/notebooks/Demo8_Hull_Form_Variation_Lackenby.ipynb", note: "opens in Google Colab", released: true },
-      { k: "4 · Data", t: "KCS hull: table of offsets (CSV)", file: "sources/kcs_hull/KCS_offsets.csv", note: "half-breadths at 201 stations, every 0.1 m in height; the notebook loads it by itself", released: true },
-      { k: "4 · Data", t: "KCS hull: IGES surfaces", file: "sources/kcs_hull/KCS_hull_SVA.igs", note: "for CAD; Tokyo 2015 CFD workshop, NMRI", released: true },
-      { k: "4 · Data", t: "KCS hull: notes", file: "https://github.com/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/sources/kcs_hull/README.md", note: "main particulars, axes, layout of the offsets table and how to cite it", released: true }
+      { k: "1 · Read", t: "Reading · Hull Form Variation from a Parent", file: "resources/hull_form/Reading_Hull_Form_Variation_from_a_Parent.pdf", note: "the method, with two worked examples", released: false },
+      { k: "2 · Guide", t: "User Guide · Demo 8 Hull Generator", file: "resources/hull_form/User_Guide_Demo8_Hull_Generator.pdf", note: "how to use the notebook: quick start, functions, use in your design model, STEP file", released: false },
+      { k: "3 · Run", t: "Demo 8 · Hull Form Variation from a Parent (notebook)", file: "https://colab.research.google.com/github/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/notebooks/Demo8_Hull_Form_Variation_Lackenby.ipynb", note: "opens in Google Colab", released: false },
+      { k: "4 · Data", t: "KCS hull: table of offsets (CSV)", file: "sources/kcs_hull/KCS_offsets.csv", note: "half-breadths at 201 stations, every 0.1 m in height; the notebook loads it by itself", released: false },
+      { k: "4 · Data", t: "KCS hull: IGES surfaces", file: "sources/kcs_hull/KCS_hull_SVA.igs", note: "for CAD; Tokyo 2015 CFD workshop, NMRI", released: false },
+      { k: "4 · Data", t: "KCS hull: notes", file: "https://github.com/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/sources/kcs_hull/README.md", note: "main particulars, axes, layout of the offsets table and how to cite it", released: false }
     ] }
 ];
 
