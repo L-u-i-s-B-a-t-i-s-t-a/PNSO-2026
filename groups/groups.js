@@ -182,8 +182,8 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G6/0.5_Project_Scope_Sheet_G6.pdf",
-        "released": false
+        "file": "groups/G6/0.5_Project_Scope_Sheet_G6.pdf?v=20261113-0835",
+        "released": true
       },
       {
         "t": "0.4 Datasheet Template",
