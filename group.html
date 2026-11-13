@@ -67,7 +67,7 @@ a.mat:hover { border-color: var(--accent); }
   <div><div class="label">Ship Design Project · group page</div><h1 id="title">Group</h1></div>
   <div class="facts" id="facts"></div>
   <section><h2>Instructor project inputs</h2><p class="lead">The base documents for your project. A dashed one is not released yet.</p><div class="mats" id="inputs"></div></section>
-  <section id="spsec" style="display:none"><h2>Specialization resources</h2><p class="lead">Material for your specializations, in the order of use. The same material is in the <a href="index.html#sp-resources">Groups</a> section of the course site.</p><div id="spres" style="display:flex;flex-direction:column;gap:14px"></div></section>
+  <section id="spsec" style="display:none"><h2>Tools and resources</h2><p class="lead">Material for all groups, in the order of use. The same material is in the <a href="index.html#tools">Groups</a> section of the course site.</p><div id="spres" style="display:flex;flex-direction:column;gap:14px"></div></section>
   <section><h2>Instructor notes</h2><p class="lead">Information the instructor adds for your group during the project, newest first. Notes for all groups are also in the reference documents and the Bibliography.</p><div id="notes" style="display:flex;flex-direction:column;gap:10px"></div></section>
   <section><h2>For all groups</h2><p class="lead">The common instructions, the project documents and the reference documents are on the <a href="index.html#groups">Groups</a> section of the course site.</p></section>
 </div>
@@ -89,7 +89,7 @@ a.mat:hover { border-color: var(--accent); }
     ins.appendChild(x.released ? el("a", { cls: "mat", href: x.file, target: "_blank", rel: "noopener" }, kids) : el("div", { cls: "mat later" }, kids));
   });
   var spr = (typeof SP_RESOURCES !== "undefined") ? SP_RESOURCES : [], sw = document.getElementById("spres");
-  spr.filter(function (r) { return g.sps.some(function (x) { return x.indexOf(r.sp + " ") === 0; }); }).forEach(function (r) {
+  spr.forEach(function (r) {
     var list = el("div", { cls: "mats" });
     r.items.forEach(function (x) {
       var kids = [el("span", { cls: "k", text: x.k }), el("span", { cls: "t" }, [x.t, el("small", { text: " · " + x.note + (x.released ? "" : " · to be released") })])];
