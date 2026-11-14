@@ -11,11 +11,11 @@ var PROJECT_REFS = [
 
 // SP_RESOURCES: tools and resources for all groups, shown in the Groups section (Tools and resources) only; hidden: true keeps an entry off the site; stamp: "..." writes a stamp across its items, which stay clickable.
 var SP_RESOURCES = [
-  { id: "lackenby", t: "The Lackenby Section Shift, Step by Step",
+  { id: "lackenby", t: "From a Parent Hull to a New Design: the Lackenby Shift and the Stretch",
     x: "For all groups, ahead of D8, and in particular for SP05 Parametric Hull: how a parent hull is reshaped to a new CP and LCB and then scaled to the design's L, B, T and D. Watch the animation first, then repeat every number by hand in the workbook. It prepares Demo 8, next to this box, and Lecture 6.2 (Papanikolaou §4.3).",
     items: [
-      { k: "1 · Watch", t: "Animation · Lackenby section shift on the KCS", file: "resources/hull_form/Lackenby_Animation.html", note: "17 steps, about 3 minutes; play, pause or go step by step", released: true },
-      { k: "2 · Calculate", t: "Workbook · Lackenby by hand (Excel)", file: "resources/hull_form/Lackenby_Hand_Calculation.xlsx", note: "21 stations and Simpson's rule, the shift formulas, Newton's method row by row, the stretch", released: true }
+      { k: "1 · Watch", t: "Animation · Lackenby shift and stretch on the KCS", file: "resources/hull_form/Lackenby_Animation.html", note: "17 steps, about 3 minutes; play, pause or go step by step", released: true },
+      { k: "2 · Calculate", t: "Workbook · Lackenby shift and stretch by hand (Excel)", file: "resources/hull_form/Lackenby_Hand_Calculation.xlsx", note: "21 stations and Simpson's rule, the shift formulas, Newton's method row by row, the stretch", released: true }
     ] },
   { id: "hull", stamp: "Under development", t: "Hull Form from a Parent (Demo 8)",
     x: "For all groups, Baseline A or B, optional: generate your hull from the KCS parent by the Lackenby section shift and a stretch of L, B, T and D, for D8 (hydrostatics check, container count on your own lines, 3D hull). Read first, then run the notebook with the guide at hand.",
