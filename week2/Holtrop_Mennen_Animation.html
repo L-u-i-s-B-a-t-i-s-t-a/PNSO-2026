@@ -447,7 +447,7 @@ const S=[
   st:p=>({mode:'hook',man:(p>=17&&HOOKV!=null)?HOOKV:null,a:ease(clamp(p/1.5,0,1)),sw:clamp((p-2)/12,0,1),hum:ease(clamp((p-13.5)/1.5,0,1)),v:(p>=17&&HOOKV!=null)?HOOKV:13+(FNV(0.263)-13)*clamp((p-2)/12,0,1)}),
   sub:p=>p>=17?{key:'sl',eqs:['rt','pe'],html:HSLIDE}:{key:'a',eqs:['rt','pe']}},
  {d:18,t:"Six parts of the resistance",eqs:['rt'],x:"",
-  st:p=>({mode:'parts',v:sweep(p,10,25,0.5,13)})},
+  st:p=>({mode:'parts',v:25,m:ease(clamp((p-3)/1.5,0,1))})},
  {d:26,t:"Wetted surface, and why areas grow as the square",eqs:['s','sscale'],x:"",
   st:p=>({mode:'scale3',skin:ease(clamp((p-1)/4,0,1)),s:(p>=10&&SCU)?SCU:(p<10?[sweep(p,1,2,6,9),sweep(p,1,2,6,9),sweep(p,1,2,6,9)]:[2,2,2])}),
   sub:p=>p>=10?{key:'sc',eqs:['s','sscale'],html:SCSLIDE}:{key:'a',eqs:['s','sscale']}},
@@ -645,12 +645,12 @@ function drawParts(st){
     order.forEach(k=>{ const top=rows.map((q,i)=>base[i]+(pct?100*q[k]/q.RT:q[k])); ctx.fillStyle=col(k); ctx.globalAlpha=k==='RFk'||k==='RW'||k==='RA'?.72:.95; ctx.beginPath();
       rows.forEach((q,i)=>i?ctx.lineTo(f.X(q.V),f.Y(top[i])):ctx.moveTo(f.X(q.V),f.Y(top[i]))); for(let i=rows.length-1;i>=0;i--) ctx.lineTo(f.X(rows[i].V),f.Y(base[i])); ctx.closePath(); ctx.fill(); ctx.globalAlpha=1; base=top; });
     if(!pct){ line(rows.map((q,i)=>[f.X(q.V),f.Y(base[i])]),C.ink,2); } });
-  const q=HM({...SHIP,V:v}); vmark(f1.X,v,r1.y,r1.y+r1.h,C.ink); vmark(f2.X,v,r2.y,r2.y+r2.h,C.ink);
-  dot(f1.X(v),f1.Y(q.RT),C.ink,5.5); label(f1.X(Math.min(v,32)),f1.Y(q.RT)-26,'RT '+fmt(q.RT,0)+' kN',C.ink);
+  const q=HM({...SHIP,V:v}); ctx.globalAlpha=st.m; vmark(f1.X,v,r1.y,r1.y+r1.h,C.ink); vmark(f2.X,v,r2.y,r2.y+r2.h,C.ink);
+  dot(f1.X(v),f1.Y(q.RT),C.ink,5.5); if(st.m>0.5) label(f1.X(Math.min(v,32)),f1.Y(q.RT)-26,'RT '+fmt(q.RT,0)+' kN',C.ink); ctx.globalAlpha=1;
   if(!small){ // the key, in full words, with the values at the marker
     const fz=13, dy=21, x0=r1.x+12, y0=r1.y+18, wk=Math.max(...PNAMES.map(p=>{ ctx.font='500 '+fz+'px '+SANS; return ctx.measureText(p[2]+', '+p[1]).width; }));
     ctx.fillStyle=C.panel; ctx.globalAlpha=.9; ctx.fillRect(x0-8,y0-14,wk+176,dy*6+10); ctx.globalAlpha=1; ctx.strokeStyle=C.rule; ctx.lineWidth=1; ctx.strokeRect(x0-8.5,y0-14.5,wk+176,dy*6+10);
-    PNAMES.forEach((p,i)=>{ const yy=y0+i*dy, val=q[p[0]]; ctx.fillStyle=C[p[3]]; ctx.fillRect(x0,yy-5,16,10); text(x0+24,yy,p[2]+', '+p[1],C.ink,'left',fz,'500'); ctx.font='600 '+fz+'px '+MONO; ctx.fillStyle=C.ink; ctx.textAlign='right'; ctx.fillText(fmt(val,val<1?2:0)+' kN · '+fmt(100*val/q.RT,1)+' %',x0+wk+168,yy); }); }
+    PNAMES.forEach((p,i)=>{ const yy=y0+i*dy, val=q[p[0]]; ctx.fillStyle=C[p[3]]; ctx.fillRect(x0,yy-5,16,10); text(x0+24,yy,p[2]+', '+p[1],C.ink,'left',fz,'500'); ctx.globalAlpha=st.m; ctx.font='600 '+fz+'px '+MONO; ctx.fillStyle=C.ink; ctx.textAlign='right'; ctx.fillText(fmt(val,val<1?2:0)+' kN · '+fmt(100*val/q.RT,1)+' %',x0+wk+168,yy); ctx.globalAlpha=1; }); }
 }
 let SCU=null; // the scale factors the user has chosen in step 3; null = the animation runs
 const SCSLIDE=`<div class="kccard"><h3>Scale the hull yourself</h3>
