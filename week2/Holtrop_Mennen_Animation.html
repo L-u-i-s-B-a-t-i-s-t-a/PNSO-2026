@@ -447,7 +447,7 @@ const S=[
   st:p=>({mode:'hook',man:(p>=17&&HOOKV!=null)?HOOKV:null,a:ease(clamp(p/1.5,0,1)),sw:clamp((p-2)/12,0,1),fr:(p>=17&&HOOKV!=null)?35:10+25*clamp((p-1.5)/12.5,0,1),hum:ease(clamp((p-13.5)/1.5,0,1)),v:(p>=17&&HOOKV!=null)?HOOKV:13+(FNV(0.263)-13)*clamp((p-2)/12,0,1)}),
   sub:p=>p>=17?{key:'sl',eqs:['rt','pe'],html:HSLIDE}:{key:'a',eqs:['rt','pe']}},
  {d:18,t:"Six parts of the resistance",eqs:['rt'],x:"",
-  st:p=>({mode:'parts',v:25,fr:sweep(p,10,35,0.5,9.5),m:ease(clamp((p-10.5)/1.5,0,1))})},
+  st:p=>{ const fr=sweep(p,10,35,0.5,9.5); return {mode:'parts',v:25,fr,m:ease(clamp((fr-25)/0.8,0,1))}; }},
  {d:26,t:"Wetted surface, and why areas grow as the square",eqs:['s','sscale'],x:"",
   st:p=>({mode:'scale3',skin:ease(clamp((p-1)/4,0,1)),s:(p>=10&&SCU)?SCU:(p<10?[sweep(p,1,2,6,9),sweep(p,1,2,6,9),sweep(p,1,2,6,9)]:[2,2,2])}),
   sub:p=>p>=10?{key:'sc',eqs:['s','sscale'],html:SCSLIDE}:{key:'a',eqs:['s','sscale']}},
