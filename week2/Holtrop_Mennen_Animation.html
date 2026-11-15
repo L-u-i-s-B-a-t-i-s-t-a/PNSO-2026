@@ -1117,23 +1117,24 @@ function drawEight(st){
   const result=(rc,t,a)=>{ if(a<=0) return; if(col){ ctx.fillStyle=C.aft; ctx.globalAlpha=.13*a; ctx.fillRect(rc.x+1,rc.y+rc.h-36,rc.w-2,35); ctx.globalAlpha=a; text(rc.x+rc.w/2,rc.y+rc.h-18,t,C.aft,'center',16,'700'); } else { ctx.globalAlpha=a; text(rc.x+rc.w-8,rc.y+11,t,C.aft,'right',11,'700'); } ctx.globalAlpha=1; };
   // A: the formula for both ships, the cubes, then the algebra down to RW × 8
   { const rcF=panel(0), rc={...rcF,h:rcF.h-calcH}, p=st.a, H=rcF.h; head(rcF,col?'A · The formula: RW ∝ ∇':'A · Formula: RW ∝ ∇',true);
-    const u=col?Math.min(rc.w*0.085,H*(tight?0.042:0.058)):rc.h*0.16, oy=col?rcF.y+H*(tight?0.3:0.31):rc.y+rc.h*0.62, xs=col?rc.x+rc.w*0.27:rc.x+rc.w*0.1, xl=col?rc.x+rc.w*0.7:rc.x+rc.w*0.36;
-    isoCube(xs,oy+u,u,0,0,0,C.fore,1); const nb=Math.min(8,Math.floor(Math.min(1,p*3.2)*9)), order=[[0,0,0],[1,0,0],[0,1,0],[1,1,0],[0,0,1],[1,0,1],[0,1,1],[1,1,1]];
-    for(let m=0;m<nb;m++){ const [i,j,k]=order[m]; isoCube(xl,oy,u,i,j,k,C.aft,1); }
-    if(col){ const yl=oy+u*2.6; text(xs,yl,(tight?'':'sister  ')+'∇ '+fmt(SHIP.vol/8,0)+' m³',C.fore,'center',fs,'600'); text(xl,yl,(tight?'':'ship  ')+'∇ '+fmt(SHIP.vol,0)+' m³',C.aft,'center',fs,'600');
-      const t1=ease(clamp((p-0.3)/0.15,0,1));
-      ctx.globalAlpha=t1; text(rc.x+10,rcF.y+(tight?40:46),'RW = ① × ② × ③',C.ink,'left',fb,'700'); text(rc.x+10,rcF.y+(tight?57:66),tight?'① size, shape  ② growth  ③ interference':'① c1c2c5·∇ρg   ② e^(m1·Fn^−0.9)   ③ e^(m2·cos(λ/Fn²))',C.muted,'left',tight?fs-1:fs-1,'500'); ctx.globalAlpha=1;
-      // the table: both ships, factor by factor
-      const rows=[[HQ[0].q,'sister',C.fore],[HQ[1].q,'ship',C.aft]], rh=tight?17:22, ty=rcF.y+H*(tight?0.44:0.5), cw=[0.17,0.22,0.27,0.16,0.18].map(v=>v*(rc.w-20)), cx=[]; let xx=rc.x+10; cw.forEach(w=>{ cx.push(xx); xx+=w; });
-      const ex=v=>v<0.01?fmt(v*1e4,2):fmt(v,3), vis=(t0)=>ease(clamp((p-t0)/0.1,0,1));
-      ctx.globalAlpha=vis(0.45); ['','① kN','② ×10⁻⁴','③','RW kN'].forEach((t,i)=>text(cx[i]+cw[i]-6,ty,t,C.muted,'right',fs,'600')); line([[rc.x+10,ty+10],[rc.x+rc.w-10,ty+10]],C.rule,1); ctx.globalAlpha=1;
-      rows.forEach(([q,nm,c],i)=>{ const y=ty+(i+1)*rh+4; ctx.globalAlpha=vis(0.5+i*0.06); text(cx[0],y,nm,c,'left',fs,'700'); [fmt(q.Wpre,0),ex(q.grow),fmt(q.inter,3),fmt(q.RW,0)].forEach((t,j)=>text(cx[j+1]+cw[j+1]-6,y,t,j===3?c:C.ink,'right',fs,j===3?'700':'500')); ctx.globalAlpha=1; });
-      { const y=ty+3*rh+8, q0_=HQ[0].q, q1_=HQ[1].q, al=vis(0.64); ctx.globalAlpha=al; line([[rc.x+10,y-9],[rc.x+rc.w-10,y-9]],C.rule,1);
-        text(cx[0],y+2,'ship ÷ sister',C.ink,'left',fs,'700'); [q1_.Wpre/q0_.Wpre,q1_.grow/q0_.grow,q1_.inter/q0_.inter,q1_.RW/q0_.RW].forEach((v,j)=>text(cx[j+1]+cw[j+1]-6,y+2,'× '+fmt(v,1),(j===0||j===3)?C.aft:C.fore,'right',fs,'700')); ctx.globalAlpha=1; }
-      // the reasoning, line by line
-      const yy=ty+4*rh+(tight?16:22), lh=tight?14:ln, al2=ease(clamp((p-0.72)/0.12,0,1)), al3=ease(clamp((p-0.84)/0.12,0,1));
-      ctx.globalAlpha=al2; text(rc.x+10,yy,tight?'② and ③: Fn and shape only, × 1.0':'② and ③ depend only on Fn and the shape: × 1.0',C.ink,'left',fs,'600'); text(rc.x+10,yy+lh,tight?'① = c1c2c5 · ∇ · ρg: only ∇ changes':'① = c1c2c5 (shape) · ∇ · ρg: only ∇ changes',C.ink,'left',fs,'600'); ctx.globalAlpha=1;
-      ctx.globalAlpha=al3; text(rc.x+10,yy+2*lh,tight?'RW ratio = ∇ ratio = 2³ = 8':'RW ship / RW sister = ∇ ship / ∇ sister = 2³ = 8',C.aft,'left',fs,'700'); ctx.globalAlpha=1; }
+    const u=col?Math.min(rc.w*0.07,H*0.04):rc.h*0.16, oy=col?rcF.y+H*0.27:rc.y+rc.h*0.62, xs=col?rc.x+rc.w*0.27:rc.x+rc.w*0.1, xl=col?rc.x+rc.w*0.7:rc.x+rc.w*0.36;
+    const noCube=col&&tight; if(!noCube) isoCube(xs,oy+u,u,0,0,0,C.fore,1); const nb=Math.min(8,Math.floor(Math.min(1,p*3.2)*9)), order=[[0,0,0],[1,0,0],[0,1,0],[1,1,0],[0,0,1],[1,0,1],[0,1,1],[1,1,1]];
+    for(let m=0;m<(noCube?0:nb);m++){ const [i,j,k]=order[m]; isoCube(xl,oy,u,i,j,k,C.aft,1); }
+    if(col){ const yl=oy+u*2.6; if(!noCube){ text(xs,yl,(tight?'':'sister  ')+'∇ '+fmt(SHIP.vol/8,0)+' m³',C.fore,'center',fs,'600'); text(xl,yl,(tight?'':'ship  ')+'∇ '+fmt(SHIP.vol,0)+' m³',C.aft,'center',fs,'600'); }
+      const Q0=HQ[0].q, Q1=HQ[1].q, t1=ease(clamp((p-0.2)/0.12,0,1)), lam=SHIP.L*0+Q0.lam, m1=Math.log(Q0.grow)/Math.pow(Q0.Fn,-0.9), m2=Math.log(Q0.inter)/Math.cos(Q0.lam/(Q0.Fn*Q0.Fn));
+      ctx.globalAlpha=t1; text(rc.x+10,rcF.y+(tight?38:44),(tight?'RW = c1c2c5·∇ρg·exp{m1·Fn^−0.9+m2·cos(λ/Fn²)}':'RW = c1·c2·c5 · ∇ρg · exp{ m1·Fn^−0.9 + m2·cos(λ/Fn²) }'),C.ink,'left',tight?fs:fb,'700');
+      text(rc.x+10,rcF.y+(tight?54:64),(tight?'c1 hull shape · c2 bulb · c5 transom: hull form only':'c1 hull shape · c2 bulb · c5 transom: from the hull form, not from the size'),C.muted,'left',tight?fs-2:fs-1,'500');
+      text(rc.x+10,rcF.y+(tight?68:82),'m1 = '+fmt(m1,2)+', m2 = '+fmt(m2,2)+', λ = '+fmt(Q0.lam,3)+', Fn = '+fmt(Q0.Fn,3)+': the same for both ships',C.muted,'left',tight?fs-2:fs-1,'500'); ctx.globalAlpha=1;
+      const rh=tight?15:21, ty=rcF.y+H*(tight?0.25:0.42), cw=[0.4,0.2,0.22,0.18].map(v=>v*(rc.w-20)), cx=[]; let xx=rc.x+10; cw.forEach(w=>{ cx.push(xx); xx+=w; });
+      const vis=(t0)=>ease(clamp((p-t0)/0.06,0,1)), g3=v=>fmt(v,3);
+      const rowsT=[['c1  hull shape',Q0.c1,Q1.c1,g3,0],['c2  bulb',Q0.c2,Q1.c2,g3,0],['c5  transom',Q0.c5,Q1.c5,g3,0],['∇ρg, kN',SHIP.vol/8*1025*G/1000,SHIP.vol*1025*G/1000,v=>fmt(v,0),1],['① = c1c2c5·∇ρg, kN',Q0.Wpre,Q1.Wpre,v=>fmt(v,0),1],['② growth, ×10⁻⁴',Q0.grow*1e4,Q1.grow*1e4,v=>fmt(v,2),0],['③ interference',Q0.inter,Q1.inter,g3,0],['RW = ① ② ③, kN',Q0.RW,Q1.RW,v=>fmt(v,0),1]];
+      ctx.globalAlpha=vis(0.3); ['','sister','ship','ship ÷ sister'].forEach((t,i)=>text(i?cx[i]+cw[i]-6:cx[0],ty,t,i===1?C.fore:i===2?C.aft:C.muted,i?'right':'left',fs,'700')); line([[rc.x+10,ty+9],[rc.x+rc.w-10,ty+9]],C.rule,1); ctx.globalAlpha=1;
+      rowsT.forEach(([n,v0,v1,f,big],i)=>{ const y=ty+(i+1)*rh+3, al=vis(0.34+i*0.05); ctx.globalAlpha=al; const last=i===rowsT.length-1;
+        if(last||i===4) line([[rc.x+10,y-rh/2-1],[rc.x+rc.w-10,y-rh/2-1]],C.rule,1);
+        text(cx[0],y,n,last?C.aft:C.ink,'left',fs,last?'700':'500'); text(cx[1]+cw[1]-6,y,f(v0),C.fore,'right',fs,'600'); text(cx[2]+cw[2]-6,y,f(v1),C.aft,'right',fs,'600'); text(cx[3]+cw[3]-6,y,'× '+fmt(v1/v0,1),big?C.aft:C.muted,'right',fs,big?'700':'500'); ctx.globalAlpha=1; });
+      const yy=ty+(rowsT.length+1)*rh+(tight?10:14), lh=tight?14:ln, al2=ease(clamp((p-0.8)/0.1,0,1)), al3=ease(clamp((p-0.9)/0.08,0,1));
+      ctx.globalAlpha=al2; text(rc.x+10,yy,tight?'Only ∇ changes: c1, c2, c5, ②, ③ are × 1.0':'Shape and Fn are equal: c1, c2, c5, ② and ③ do not change (× 1.0)',C.ink,'left',fs,'600'); ctx.globalAlpha=1;
+      ctx.globalAlpha=al3; text(rc.x+10,yy+lh,tight?'RW ratio = ∇ ratio = 2³ = 8':'RW ship / RW sister = ∇ ship / ∇ sister = 2³ = 8',C.aft,'left',fs,'700'); ctx.globalAlpha=1; }
     else text(rc.x+rc.w*0.56,rc.y+rc.h*0.6,'∇ '+fmt(SHIP.vol/8,0)+' → '+fmt(SHIP.vol,0)+' m³',C.ink,'left',fs);
     result(rcF,col?'2 × 2 × 2: ∇ × 8, RW × 8':'∇ × 8 → RW × 8',clamp((p-0.97)/0.03,0,1)); }
   // B: the coefficient, S and V²
