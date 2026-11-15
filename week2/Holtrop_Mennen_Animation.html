@@ -688,7 +688,7 @@ function drawScale3(st){
   if(small) return;
   // right: the underwater hull as a rotating solid, a box or a simplified ship, scaled by the three factors
   const [sx,sy,sz]=st.s, x0=r.x+r.w*0.52, w0=r.w*0.48, a0=5, b0=1.3, h0=0.7, cyw=Math.cos(ROT.yaw), syw=Math.sin(ROT.yaw), cpt=Math.cos(ROT.pit), spt=Math.sin(ROT.pit);
-  const rad=Math.sqrt((a0*3)**2+(b0*3)**2)/2, regionH=r.h*0.50, u=Math.min(w0*1.12/(2*rad),regionH/(2*rad*0.50)), cx0=x0+w0*0.5, cy0=r.y+30+regionH*0.52;
+  const rad=Math.sqrt((a0*3)**2+(b0*3)**2)/2, regionH=r.h*0.40, u=Math.min(w0*1.12/(2*rad),regionH/(2*rad*0.50)), cx0=x0+w0*0.5, cy0=r.y+128+regionH*0.52;
   const prj=p=>{ const x1=p[0]*cyw-p[1]*syw, y1=p[0]*syw+p[1]*cyw; return [cx0+x1*u, cy0+(y1*spt-p[2]*cpt)*u, y1*cpt+p[2]*spt]; };
   const wire=(A,B,H,col)=>{ const q=boxFaces(A,B,H); ctx.setLineDash([5,4]); ctx.strokeStyle=col; ctx.lineWidth=1.2; [q[0],q[1]].forEach(f=>{ ctx.beginPath(); f.forEach((p,k)=>{ const s=prj(p); k?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]); }); ctx.closePath(); ctx.stroke(); });
     q[0].forEach((p,k)=>{ const s=prj(p), t=prj(q[1][[0,3,2,1][k]]); ctx.beginPath(); ctx.moveTo(s[0],s[1]); ctx.lineTo(t[0],t[1]); ctx.stroke(); }); ctx.setLineDash([]); };
@@ -714,8 +714,13 @@ function drawScale3(st){
   rows.forEach((row,i)=>{ const yy=ty+i*dy, hd=(i===0||i===6), hl=(i===4||i===5); ctx.textBaseline='middle'; row.forEach((t,c)=>{ ctx.textAlign=c?'right':'left'; ctx.font=(hd?'600 11px ':((c===3&&hl)||(i>6&&c===1&&row[1]!==row[2])?'700 12px ':'500 12px '))+MONO; ctx.fillStyle=hd?C.muted:(c===3&&hl?C.aft:(i>6&&c===1?C.fore:C.ink)); ctx.fillText(t,cx[c],yy); }); });
   { const fz=small?11:13, yv=r.y+32, ys=yv+19, rt='×'+fmt(Sn/S0,2), rv='×'+fmt(Vn/V0,2), same=Math.abs(sx-sy)<1e-6&&Math.abs(sy-sz)<1e-6;
     text(x0,yv,'Volume  ∇ :  ×'+fmt(sx,2)+' · ×'+fmt(sy,2)+' · ×'+fmt(sz,2)+'  =  '+rv+'  (L · B · T), exact',same?C.aft:C.ink,'left',fz,'700');
-    text(x0,ys,'Surface S :  bottom ×'+fmt(sx*sy,2)+',  side ×'+fmt(sx*sz,2)+',  end ×'+fmt(sy*sz,2)+'   '+(same?'→ whole S':'→ whole S ≈')+' '+rt,same?C.aft:C.ink,'left',fz,'700');
-    text(x0,ys+17,same?'exact: same shape, every area × scale²':'approximate: not the same shape, so S is not just the product',same?C.aft:C.muted,'left',small?10:11,'500'); }
+    const fb=SHP==='ship'?hullFaces(SHIP.L,SHIP.B,SHIP.T):boxFaces(SHIP.L,SHIP.B,SHIP.T); let Pz=0,Py=0,Px=0; fb.forEach(f=>{ if(f.every(p=>p[2]===0)) return; const e=(p,q)=>[q[0]-p[0],q[1]-p[1],q[2]-p[2]], cr=(u,v)=>[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]], a1=cr(e(f[0],f[1]),e(f[0],f[2])), a2=cr(e(f[0],f[2]),e(f[0],f[3])); Px+=(Math.abs(a1[0])+Math.abs(a2[0]))/2; Py+=(Math.abs(a1[1])+Math.abs(a2[1]))/2; Pz+=(Math.abs(a1[2])+Math.abs(a2[2]))/2; });
+    const Pt=Px+Py+Pz, wb=Pz/Pt, ws=Py/Pt, we=Px/Pt, pc=v=>Math.round(100*v)+'%', col=same?C.aft:C.ink, ly=15;
+    text(x0,ys-2,'Surface S: each kind of face scales by its own two directions',C.muted,'left',small?10:11,'500');
+    text(x0,ys+ly-2,'bottom (L·B) :  ×'+fmt(sx,2)+' · ×'+fmt(sy,2)+'  =  ×'+fmt(sx*sy,2)+'   ('+pc(wb)+' of S)',col,'left',fz,'700');
+    text(x0,ys+2*ly-2,'side   (L·T) :  ×'+fmt(sx,2)+' · ×'+fmt(sz,2)+'  =  ×'+fmt(sx*sz,2)+'   ('+pc(ws)+' of S)',col,'left',fz,'700');
+    text(x0,ys+3*ly-2,'end    (B·T) :  ×'+fmt(sy,2)+' · ×'+fmt(sz,2)+'  =  ×'+fmt(sy*sz,2)+'   ('+pc(we)+' of S)',col,'left',fz,'700');
+    text(x0,ys+4*ly,'whole S  =  '+pc(wb)+'·'+fmt(sx*sy,2)+' + '+pc(ws)+'·'+fmt(sx*sz,2)+' + '+pc(we)+'·'+fmt(sy*sz,2)+'  '+(same?'=':'≈')+'  '+rt+(same?'  exact':'  approx.'),col,'left',fz,'700'); }
 }
 const RZ=(()=>{ const o=[{V:0,RF:0,RFk:0}]; for(let V=0.5;V<=35.001;V+=0.5){ const q=HM({...SHIP,V}); o.push({V,RF:q.RF,RFk:q.RFk}); } return o; })();
 const rzAt=(key,v)=>{ const i=Math.min(RZ.length-2,Math.floor(v/0.5)), t=(v-RZ[i].V)/0.5; return RZ[i][key]*(1-t)+RZ[i+1][key]*t; };
