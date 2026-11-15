@@ -714,7 +714,7 @@ function drawScale3(st){
   rows.forEach((row,i)=>{ const yy=ty+i*dy, hd=(i===0||i===6), hl=(i===4||i===5); ctx.textBaseline='middle'; row.forEach((t,c)=>{ ctx.textAlign=c?'right':'left'; ctx.font=(hd?'600 11px ':((c===3&&hl)||(i>6&&c===1&&row[1]!==row[2])?'700 12px ':'500 12px '))+MONO; ctx.fillStyle=hd?C.muted:(c===3&&hl?C.aft:(i>6&&c===1?C.fore:C.ink)); ctx.fillText(t,cx[c],yy); }); });
   { const fz=small?11:13, yv=r.y+32, ys=yv+19, rt='×'+fmt(Sn/S0,2), rv='×'+fmt(Vn/V0,2), same=Math.abs(sx-sy)<1e-6&&Math.abs(sy-sz)<1e-6;
     text(x0,yv,'Volume  ∇ :  ×'+fmt(sx,2)+' · ×'+fmt(sy,2)+' · ×'+fmt(sz,2)+'  =  '+rv+'  (L · B · T), exact',same?C.aft:C.ink,'left',fz,'700');
-    text(x0,ys,'Surface S :  ×'+fmt(sx*sy,2)+' · ×'+fmt(sx*sz,2)+' · ×'+fmt(sy*sz,2)+'  '+(same?'=':'≈')+'  '+rt+'  (bottom · side · end)',same?C.aft:C.ink,'left',fz,'700');
+    text(x0,ys,'Surface S :  bottom ×'+fmt(sx*sy,2)+',  side ×'+fmt(sx*sz,2)+',  end ×'+fmt(sy*sz,2)+'   '+(same?'→ whole S':'→ whole S ≈')+' '+rt,same?C.aft:C.ink,'left',fz,'700');
     text(x0,ys+17,same?'exact: same shape, every area × scale²':'approximate: not the same shape, so S is not just the product',same?C.aft:C.muted,'left',small?10:11,'500'); }
 }
 const RZ=(()=>{ const o=[{V:0,RF:0,RFk:0}]; for(let V=0.5;V<=35.001;V+=0.5){ const q=HM({...SHIP,V}); o.push({V,RF:q.RF,RFk:q.RFk}); } return o; })();
