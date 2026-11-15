@@ -661,7 +661,7 @@ const SCSLIDE=`<div class="kccard"><h3>Scale the hull yourself</h3>
 <label>Draught ×<input id="sT" type="range" min="1" max="3" step="0.25" value="2"><output id="oT">2.00</output></label>
 <label>Rotate<input id="sR" type="range" min="0" max="360" step="5" value="40"><output id="oR">40°</output></label></div>
 <div class="sc3b"><button type="button" data-sc="2,2,2">×2 in all three</button><button type="button" data-sc="2,1,1">×2 length only</button><button type="button" data-sc="2,2,1">×2 length and beam</button><button type="button" data-sc="1,2,2">×2 beam and draught</button><button type="button" data-sc="1,1,1">reset</button></div>
-<div class="sc3b"><span style="align-self:center">Shape:</span><button type="button" data-shape="ship" id="shShip">Wigley hull</button><button type="button" data-shape="box" id="shBox">Box</button><button type="button" data-shape="patch" id="shPatch">Tilted patch: how it works</button></div>
+<div class="sc3b"><span style="align-self:center">Shape:</span><button type="button" data-shape="ship" id="shShip">Wigley hull</button><button type="button" data-shape="box" id="shBox">Box</button><button type="button" data-shape="mesh" id="shMesh">Hull in patches</button><button type="button" data-shape="patch" id="shPatch">Tilted patch: how it works</button></div>
 <p class="sm" style="margin:6px 0 0">Drag the block on the left of the plot to turn it. An area scales with two of the factors multiplied, a volume with all three. Only when all three are equal is the shape the same, and then the area goes as the square of the scale. A Wigley hull (the classical test hull, Cb = 4/9) and a box of the same L, B and T have the same scale law but different Cb and Cp.</p></div>`;
 let SHP='ship'; const ROT={yaw:0.7,pit:0.8}, SD={moved:false};
 // a simplified ship: planform power 1.4, superelliptic section n = 8; Cb and Cp come out of the same numbers
@@ -690,6 +690,7 @@ function drawScale3(st){
   const [sx,sy,sz]=st.s, x0=r.x+r.w*0.52, w0=r.w*0.48, a0=5, b0=1.3, h0=0.7, cyw=Math.cos(ROT.yaw), syw=Math.sin(ROT.yaw), cpt=Math.cos(ROT.pit), spt=Math.sin(ROT.pit);
   const rad=Math.sqrt((a0*3)**2+(b0*3)**2)/2, regionH=r.h*0.47, u=Math.min(w0*1.12/(2*rad),regionH/(2*rad*0.56)), cx0=x0+w0*0.5, cy0=r.y+98+regionH*0.52;
   const prj=p=>{ const x1=p[0]*cyw-p[1]*syw, y1=p[0]*syw+p[1]*cyw; return [cx0+x1*u, cy0+(y1*spt-p[2]*cpt)*u, y1*cpt+p[2]*spt]; };
+  const isH=SHP==='ship'||SHP==='mesh';
   if(SHP==='patch'){ const K=2, e1=[2*K,0,0.9*K], e2=[0,1.1*K,0.6*K], cr=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
     const av=cr(e1,e2).map(Math.abs), A0=Math.hypot(...av)/K/K, Ax=av[0]/K/K, Ay=av[1]/K/K, Az=av[2]/K/K; // shadows on y-z (end), x-z (side), x-y (bottom), per unit K
     const mk=(S)=>{ const c=[(e1[0]+e2[0])/2,(e1[1]+e2[1])/2,(e1[2]+e2[2])/2]; return [[0,0,0],e1,[e1[0]+e2[0],e1[1]+e2[1],e1[2]+e2[2]],e2].map(p=>[(p[0]-c[0])*S[0],(p[1]-c[1])*S[1],(p[2]-c[2])*S[2]]); };
@@ -721,21 +722,24 @@ function drawScale3(st){
     return; }
   const wire=(A,B,H,col)=>{ const q=boxFaces(A,B,H); ctx.setLineDash([5,4]); ctx.strokeStyle=col; ctx.lineWidth=1.2; [q[0],q[1]].forEach(f=>{ ctx.beginPath(); f.forEach((p,k)=>{ const s=prj(p); k?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]); }); ctx.closePath(); ctx.stroke(); });
     q[0].forEach((p,k)=>{ const s=prj(p), t=prj(q[1][[0,3,2,1][k]]); ctx.beginPath(); ctx.moveTo(s[0],s[1]); ctx.lineTo(t[0],t[1]); ctx.stroke(); }); ctx.setLineDash([]); };
-  if(SHP==='ship'){ const pg=(pts)=>{ ctx.beginPath(); pts.forEach((p,k)=>{ const s=prj(p); k?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]); }); ctx.stroke(); };
+  if(isH){ const pg=(pts)=>{ ctx.beginPath(); pts.forEach((p,k)=>{ const s=prj(p); k?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]); }); ctx.stroke(); };
     ctx.setLineDash([5,4]); ctx.strokeStyle=C.muted; ctx.lineWidth=1.3; const gw=(x,z)=>(b0/2)*(1-(2*x/a0)**2)*(1-(z/h0)**2), xs=vs(-a0/2,a0/2,30), zs=vs(-h0,0,10);
     pg(xs.map(x=>[x,gw(x,0),0]).concat(xs.slice().reverse().map(x=>[x,-gw(x,0),0]))); pg(xs.map(x=>[x,0,-h0])); pg(zs.map(z=>[0,gw(0,z),z]).concat(zs.slice().reverse().map(z=>[0,-gw(0,z),z]))); ctx.setLineDash([]); }
   else wire(a0,b0,h0,C.muted);
-  const A=a0*sx,Bb=b0*sy,H=h0*sz, faces=(SHP==='ship'?hullFaces(A,Bb,H):boxFaces(A,Bb,H)), cen=[0,0,-H/2], L0=[-0.35,-0.5,0.8], ln=Math.hypot(...L0);
-  const out=[]; faces.forEach(f=>{ const e1=[f[1][0]-f[0][0],f[1][1]-f[0][1],f[1][2]-f[0][2]], e2=[f[3][0]-f[0][0],f[3][1]-f[0][1],f[3][2]-f[0][2]]; let n=[e1[1]*e2[2]-e1[2]*e2[1],e1[2]*e2[0]-e1[0]*e2[2],e1[0]*e2[1]-e1[1]*e2[0]]; const m=Math.hypot(...n); if(m<1e-9) return; n=n.map(v=>v/m);
+  const A=a0*sx,Bb=b0*sy,H=h0*sz, faces=(isH?hullFaces(A,Bb,H):boxFaces(A,Bb,H)), cen=[0,0,-H/2], L0=[-0.35,-0.5,0.8], ln=Math.hypot(...L0);
+  let rat=null, rmin=1, rmax=1, ramp=null;
+  if(SHP==='mesh'){ const f0=hullFaces(a0,b0,h0); rat=faces.map((f,k)=>(f.every(p=>p[2]===0)||faceArea(f0[k])<1e-9)?null:faceArea(f)/faceArea(f0[k])); const vv=rat.filter(v=>v!=null); rmin=Math.min(...vv); rmax=Math.max(...vv);
+    const LO=[255,236,170], HI=[176,42,32]; ramp=v=>{ const t=(rmax-rmin<1e-6)?0.5:(v-rmin)/(rmax-rmin); return 'rgb('+LO.map((c,q)=>Math.round(c+(HI[q]-c)*t)).join(',')+')'; }; }
+  const out=[]; faces.forEach((f,k)=>{ const e1=[f[1][0]-f[0][0],f[1][1]-f[0][1],f[1][2]-f[0][2]], e2=[f[3][0]-f[0][0],f[3][1]-f[0][1],f[3][2]-f[0][2]]; let n=[e1[1]*e2[2]-e1[2]*e2[1],e1[2]*e2[0]-e1[0]*e2[2],e1[0]*e2[1]-e1[1]*e2[0]]; const m=Math.hypot(...n); if(m<1e-9) return; n=n.map(v=>v/m);
     const c=[0,1,2].map(k=>(f[0][k]+f[1][k]+f[2][k]+f[3][k])/4); if(n[0]*(c[0]-cen[0])+n[1]*(c[1]-cen[1])+n[2]*(c[2]-cen[2])<0) n=n.map(v=>-v);
-    const nx_=n[0]*cyw-n[1]*syw, ny_=n[0]*syw+n[1]*cyw, nv=ny_*cpt+n[2]*spt; if(nv<=0) return; const pr=f.map(prj); out.push({top:f.every(p=>p[2]===0),pr,d:pr.reduce((s,p)=>s+p[2],0)/4,sh:Math.max(0,(n[0]*L0[0]+n[1]*L0[1]+n[2]*L0[2])/ln)}); });
+    const nx_=n[0]*cyw-n[1]*syw, ny_=n[0]*syw+n[1]*cyw, nv=ny_*cpt+n[2]*spt; if(nv<=0) return; const pr=f.map(prj); out.push({k,top:f.every(p=>p[2]===0),pr,d:pr.reduce((s,p)=>s+p[2],0)/4,sh:Math.max(0,(n[0]*L0[0]+n[1]*L0[1]+n[2]*L0[2])/ln)}); });
   out.sort((p,q)=>p.d-q.d);
-  out.forEach(o=>{ ctx.beginPath(); o.pr.forEach((p,k)=>k?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.closePath(); ctx.globalAlpha=o.top?0.5:1; ctx.fillStyle=C.fore; ctx.fill(); ctx.globalAlpha=1; ctx.fillStyle='rgba(10,30,60,'+(0.42*(1-o.sh)).toFixed(3)+')'; if(!o.top) ctx.fill(); ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=0.6; ctx.stroke(); });
-  text(x0,r.y+12,(SHP==='ship'?'A Wigley hull':'A box')+', underwater part: L ×'+fmt(sx,2)+', B ×'+fmt(sy,2)+', T ×'+fmt(sz,2),C.ink,'left',15,'700');
+  out.forEach(o=>{ ctx.beginPath(); o.pr.forEach((p,k)=>k?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.closePath(); ctx.globalAlpha=o.top?0.5:1; ctx.fillStyle=(SHP==='mesh'&&!o.top&&rat&&rat[o.k]!=null)?ramp(rat[o.k]):C.fore; ctx.fill(); ctx.globalAlpha=1; ctx.fillStyle='rgba(10,30,60,'+(0.42*(1-o.sh)).toFixed(3)+')'; if(!o.top) ctx.fill(); ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=0.6; ctx.stroke(); });
+  text(x0,r.y+12,(SHP==='mesh'?'A Wigley hull cut in patches':isH?'A Wigley hull':'A box')+', underwater part: L ×'+fmt(sx,2)+', B ×'+fmt(sy,2)+', T ×'+fmt(sz,2),C.ink,'left',15,'700');
   text(x0+w0,r.y+30,'drag to rotate',C.muted,'right',11);
   // numbers: now against the paper's ship (was)
-  const L1=SHIP.L*sx, B1=SHIP.B*sy, T1=SHIP.T*sz, cb=SHP==='ship'?4/9:1, cpp=SHP==='ship'?2/3:1;
-  const Sof=(L,B,T)=>SHP==='ship'?wetArea(hullFaces(L,B,T)):L*B+2*(L+B)*T;
+  const L1=SHIP.L*sx, B1=SHIP.B*sy, T1=SHIP.T*sz, cb=isH?4/9:1, cpp=isH?2/3:1;
+  const Sof=(L,B,T)=>isH?wetArea(hullFaces(L,B,T)):L*B+2*(L+B)*T;
   const Vn=L1*B1*T1*cb, Sn=Sof(L1,B1,T1), V0=SHIP.L*SHIP.B*SHIP.T*cb, S0=Sof(SHIP.L,SHIP.B,SHIP.T);
   const ty=r.y+r.h*0.645, dy=small?15:17, cx=[x0,x0+w0*0.55,x0+w0*0.78,x0+w0];
   const rows=[['','now','was','ratio'],['Length L, m',fmt(L1,0),'205','×'+fmt(sx,2)],['Beam B, m',fmt(B1,1),'32','×'+fmt(sy,2)],['Draught T, m',fmt(T1,1),'10','×'+fmt(sz,2)],['Volume ∇, m³',fmt(Vn,0),fmt(V0,0),'×'+fmt(Vn/V0,2)],['Wetted surface S, m²',fmt(Sn,0),fmt(S0,0),'×'+fmt(Sn/S0,2)],
@@ -743,12 +747,21 @@ function drawScale3(st){
   rows.forEach((row,i)=>{ const yy=ty+i*dy, hd=(i===0||i===6), hl=(i===4||i===5); ctx.textBaseline='middle'; row.forEach((t,c)=>{ ctx.textAlign=c?'right':'left'; ctx.font=(hd?'600 11px ':((c===3&&hl)||(i>6&&c===1&&row[1]!==row[2])?'700 12px ':'500 12px '))+MONO; ctx.fillStyle=hd?C.muted:(c===3&&hl?C.aft:(i>6&&c===1?C.fore:C.ink)); ctx.fillText(t,cx[c],yy); }); });
   { const fz=small?11:13, yv=r.y+30, ys=yv+19, rt='×'+fmt(Sn/S0,2), rv='×'+fmt(Vn/V0,2), same=Math.abs(sx-sy)<1e-6&&Math.abs(sy-sz)<1e-6;
     text(x0,yv,'Volume  ∇ :  ×'+fmt(sx,2)+' · ×'+fmt(sy,2)+' · ×'+fmt(sz,2)+'  =  '+rv+'  (L · B · T), exact',same?C.aft:C.ink,'left',fz,'700');
-    const fb=SHP==='ship'?hullFaces(SHIP.L,SHIP.B,SHIP.T):boxFaces(SHIP.L,SHIP.B,SHIP.T); let Pz=0,Py=0,Px=0; fb.forEach(f=>{ if(f.every(p=>p[2]===0)) return; const e=(p,q)=>[q[0]-p[0],q[1]-p[1],q[2]-p[2]], cr=(u,v)=>[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]], a1=cr(e(f[0],f[1]),e(f[0],f[2])), a2=cr(e(f[0],f[2]),e(f[0],f[3])); Px+=(Math.abs(a1[0])+Math.abs(a2[0]))/2; Py+=(Math.abs(a1[1])+Math.abs(a2[1]))/2; Pz+=(Math.abs(a1[2])+Math.abs(a2[2]))/2; });
+    if(SHP==='mesh'){ const fr0=hullFaces(SHIP.L,SHIP.B,SHIP.T), nt=10, ix=(i,j,s)=>i*(2*nt+1)+j*2+(s>0?0:1), nP=rat.filter(v=>v!=null).length, ly=14,
+        smp=[['keel patch, midship',ix(18,0,1)],['side patch, midship',ix(18,nt-1,1)],['bilge / bow patch',ix(3,5,1)]];
+      text(x0,ys-4,nP+' patches; each is scaled by its own rule, then all are added:',C.muted,'left',small?10:11,'500');
+      smp.forEach((q,n)=>{ const a0_=faceArea(fr0[q[1]]), rr=rat[q[1]], yy=ys+(n+1)*ly-4; ctx.fillStyle=ramp(rr); ctx.fillRect(x0,yy-5,10,10); ctx.strokeStyle=C.muted; ctx.lineWidth=.6; ctx.strokeRect(x0,yy-5,10,10);
+        text(x0+16,yy,q[0]+' :  '+fmt(a0_,2)+' m²  ×'+fmt(rr,2)+'  =  '+fmt(a0_*rr,2)+' m²',C.ink,'left',fz,'700'); });
+      text(x0,ys+4*ly-3,'Σ '+nP+' patches :  '+fmt(S0,0)+' m²  →  '+fmt(Sn,0)+' m²  =  '+rt+'   (patch scales ×'+fmt(rmin,2)+' to ×'+fmt(rmax,2)+')',same?C.aft:C.ink,'left',fz,'700');
+      const gx=x0+w0-120, gy=r.y+40; for(let q=0;q<120;q++){ ctx.fillStyle=ramp(rmin+(rmax-rmin)*q/119); ctx.fillRect(gx+q,gy,1,7); }
+      text(gx,gy+16,'×'+fmt(rmin,2),C.muted,'left',10); text(gx+120,gy+16,'×'+fmt(rmax,2),C.muted,'right',10); text(gx+60,gy+16,'patch scale',C.muted,'center',10); }
+    else {
+    const fb=isH?hullFaces(SHIP.L,SHIP.B,SHIP.T):boxFaces(SHIP.L,SHIP.B,SHIP.T); let Pz=0,Py=0,Px=0; fb.forEach(f=>{ if(f.every(p=>p[2]===0)) return; const e=(p,q)=>[q[0]-p[0],q[1]-p[1],q[2]-p[2]], cr=(u,v)=>[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]], a1=cr(e(f[0],f[1]),e(f[0],f[2])), a2=cr(e(f[0],f[2]),e(f[0],f[3])); Px+=(Math.abs(a1[0])+Math.abs(a2[0]))/2; Py+=(Math.abs(a1[1])+Math.abs(a2[1]))/2; Pz+=(Math.abs(a1[2])+Math.abs(a2[2]))/2; });
     const Pt=Px+Py+Pz, wb=Pz/Pt, ws=Py/Pt, we=Px/Pt, pc=v=>Math.round(100*v)+'%', col=same?C.aft:C.ink, ly=14;
     text(x0,ys-4,'bottom (L·B) :  ×'+fmt(sx,2)+' · ×'+fmt(sy,2)+'  =  ×'+fmt(sx*sy,2),col,'left',fz,'700');
     text(x0,ys+ly-4,'side   (L·T) :  ×'+fmt(sx,2)+' · ×'+fmt(sz,2)+'  =  ×'+fmt(sx*sz,2),col,'left',fz,'700');
     text(x0,ys+2*ly-4,'end    (B·T) :  ×'+fmt(sy,2)+' · ×'+fmt(sz,2)+'  =  ×'+fmt(sy*sz,2),col,'left',fz,'700');
-    text(x0,ys+3*ly,'whole S  =  '+pc(wb)+'·'+fmt(sx*sy,2)+' + '+pc(ws)+'·'+fmt(sx*sz,2)+' + '+pc(we)+'·'+fmt(sy*sz,2)+'  '+(same?'=':'≈')+'  '+rt+(same?'  exact':'  approx.'),col,'left',fz,'700'); }
+    text(x0,ys+3*ly,'whole S  =  '+pc(wb)+'·'+fmt(sx*sy,2)+' + '+pc(ws)+'·'+fmt(sx*sz,2)+' + '+pc(we)+'·'+fmt(sy*sz,2)+'  '+(same?'=':'≈')+'  '+rt+(same?'  exact':'  approx.'),col,'left',fz,'700'); } }
 }
 const RZ=(()=>{ const o=[{V:0,RF:0,RFk:0}]; for(let V=0.5;V<=35.001;V+=0.5){ const q=HM({...SHIP,V}); o.push({V,RF:q.RF,RFk:q.RFk}); } return o; })();
 const rzAt=(key,v)=>{ const i=Math.min(RZ.length-2,Math.floor(v/0.5)), t=(v-RZ[i].V)/0.5; return RZ[i][key]*(1-t)+RZ[i+1][key]*t; };
@@ -1285,10 +1298,10 @@ $('itab').addEventListener('input',e=>{ const id=e.target.id; if(!id) return; co
 const scSet=(x,y,z)=>{ SCU=[x,y,z]; [['sL',x,'oL'],['sB',y,'oB'],['sT',z,'oT']].forEach(([id,v,oid])=>{ if($(id)) $(id).value=v; if($(oid)) $(oid).textContent=v.toFixed(2); }); state.playing=false; state.last=0; $('play').textContent='Play'; draw(); };
 $('itab').addEventListener('input',e=>{ if(['sL','sB','sT'].includes(e.target.id)) scSet(+$('sL').value,+$('sB').value,+$('sT').value); });
 $('itab').addEventListener('input',e=>{ if(e.target.id==='sR'){ ROT.yaw=+e.target.value*Math.PI/180; $('oR').textContent=e.target.value+'°'; draw(); } });
-const shSync=()=>{ ['box','ship','patch'].forEach(k=>{ const b=$(k==='box'?'shBox':k==='patch'?'shPatch':'shShip'); if(b) b.style.fontWeight=SHP===k?'700':'400', b&&(b.style.outline=SHP===k?'2px solid var(--fore,#0b7cb0)':'none'); }); };
-$('itab').addEventListener('click',e=>{ const sb=e.target.closest('button[data-shape]'); if(sb){ SHP=sb.dataset.shape; shSync(); draw(); return; } });
+const shSync=()=>{ ['box','ship','patch','mesh'].forEach(k=>{ const b=$(k==='box'?'shBox':k==='patch'?'shPatch':k==='mesh'?'shMesh':'shShip'); if(b) b.style.fontWeight=SHP===k?'700':'400', b&&(b.style.outline=SHP===k?'2px solid var(--fore,#0b7cb0)':'none'); }); };
+$('itab').addEventListener('click',e=>{ const sb=e.target.closest('button[data-shape]'); if(sb){ SHP=sb.dataset.shape; if(SHP==='mesh'&&ROT.pit>0) ROT.pit=-0.7; else if(SHP!=='mesh'&&ROT.pit<0) ROT.pit=0.8; shSync(); draw(); return; } });
 cv.addEventListener('pointerdown',e=>{ if(curMode()!=='scale3') return; const rc=cv.getBoundingClientRect(); if(e.clientX-rc.left<rc.width*0.5) return; cv.setPointerCapture(e.pointerId); SD.d=[e.clientX,e.clientY,ROT.yaw,ROT.pit]; SD.moved=false; });
-cv.addEventListener('pointermove',e=>{ if(!SD.d) return; if(Math.abs(e.clientX-SD.d[0])+Math.abs(e.clientY-SD.d[1])>3) SD.moved=true; ROT.yaw=SD.d[2]+(e.clientX-SD.d[0])*0.01; ROT.pit=clamp(SD.d[3]+(e.clientY-SD.d[1])*0.006,0.1,1.4); if($('sR')){ const dg=((ROT.yaw*180/Math.PI)%360+360)%360; $('sR').value=Math.round(dg/5)*5; $('oR').textContent=Math.round(dg)+'°'; } draw(); });
+cv.addEventListener('pointermove',e=>{ if(!SD.d) return; if(Math.abs(e.clientX-SD.d[0])+Math.abs(e.clientY-SD.d[1])>3) SD.moved=true; ROT.yaw=SD.d[2]+(e.clientX-SD.d[0])*0.01; ROT.pit=clamp(SD.d[3]+(e.clientY-SD.d[1])*0.006,-1.4,1.4); if($('sR')){ const dg=((ROT.yaw*180/Math.PI)%360+360)%360; $('sR').value=Math.round(dg/5)*5; $('oR').textContent=Math.round(dg)+'°'; } draw(); });
 cv.addEventListener('pointerup',()=>{ SD.d=null; setTimeout(()=>{ SD.moved=false; },50); }); cv.addEventListener('pointercancel',()=>{ SD.d=null; });
 $('itab').addEventListener('click',e=>{ const b=e.target.closest('button[data-sc]'); if(b){ const v=b.dataset.sc.split(',').map(Number); scSet(v[0],v[1],v[2]); } });
 $('itab').addEventListener('input',e=>{ if(e.target.id!=='hSpd'&&e.target.id!=='pSpd') return; HOOKV=parseFloat(e.target.value); const vv=$(e.target.id==='pSpd'?'pSpdV':'hSpdV'); if(vv) vv.textContent=HOOKV.toFixed(1)+' kn'; state.playing=false; state.last=0; $('play').textContent='Play'; draw(); });
