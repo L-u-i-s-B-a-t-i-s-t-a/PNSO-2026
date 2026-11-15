@@ -444,10 +444,10 @@ let HOOKV=null;
 const HSLIDE=`<div class="kccard"><h3>Move the speed yourself</h3><input id="hSpd" type="range" min="13" max="35" step="0.1" value="22.9" aria-label="Ship speed in knots" style="width:100%"><p class="sm" style="margin:6px 0 0"><b id="hSpdV">22.9 kn</b> · <span style="color:#d63a3a">&#9679; red</span>: the waves add up, more wave resistance. <span style="color:#2e9e5b">&#9679; green</span>: they cancel, less. A dot appears on the ruler when you reach such a speed, and the marker moves along the resistance curves.</p></div>`;
 const S=[
  {d:34,t:"Question: how does Holtrop–Mennen determine the speed?",eqs:['rt','pe'],x:"",
-  st:p=>({mode:'hook',man:(p>=17&&HOOKV!=null)?HOOKV:null,a:ease(clamp(p/1.5,0,1)),sw:clamp((p-2)/12,0,1),hum:ease(clamp((p-13.5)/1.5,0,1)),v:(p>=17&&HOOKV!=null)?HOOKV:13+(FNV(0.263)-13)*clamp((p-2)/12,0,1)}),
+  st:p=>({mode:'hook',man:(p>=17&&HOOKV!=null)?HOOKV:null,a:ease(clamp(p/1.5,0,1)),sw:clamp((p-2)/12,0,1),fr:(p>=17&&HOOKV!=null)?35:10+25*clamp((p-1.5)/12.5,0,1),hum:ease(clamp((p-13.5)/1.5,0,1)),v:(p>=17&&HOOKV!=null)?HOOKV:13+(FNV(0.263)-13)*clamp((p-2)/12,0,1)}),
   sub:p=>p>=17?{key:'sl',eqs:['rt','pe'],html:HSLIDE}:{key:'a',eqs:['rt','pe']}},
  {d:18,t:"Six parts of the resistance",eqs:['rt'],x:"",
-  st:p=>({mode:'parts',v:25,m:ease(clamp((p-3)/1.5,0,1))})},
+  st:p=>({mode:'parts',v:25,fr:sweep(p,10,35,0.5,9.5),m:ease(clamp((p-10.5)/1.5,0,1))})},
  {d:26,t:"Wetted surface, and why areas grow as the square",eqs:['s','sscale'],x:"",
   st:p=>({mode:'scale3',skin:ease(clamp((p-1)/4,0,1)),s:(p>=10&&SCU)?SCU:(p<10?[sweep(p,1,2,6,9),sweep(p,1,2,6,9),sweep(p,1,2,6,9)]:[2,2,2])}),
   sub:p=>p>=10?{key:'sc',eqs:['s','sscale'],html:SCSLIDE}:{key:'a',eqs:['s','sscale']}},
@@ -639,7 +639,7 @@ function drawParts(st){
   if(small){ const h=(r.h-46)/2; r1={x:r.x,y:r.y,w:r.w,h}; r2={x:r.x,y:r.y+h+46,w:r.w,h}; } else { const w1=r.w*0.6; r1={x:r.x,y:r.y,w:w1-g/2,h:r.h}; r2={x:r.x+w1+g/2+34,y:r.y,w:r.w-w1-g/2-34,h:r.h}; }
   const f1=frame(r1,[10,35],[0,6500],{xt:[10,15,20,25,30,35],yt:[0,2000,4000,6000],yf:y=>fmt(y,0),xl:'Speed V, kn',yl:'Total resistance RT, kN (stacked parts)',bandsFn:fn=>fn*Math.sqrt(G*SHIP.L)/KN});
   const f2=frame(r2,[10,35],[0,100],{xt:[10,20,30],yt:[0,25,50,75,100],yf:y=>y+' %',xl:'Speed V, kn',yl:'Share of RT'});
-  const v=st.v, rows=R;
+  const v=st.v, rows=R.filter(q=>q.V<=st.fr+1e-9); if(rows.length<2) return;
   const order=['RFk','RAPP','RB','RTR','RA','RW'], col=k=>C[PNAMES.find(p=>p[0]===k)[3]];
   [[f1,false],[f2,true]].forEach(([f,pct])=>{ let base=rows.map(()=>0);
     order.forEach(k=>{ const top=rows.map((q,i)=>base[i]+(pct?100*q[k]/q.RT:q[k])); ctx.fillStyle=col(k); ctx.globalAlpha=k==='RFk'||k==='RW'||k==='RA'?.72:.95; ctx.beginPath();
@@ -944,20 +944,20 @@ function drawHook(st){
   ctx.strokeStyle=C.rule; ctx.lineWidth=1; ctx.setLineDash([]); ctx.strokeRect(rl.x+.5,rl.y+.5,rl.w-1,rl.h-1);
   ctx.fillStyle=C.ink; ctx.beginPath(); ctx.moveTo(f.X(cur),rl.y+rl.h+1); ctx.lineTo(f.X(cur)-7,rl.y+rl.h+13); ctx.lineTo(f.X(cur)+7,rl.y+rl.h+13); ctx.closePath(); ctx.fill();
   if(man){ const dd=(arr,c)=>arr.forEach(v=>{ const d=Math.abs(cur-v)/(1.5*hw); if(d<1&&v>=13&&v<=35){ ctx.globalAlpha=st.a*(1-d*0.5)*(0.45+0.55*blink); dot(f.X(v),rl.y+rl.h/2,c,small?5:7.5); ctx.globalAlpha=st.a; } }); dd(HU,RED); dd(HO,GRN); }
-  HU.forEach(v=>{ if(v<Vh-0.3&&!small){ ctx.globalAlpha=st.a; text(f.X(v),rl.y-9,fmt(v,1),C.aft,'center',13,'600'); } });
+  HU.forEach(v=>{ if(v<cur-0.05&&v<Vh-0.3&&!small&&!man){ ctx.globalAlpha=st.a; text(f.X(v),rl.y-9,fmt(v,1),C.aft,'center',13,'600'); } });
   if(st.hum>0){ ctx.globalAlpha=st.hum; label(f.X(Vh),rl.y-(small?18:32),small?'hump '+fmt(Vh,1):'the hump we follow: '+fmt(Vh,1)+' kn',C.aft,'center'); }
   ctx.globalAlpha=1;
-  if(!small) rtPlot({x:r.x+r.w*0.62+30,y:r.y+26,w:r.w*0.38-34,h:r.h-26-2},cur,st.a,{hl:true});
+  if(!small) rtPlot({x:r.x+r.w*0.62+30,y:r.y+26,w:r.w*0.38-34,h:r.h-26-2},cur,st.a,{hl:true,fr:st.fr});
 }
 // total resistance against speed, every component, humps (orange) and hollows (blue) marked; the marker follows the speed
-function rtPlot(pr,cur,al,o){ o=o||{};
+function rtPlot(pr,cur,al,o){ o=o||{}; const fr=o.fr==null?35:o.fr, RR=R.filter(q=>q.V<=fr+1e-9);
   ctx.globalAlpha=al; const hw=0.007*Math.sqrt(G*SHIP.L)/KN, HU=[4,3,2,1].map(j=>FNV(hump(j))), HO=[4,3,2,1].map(j=>FNV(hollow(j)));
   const f=frame(pr,[10,35],[0,6500],{xt:[10,15,20,25,30,35],yt:[0,2000,4000,6000],yf:y=>fmt(y,0),xl:'Speed V, kn',yl:'Resistance, kN'});
-  [[HU,C.as],[HO,C.fs]].forEach(([arr,c])=>{ ctx.fillStyle=c; ctx.globalAlpha=al*0.85; arr.forEach(v=>{ const a0=f.X(v-hw),b0=f.X(v+hw); if(b0>pr.x&&a0<pr.x+pr.w) ctx.fillRect(Math.max(a0,pr.x),pr.y,Math.min(b0,pr.x+pr.w)-Math.max(a0,pr.x),pr.h); }); });
-  ctx.globalAlpha=al; ctx.font='600 11px '+MONO; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.textBaseline='top'; ctx.fillStyle=C.aft; HU.forEach((v,i)=>ctx.fillText(fmt(v,1),f.X(v),pr.y+3+(i%2)*13));
+  [[HU,C.as],[HO,C.fs]].forEach(([arr,c])=>{ ctx.fillStyle=c; ctx.globalAlpha=al*0.85; arr.forEach(v=>{ if(v-hw>fr) return; const a0=f.X(v-hw),b0=Math.min(f.X(v+hw),f.X(fr)); if(b0>pr.x&&a0<pr.x+pr.w) ctx.fillRect(Math.max(a0,pr.x),pr.y,Math.min(b0,pr.x+pr.w)-Math.max(a0,pr.x),pr.h); }); });
+  ctx.globalAlpha=al; ctx.font='600 11px '+MONO; ctx.textAlign='center'; ctx.textBaseline='bottom'; ctx.textBaseline='top'; ctx.fillStyle=C.aft; HU.forEach((v,i)=>{ if(v<=fr) ctx.fillText(fmt(v,1),f.X(v),pr.y+3+(i%2)*13); });
   const L=[['RT',C.ink,3.2,q=>q.RT],['RFk',C.fore,2.2,q=>q.RFk],['RW',C.aft,2.2,q=>q.RW],['RA',C.pb,2,q=>q.RA],['RS',C.ghost,2,q=>q.RAPP+q.RB+q.RTR]];
-  L.forEach(([k,c,w,g])=>line(R.map(q=>[f.X(q.V),f.Y(g(q))]),c,w));
-  const q=HM({...SHIP,V:cur}); vmark(f.X,cur,pr.y,pr.y+pr.h,C.ink); L.forEach(([k,c,w,g])=>dot(f.X(cur),f.Y(g(q)),c,k==='RT'?5.5:4));
+  L.forEach(([k,c,w,g])=>line(RR.map(q=>[f.X(q.V),f.Y(g(q))]),c,w));
+  const q=HM({...SHIP,V:cur}); if(cur<=fr){ vmark(f.X,cur,pr.y,pr.y+pr.h,C.ink); L.forEach(([k,c,w,g])=>dot(f.X(cur),f.Y(g(q)),c,k==='RT'?5.5:4)); }
   const lg=[[C.ink,'RT total, '+fmt(q.RT,0)+' kN',{w:3}],[C.fore,'RF(1+k1) friction',{w:2.2}],[C.aft,'RW waves',{w:2.2}],[C.pb,'RA correlation',{w:2}],[C.ghost,'RAPP, RB, RTR small parts',{w:2}]];
   legend(pr.x+10,pr.y+44,lg);
   ctx.globalAlpha=1; }
