@@ -534,7 +534,7 @@ footer .wrap { padding-block: 24px 40px; border-top: 1px solid var(--line); font
     cal.appendChild(el("div", { cls: "week" + (weekReady ? "" : " later"), id: "week" + w.n }, [rail, list]));
   });
 
-  document.getElementById("stamp").textContent = "Version " + SITE_VERSION + "15 Nov 2026, 18:30" + (PREVIEW ? "Preview · week 1 shown as released; files are placeholders" : (RELEASED.length ? "Released: week " + RELEASED.join(", ") : RELEASED_FILES.length ? "First materials are out; the rest are released about a week before each session" : "Materials are released about a week before each session"));
+  document.getElementById("stamp").textContent = "Version " + SITE_VERSION + " · " + (PREVIEW ? "Preview · week 1 shown as released; files are placeholders" : (RELEASED.length ? "Released: week " + RELEASED.join(", ") : RELEASED_FILES.length ? "First materials are out; the rest are released about a week before each session" : "Materials are released about a week before each session"));
 })();
 </script>
 
