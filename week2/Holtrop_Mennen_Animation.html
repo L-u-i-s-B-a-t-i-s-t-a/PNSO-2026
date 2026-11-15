@@ -404,20 +404,7 @@ const VTAB=`<table class="kc"><thead><tr><th>Ship type</th><th>Fn max</th><th>CP
 const CHECK=`<table class="kc"><thead><tr><th>At 25 kn</th><th>Paper</th><th>Recomputed here</th><th>Difference</th></tr></thead><tbody>
 ${[['Wetted surface S, m²','S','S',0],['Friction RF, kN','RF','RF',1],['Appendages RAPP, kN','RAPP','RAPP',1],['Waves RW, kN','RW','RW',1],['Correlation RA, kN','RA','RA',1],['Total RT, kN','RT','RT',1],['Effective power PE, kW','PE','PE',0],['Wake fraction w','w','w',3],['Thrust deduction t','t','t',3]].map(([n,a,b,d])=>`<tr><td>${n}</td><td>${fmt(PAPER[a],d)}</td><td>${fmt(P25[b],d)}</td><td>${(P25[b]>=PAPER[a]?'+':'−')+fmt(Math.abs(P25[b]/PAPER[a]-1)*100,1)} %</td></tr>`).join('')}
 </tbody></table><p class="sm" style="margin:6px 0 0;color:var(--muted)">Paper values read from a scanned copy. Shaft power in the paper: ${fmt(PAPER.PS,0)} kW, with η0 from its B-series propeller.</p>`;
-const SUMMARY=`<div class="kcgrid">
-<div class="kccard" style="grid-column:1/-1"><h3>The two opening questions, answered</h3><p class="sm" style="margin:0"><b>1. Same speed?</b> No in knots, yes in Froude number. The two ships have the same shape, so their humps of wave resistance fall at the same Fn: 0.263 for this shape. In knots that is 22.9 kn for the 205 m ship and 16.2 kn for its 102.5 m sister, because V = Fn·√(gL). <b>2. How many times more wave resistance, each ship at its own hump speed?</b> At these corresponding speeds the waves scale exactly: same CW, and RW 8 times larger on the larger ship (step 9). Friction does not scale this way: the larger ship's CF is 12 % lower, so RF(1 + k1)/RW is 2.62 for the sister and 2.31 for the ship, and the total resistance does not scale exactly.</p></div>
-<div class="kccard" style="grid-column:1/-1"><h3>Two ways to see RW × 8</h3><ul class="sm" style="margin:0 0 6px;padding-left:18px"><li><b>A · The formula.</b> RW ∝ ∇, and the volume of a ship twice as long is 2 × 2 × 2 = 8 times larger.</li><li><b>B · The coefficient.</b> RW = CW·½ρ·S·V². At the same Fn, CW is equal; the wetted surface S is 4 times larger and V² is 2 times larger (V² ∝ L).</li></ul><button type="button" onclick="go(8)" style="font:inherit;padding:6px 12px;border:1px solid var(--rule,#999);border-radius:6px;background:transparent;color:inherit;cursor:pointer">Show the two animations (step 9)</button></div>
-<div class="kccard key" style="grid-column:1/-1"><h3>Key conclusion: waves follow Fn and shape, friction follows size</h3><p class="kckey">Two geometrically similar hulls at the same Froude number make the same wave pattern, scaled: their wave coefficient CW is the same, and their humps and hollows fall at the same Fn, whatever their size. The Fn of a hump depends on the shape, through λ = 1.446·CP − 0.03·L/B. Friction does not scale this way: CF depends on the Reynolds number, so a larger ship has a smaller CF, and at the same Fn friction and waves are in a different proportion on each size.</p></div>
-<div class="kccard"><h3>The six parts</h3><ul class="sm" style="margin:0;padding-left:18px">
-<li><b>RF(1 + k1)</b>: friction of the flat plate times the form factor; size-dependent through Rn</li>
-<li><b>RW</b>: waves; a size-and-shape scale, times a growth factor in Fn, times an interference factor in cos(λ/Fn²)</li>
-<li><b>RA</b>: model–ship correlation; its coefficient depends on L</li>
-<li><b>RAPP, RB, RTR</b>: appendages, bulb near the surface, immersed transom; small here</li></ul></div>
-<div class="kccard"><h3>Use it well</h3><ul class="sm" style="margin:0;padding-left:18px">
-<li>Inside the ranges of CP, L/B, B/T and Fn of its ship type</li>
-<li>Read the humps from λ of your own hull, not from a table of typical values</li>
-<li>Power: PE = RT·V, then w, t, ηR and the propeller's η0 give the shaft power</li>
-<li>Check a new implementation against the paper's example, as step 15 does</li></ul></div></div>`;
+const SUMMARY=`<div class="kccard key"><h3>Key conclusion: waves follow Fn and shape, friction follows size</h3><p class="kckey">Two geometrically similar hulls at the same Froude number make the same wave pattern, scaled: the same CW, and humps and hollows at the same Fn, whatever the size. The Fn of a hump depends on the shape, through λ = 1.446·CP − 0.03·L/B. Friction follows the Reynolds number, so size changes its share of the total.</p></div>`;
 const EXPLORE=`<div class="xp">
 <label>Height (vertical axis) <select id="xH"><option value="I">interference factor: humps and hollows</option><option value="CW">CW × 10³, wave coefficient</option><option value="RW">RW, wave resistance [kN]</option><option value="WS">RW / RT, wave share [%]</option><option value="CT">CT × 10³, total coefficient</option><option value="RT">RT, total resistance [kN]</option><option value="RFk">RF(1 + k1), friction [kN]</option><option value="PE">PE, effective power [kW]</option></select></label>
 <label>Horizontal axis <select id="xX"><option value="F">Froude number Fn</option><option value="V">speed V [kn]</option></select></label>
@@ -529,7 +516,7 @@ const S=[
   st:p=>({mode:'valid',f:p<8.5?sweep(p,0.12,0.48,0.5,8.5):lerp(0.48,P25.Fn,ease(clamp((p-9)/3,0,1)))}),sub:()=>({key:'t',eqs:['valid'],html:VNOTE})},
  {d:10,t:"Check against the paper",eqs:[],x:"A formula typed into a program is easy to get wrong. The paper's worked example is the test: with lcb taken from ½ LWL (step 13) the recomputed values agree within 0.2 %, except the correlation allowance, 0.6 % lower; the cause of that difference was not traced.",
   st:p=>({mode:'bar',grow:1,v:25,ghost:1}),sub:()=>({key:'c',eqs:[],html:CHECK})},
- {d:12,t:"Summary",eqs:[],x:"",st:p=>({mode:'size',f:0.40,pick:3,quiet:1,kn:1}),sub:()=>({key:'s',html:SUMMARY,text:"Waves follow the Froude number and the shape; friction follows size."})},
+ {d:16,t:"Summary: two ships, one wave pattern",eqs:[],x:"",st:p=>({mode:'conc',a:ease(clamp(p/1.5,0,1)),b:ease(clamp((p-2)/1.5,0,1)),tb:clamp((p-5)/7,0,1),key:ease(clamp((p-12)/1.5,0,1))}),sub:()=>({key:'sm',eqs:[],html:SUMMARY})},
  {d:6,t:"Explore: the Holtrop–Mennen map",eqs:[],x:"Pick what stands on each axis: the interference factor, the wave and total coefficients, the wave and total resistance, the friction, the wave share or the power, over Fn or speed, and over CP, L/B or B/T. Everything is computed live with the same formulas. The orange and blue lines are the humps and hollows, where the number of half waves $N=\lambda/(\pi F_n^2)$ along the ship is odd (the waves add up) or even (they cancel); the solid line runs on the surface and the dashed one is the same line projected on the floor, where its $F_n$ is read. The plot on the right shows the resistance of the marker hull by component, with the same humps and hollows as vertical lines, so the map and the curves can be read together. Turn the map, change the size. The humps move with the shape; the wave coefficient map does not change with size, the resistances and the total coefficient do.",
   st:p=>({mode:'explore',intro:ease(clamp(p/3,0,1))}),sub:()=>({key:'x',eqs:[],html:EXPLORE})}
 ];
@@ -1309,6 +1296,36 @@ function drawInputs(st){
       else text(rc.x+rc.w*0.56,rc.y+rc.h*0.6,'c2 '+fmt(P25.c2,3)+': RW '+fmt((P25.RW/NOBULB.RW-1)*100,0)+' %',C.ink,'left',fs); } }
 }
 
+function drawConc(st){
+  const r=mainRect(), yw=r.y+r.h*(small?0.2:0.30), Vb=HQ[1].V, Vs=HQ[0].V;
+  const Lp1=r.w*(small?0.40:0.34), bow1=r.x+r.w*(small?0.62:0.54), Lp2=Lp1/2, bow2=r.x+r.w-(small?4:10), seaH=small?24:44;
+  const sea=()=>{ ctx.fillStyle=C.seas; ctx.fillRect(r.x,yw,r.w,seaH); line([[r.x,yw],[r.x+r.w,yw]],C.sea,1.6); };
+  ctx.globalAlpha=st.a; sea(); const g1=drawShipImg(bow1,yw,Lp1,{alpha:st.a,under:false});
+  const mpp=SHIP.L/Lp1, A=small?4:12;
+  const wsys=(bowX,Lsh,Vkn,x0,x1,al,am)=>{ const A=(small?4:12)*(am||1), V=Vkn*KN, k=G/(V*V), Ls=LAM*Lsh, pb=[],ps=[],pt=[];
+    for(let x=x0;x<=x1;x+=2){ const sm=(bowX-x)*mpp; let zb=0,zs=0; if(sm>=0) zb=Math.cos(k*sm); else zb=Math.exp(sm/12); if(sm>=Ls) zs=-0.8*Math.cos(k*(sm-Ls))*(1-Math.exp(-(sm-Ls)*k/1.2)); pb.push([x,yw-A*zb]); ps.push([x,yw-A*zs]); pt.push([x,yw-A*(zb+zs)]); }
+    ctx.globalAlpha=al*0.6; line(pb,C.aft,1.4); line(ps,C.fore,1.4); ctx.globalAlpha=al*0.28; ctx.fillStyle=C.pb; ctx.beginPath(); ctx.moveTo(pt[0][0],yw); pt.forEach(q=>ctx.lineTo(q[0],q[1])); ctx.lineTo(pt[pt.length-1][0],yw); ctx.closePath(); ctx.fill(); ctx.globalAlpha=al; line(pt,C.pb,3.4); };
+  wsys(bow1,SHIP.L,Vb,r.x,bow1+22,st.a);
+  ctx.globalAlpha=st.a; text(bow1-Lp1,yw+g1.T+(small?14:26),small?'205 m':'the paper\'s ship, 205 m',C.ink,'left',small?11:15,'600');
+  text(bow1-Lp1,yw+g1.T+(small?28:48),'V = '+fmt(Vb,1)+' kn · Fn '+fmt(HQ[1].q.Fn,3),C.aft,'left',small?11:15,'700');
+  if(st.b>0){ ctx.globalAlpha=st.b; sea(); const g2=drawShipImg(bow2,yw,Lp2,{alpha:st.b,under:false}); wsys(bow2,SHIP.L/2,Vs,bow1+22,Math.min(bow2+22,r.x+r.w),st.b,0.5);
+    ctx.globalAlpha=st.b; text(bow2,yw+g2.T+(small?14:26),small?'102.5 m':'its copy, half the size: 102.5 m',C.ink,'right',small?11:15,'600');
+    text(bow2,yw+g2.T+(small?28:48),'V = '+fmt(Vs,1)+' kn · Fn '+fmt(HQ[0].q.Fn,3),C.aft,'right',small?11:15,'700'); }
+  if(!small&&st.b>0.8){ ctx.globalAlpha=st.b; label(r.x+r.w*0.70,yw-86,'same Fn: same wave pattern, scaled',C.ink,'center'); }
+  ctx.globalAlpha=1;
+  // the comparison, row by row
+  const a=HQ[1].q, b=HQ[0].q, rows=[['Speed at the hump',fmt(a.V,1)+' kn',fmt(b.V,1)+' kn','× '+fmt(a.V/b.V,2)+' (√2)',0],['Froude number',fmt(a.Fn,3),fmt(b.Fn,3),'the same',0],['Wave length λw / L',fmt(2*Math.PI*a.Fn*a.Fn,2),fmt(2*Math.PI*b.Fn*b.Fn,2),'the same',0],['Wave coefficient CW × 10³',fmt(a.CW*1000,3),fmt(b.CW*1000,3),'the same',0],
+    ['Waves RW',fmt(a.RW,0)+' kN',fmt(b.RW,0)+' kN','× '+fmt(a.RW/b.RW,1),1],['Friction RF(1 + k1)',fmt(a.RFk,0)+' kN',fmt(b.RFk,0)+' kN','× '+fmt(a.RFk/b.RFk,1),2],['Total RT',fmt(a.RT,0)+' kN',fmt(b.RT,0)+' kN','× '+fmt(a.RT/b.RT,1),0]];
+  if(small){ ctx.globalAlpha=clamp(st.tb*2,0,1); text(r.x+4,r.y+r.h*0.66,'Waves RW × '+fmt(a.RW/b.RW,1)+'  ('+fmt(a.RW,0)+' / '+fmt(b.RW,0)+' kN)',C.aft,'left',12,'700'); text(r.x+4,r.y+r.h*0.82,'Friction × '+fmt(a.RFk/b.RFk,1)+'  ('+fmt(a.RFk,0)+' / '+fmt(b.RFk,0)+' kN)',C.fore,'left',12,'700'); ctx.globalAlpha=1; return; }
+  const use=rows, ty=r.y+r.h*(small?0.46:0.50), rh=small?(r.h*0.40)/(use.length+1):(r.h*0.40)/(use.length+1), fz=small?11:16;
+  const cx=[r.x+8,r.x+r.w*(small?0.40:0.34),r.x+r.w*(small?0.58:0.52),r.x+r.w*(small?0.78:0.70)];
+  ctx.globalAlpha=clamp(st.tb*3,0,1); [['','205 m ship','102.5 m copy','ratio'],].forEach(h=>h.forEach((t,i)=>text(cx[i],ty+rh*0.5,t,C.muted,'left',fz-2,'700'))); line([[r.x,ty+rh],[r.x+r.w,ty+rh]],C.rule,1.5);
+  use.forEach((rw,i)=>{ const al=clamp(st.tb*use.length*1.1-i,0,1); if(al<=0) return; ctx.globalAlpha=al; const y=ty+rh*(1.5+i), hl=rw[4];
+    if(hl){ ctx.fillStyle=hl===1?C.aft:C.fore; ctx.globalAlpha=al*0.12; ctx.fillRect(r.x,y-rh*0.5,r.w,rh*0.96); ctx.globalAlpha=al; }
+    text(cx[0],y,rw[0],C.ink,'left',fz,hl?'700':'500'); text(cx[1],y,rw[1],C.ink,'left',fz,hl?'700':'500'); text(cx[2],y,rw[2],C.ink,'left',fz,hl?'700':'500'); text(cx[3],y,rw[3],hl===1?C.aft:(hl===2?C.fore:C.muted),'left',fz,'700'); });
+  ctx.globalAlpha=clamp(st.key,0,1); if(!small){ text(r.x+8,r.y+r.h-14,'Waves follow Fn and shape: RW × 8. Friction follows size: RF(1 + k1) × '+fmt(a.RFk/b.RFk,1)+'.',C.ink,'left',17,'700'); }
+  ctx.globalAlpha=1;
+}
 function drawHeight(st){
   const r=mainRect(), lw=small?r.w:r.w*0.54, Lp=lw*0.5, mpp=SHIP.L/Lp, bowX=r.x+lw*0.97, A=small?9:15;
   const rowsY=small?[r.y+r.h*0.34,r.y+r.h*0.80]:[r.y+r.h*0.30,r.y+r.h*0.72];
@@ -1548,7 +1565,7 @@ function draw(){
   if(!W) return; C=colors(); FS=small?11:13; MONO=css('--mono')||'monospace'; SANS=css('--sans')||'sans-serif';
   const T=state.t, k=sceneAt(T), st=S[k].st(T-START[k]); curSt=st;
   ctx.clearRect(0,0,W,H); ctx.fillStyle=C.panel; ctx.fillRect(0,0,W,H);
-  ({fric2:drawFric2,scale3:drawScale3,parts:drawParts,inputs:drawInputs,eight:drawEight,height:drawHeight,whres:drawWhres,ca:drawCA,fac:drawFactors,hook:drawHook,ship:drawShip,bar:drawBar,fric:drawFric,fleet:drawFleet,k1:drawK1,wave:drawWave,wave2:drawWave2,comp6:drawComp6,count:drawCount,hmw:drawHMW,size:drawSize,shape:drawShape,small:drawSmall,stack:drawStack,smv:drawSmv,chain:drawChain,valid:drawValid,explore:drawExplore})[st.mode](st);
+  ({fric2:drawFric2,scale3:drawScale3,parts:drawParts,inputs:drawInputs,eight:drawEight,height:drawHeight,conc:drawConc,whres:drawWhres,ca:drawCA,fac:drawFactors,hook:drawHook,ship:drawShip,bar:drawBar,fric:drawFric,fleet:drawFleet,k1:drawK1,wave:drawWave,wave2:drawWave2,comp6:drawComp6,count:drawCount,hmw:drawHMW,size:drawSize,shape:drawShape,small:drawSmall,stack:drawStack,smv:drawSmv,chain:drawChain,valid:drawValid,explore:drawExplore})[st.mode](st);
   readouts(st);
 }
 function readouts(st){
@@ -1602,7 +1619,7 @@ const PTS=[
   ['The scale is $\\lambda=2$: every length ($L$, $B$, $T$) doubles, every area grows by $2^2=4$, every volume by $2^3=8$. At the same $F_n$, $V^2=F_n^2\\,g\\,L$ doubles too.','The 205 m ship and its 102.5 m sister are geometrically similar and sail at $F_n$ 0.263: 22.9 kn and 16.2 kn.','A: $R_W$ follows the displaced volume, $2^{3}=8$. B: $C_W$ equal, $S\\times4$, $V^{2}\\times2$.','Both give $R_W\\times8$.'],
   ['The humps are set by a shape ratio: $$\\lambda=1.446\\,C_P-0.03\\,\\frac{L}{B}$$','A fuller hull ($C_P$ 0.75, $L/B$ 6.4) has humps near $F_n$ 0.24 and 0.31; this fine hull ($C_P$ 0.58) near 0.20 and 0.26.'],
   ['The correlation allowance $R_A$ is a correction, not a physical force: it makes the prediction agree with full-size trials. $C_A=0.352\\times10^{-3}$ gives 221 kN at 25 kn, 12 % of the total.','Appendages are friction on extra wetted area with a form factor: $R_{APP}=\\tfrac12\\rho V^{2}S_{APP}(1+k_2)C_F$, 8.8 kN here, 0.5 % of the total.','Against speed (log scale): the transom is the largest small part at low speed (34 kN at 16 kn, zero from 23.0 kn); $R_{APP}$ and $R_A$ grow as $V^2$; the bulb stays below 0.1 kN.','Then all parts stacked: friction 75 % at 14 kn, waves 61 % at 35 kn.'],
-  ['**NOT INCLUDED:** environmental (sea) margin, design margin, service margin, air drag and wind drag. This is calm water, clean hull, trial condition. The margins come in Lecture 3.3.','$$P_E=R_T\\,V=23{,}063\\ \\text{kW at 25 kn}$$','With wake $w=0.258$ and thrust deduction $t=0.175$: $$\\eta_H=\\frac{1-t}{1-w}=1.112$$ With $\\eta_R$, the propeller and the shaft losses, the shaft power is 32,621 kW.'],
+  ['<b>NOT INCLUDED:</b> environmental (sea) margin, design margin, service margin, air drag and wind drag. This is calm water, clean hull, trial condition. The margins come in Lecture 3.3.','$$P_E=R_T\\,V=23{,}063\\ \\text{kW at 25 kn}$$','With wake $w=0.258$ and thrust deduction $t=0.175$: $$\\eta_H=\\frac{1-t}{1-w}=1.112$$ With $\\eta_R$, the propeller and the shaft losses, the shaft power is 32,621 kW.'],
   ['Three inputs are not main dimensions: transom area $A_T$, entrance angle $i_E$ and the bulb section $A_{BT}$, $h_B$.','Transom: adds $R_{TR}$ and lowers $R_W$ through $c_5$. Entrance angle: enters $R_W$ only, through $c_1$. Bulb: enters $R_W$ (through $c_2$), the wetted surface and $R_B$.','The plots show the size of each effect; the formulas are in the lower right. Values to expect are under More (Papanikolaou, Ch. 3).'],
   ['The formulas are regressions on model tests, so they hold only inside the data they came from.','This ship ($C_P$ 0.58, $L/B$ 6.4, $B/T$ 3.2) is covered up to $F_n$ 0.45; a full tanker hull only up to $F_n$ 0.24.'],
  ['The paper’s worked example is the test of the program.','The recomputed values agree within 0.2 %, except the correlation allowance, 0.6 % lower; the cause was not traced.'],
@@ -1726,8 +1743,11 @@ MORE[13]=[
  _r`The formulas are regressions on model tests of real hulls, so they hold only inside the data they came from. Each ship type has a range of $C_P$, $L/B$, $B/T$ and a maximum $F_n$. This ship, $C_P=0.58$, $L/B=6.4$, $B/T=3.2$, falls among container ships and destroyers, up to $F_n=0.45$. A full tanker hull is covered only to $F_n=0.24$: beyond that, use another method or model tests.`];
 MORE[14]=[
  _r`A formula typed into a program is easy to get wrong. The paper's worked example is the test: with $lcb$ taken from ½ $L_{WL}$ (step 13) the recomputed values agree within 0.2 %, except the correlation allowance, 0.6 % lower; the cause of that difference was not traced.`];
+PTS[15]=['<b>1. Same hump speed?</b> No in knots (22.9 kn and 16.2 kn), yes in Froude number: 0.263 for both, because $V=F_n\\sqrt{gL}$.','<b>2. Each at its own hump speed: $R_W\\times8$.</b> A: $R_W\\propto\\nabla$ and $2^3=8$. B: $C_W$ equal, $S\\times4$, $V^2\\times2$.','Friction does not scale this way: $R_F(1+k_1)$ is ×7.0 and $R_T$ ×7.0, because the larger ship\'s $C_F$ is lower.'];
 MORE[15]=[
- _r`Waves follow the Froude number and the shape; friction follows size. The two opening questions are answered here, with the two ways to see $R_W\times8$ and the six parts of the resistance.`];
+ _r`Waves follow the Froude number and the shape; friction follows size. The two opening questions are answered on the slide, with the two ships side by side, each at its own hump speed.`,
+ _r`The six parts. $R_F(1+k_1)$: friction of the flat plate times the form factor, size-dependent through $R_n$. $R_W$: waves; a size-and-shape scale, times a growth factor in $F_n$, times an interference factor in $\cos(\lambda/F_n^2)$. $R_A$: model–ship correlation, its coefficient depends on $L$. $R_{APP}$, $R_B$, $R_{TR}$: appendages, bulb near the surface, immersed transom; small here. The power from them is calm-water, clean-hull, trial-condition power, without sea, design or service margins and without air or wind drag (step 12).`,
+ _r`Use it well. Inside the ranges of $C_P$, $L/B$, $B/T$ and $F_n$ of its ship type (step 14). Read the humps from $\lambda$ of your own hull, not from a table of typical values. Power: $P_E=R_T\,V$, then $w$, $t$, $\eta_R$ and the propeller's $\eta_0$ give the shaft power. Check a new implementation against the paper's example, as step 15 does.`];
 MORE[16]=[
  _r`Pick what stands on each axis: the interference factor, the wave and total coefficients, the wave and total resistance, the friction, the wave share or the power, over $F_n$ or speed, and over $C_P$, $L/B$ or $B/T$. Everything is computed live with the same formulas. Turn the map, change the size. The humps move with the shape; the wave coefficient map does not change with size, the resistances and the total coefficient do.`];
 
