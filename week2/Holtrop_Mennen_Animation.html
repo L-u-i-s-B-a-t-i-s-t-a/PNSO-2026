@@ -995,7 +995,7 @@ function drawComp6(st){
   });
 }
 function drawCount(st){
-  const r=mainRect(), f=frame({x:r.x,y:r.y,w:r.w,h:r.h*0.47},[0.16,0.42],[0,8.5],{xt:[0.16,0.2,0.24,0.28,0.32,0.36,0.4],xf:x=>x.toFixed(2),yt:[1,2,3,4,5,6,7,8],yl:'N = λ/(π·Fn²), half waves between bow crest and stern trough',bandsFn:x=>x});
+  const r=mainRect(), f=frame({x:r.x,y:r.y,w:r.w,h:r.h*0.40},[0.16,0.42],[0,8.5],{xt:[0.16,0.2,0.24,0.28,0.32,0.36,0.4],xf:x=>x.toFixed(2),yt:[1,2,3,4,5,6,7,8],yl:'N = λ/(π·Fn²), half waves between bow crest and stern trough',bandsFn:x=>x});
   for(let n=1;n<=8;n++){ line([[f.X(0.16),f.Y(n)],[f.X(0.42),f.Y(n)]],n%2?C.aft:C.fore,1,[3,4]); }
   const fn=vs(0.16,0.42,200), cur=st.f, lim=st.full?9:cur;
   line(fn.filter(x=>x<=lim).map(x=>[f.X(x),f.Y(Math.min(8.5,LAM/(Math.PI*x*x)))]),C.ink,2.8);
@@ -1004,13 +1004,21 @@ function drawCount(st){
   for(let n=2;n<=7;n++){ const x=Math.sqrt(LAM/(Math.PI*n)); if(x<=lim&&x>=0.16){ dot(f.X(x),f.Y(n),n%2?C.aft:C.fore,5); if(!small) label(f.X(x)+(n%2?10:-10),f.Y(n)+(n%2?-18:18),(n%2?'hump ':'hollow ')+fmt(x,3),n%2?C.aft:C.fore,n%2?'left':'right'); } }
   // the wave resistance, on the same Fn axis: do the humps fall where N is odd?
   if(!RR6) RR6=vs(0.15,0.47,320).map(fn=>HM({...SHIP,V:fn*Math.sqrt(G*SHIP.L)/KN}));
-  const rc={x:r.x,y:r.y+r.h*0.62,w:r.w,h:r.h*0.30}, rows=RR6.filter(q=>q.Fn>=0.16&&q.Fn<=Math.min(lim,0.42)+1e-9);
-  const g=frame(rc,[0.16,0.42],[0,2.5],{xt:[0.16,0.2,0.24,0.28,0.32,0.36,0.4],xf:x=>x.toFixed(2)+' · '+fmt(FNV(x),0)+' kn',yt:[0,0.5,1,1.5,2,2.5],yf:y=>fmt(y,1),xl:'Froude number Fn · speed V',yl:'RW / V⁵ (×10³, kN per (m/s)⁵): the wave resistance with the trend taken out; dashed: without the interference ③',bandsFn:x=>x});
-  if(rows.length>1){ for(let i=1;i<rows.length;i++){ const q0=rows[i-1],q1=rows[i], k0=1000/Math.pow(q0.V*KN,5), k1=1000/Math.pow(q1.V*KN,5), d0=q0.RW/q0.inter*k0, d1=q1.RW/q1.inter*k1, up=(q0.inter+q1.inter)/2>=1; ctx.fillStyle=up?C.aft:C.fore; ctx.globalAlpha=.5; ctx.beginPath(); ctx.moveTo(g.X(q0.Fn),g.Y(q0.RW*k0)); ctx.lineTo(g.X(q1.Fn),g.Y(q1.RW*k1)); ctx.lineTo(g.X(q1.Fn),g.Y(d1)); ctx.lineTo(g.X(q0.Fn),g.Y(d0)); ctx.closePath(); ctx.fill(); ctx.globalAlpha=1; }
-    line(rows.map(q=>[g.X(q.Fn),g.Y(q.RW/q.inter*1000/Math.pow(q.V*KN,5))]),C.muted,1.4,[5,4]); line(rows.map(q=>[g.X(q.Fn),g.Y(q.RW*1000/Math.pow(q.V*KN,5))]),C.aft,2.6); const q=rows[rows.length-1]; if(!st.full) dot(g.X(q.Fn),g.Y(q.RW*1000/Math.pow(q.V*KN,5)),C.aft,5); }
-  for(let n=2;n<=7;n++){ const x=Math.sqrt(LAM/(Math.PI*n)); if(x>=0.16&&x<=0.42){ const on=x<=lim; line([[f.X(x),f.Y(8.5)],[f.X(x),rc.y+rc.h]],n%2?C.aft:C.fore,on?1.4:0.7,on?[]:[2,4]); if(on&&!small) text(f.X(x),rc.y+rc.h-10,'N = '+n,n%2?C.aft:C.fore,'center',11,'700'); } }
-  if(st.full){ const qc=HM({...SHIP,V:vfn(cur)}), yv=qc.RW*1000/Math.pow(qc.V*KN,5); line([[f.X(cur),f.Y(8.5)],[f.X(cur),rc.y+rc.h]],C.ink,1.6,[5,4]); dot(g.X(cur),g.Y(yv),C.ink,6); label(g.X(cur)+8,g.Y(yv)+26,fmt(qc.V,1)+' kn · Fn '+fmt(cur,3),C.ink,'left'); }
-  if(!small) legend(rc.x+10,rc.y+16,[[C.aft,'RW',{w:2.6}],[C.muted,'RW without ③',{w:1.4,dash:[5,4]}],[C.aft,'above dashed: hump',{box:1}],[C.fore,'below dashed: hollow',{box:1}]],{row:1});
+  const rA={x:r.x,y:r.y+r.h*0.52,w:r.w,h:r.h*0.16}, rB={x:r.x,y:r.y+r.h*0.76,w:r.w,h:r.h*0.17}, rows=RR6.filter(q=>q.Fn>=0.16&&q.Fn<=Math.min(lim,0.42)+1e-9);
+  const SL=d=>Math.sign(d)*Math.log10(1+Math.abs(d)/2), dd=q=>q.RW-q.RW/q.inter, all=RR6.filter(q=>q.Fn>=0.16&&q.Fn<=0.42), dm=Math.ceil(Math.max(...all.map(q=>Math.abs(dd(q))))/50)*50||50, rm=Math.ceil(Math.max(...all.map(q=>q.RW))/1000)*1000;
+  const xt=[0.16,0.2,0.24,0.28,0.32,0.36,0.4];
+  const gA=frame(rA,[0.16,0.42],[0,rm],{xt:[],yt:[0,rm/2,rm],yf:y=>y?fmt(y/1000,1)+'k':'0',yl:'RW, kN: with the interference ③ (full) and without it (dashed)',bandsFn:x=>x});
+  const gB=frame(rB,[0.16,0.42],[-SL(dm),SL(dm)],{xt,xf:x=>x.toFixed(2)+' · '+fmt(FNV(x),0)+' kn',yt:[-SL(1000),-SL(100),-SL(10),0,SL(10),SL(100),SL(1000)].filter(y=>Math.abs(y)<=SL(dm)+1e-9),yf:y=>{ const d=Math.sign(y)*2*(Math.pow(10,Math.abs(y))-1); return d?(d>0?'+':'−')+fmt(Math.round(Math.abs(d)/10)*10||Math.abs(d),0):'0'; },xl:'Froude number Fn · speed V',yl:'ΔRW = RW − RW without ③, kN (signed log scale): extra above 0, saved below 0',bandsFn:x=>x});
+  line([[gB.X(0.16),gB.Y(0)],[gB.X(0.42),gB.Y(0)]],C.ink,1.2);
+  if(rows.length>1){ for(let i=1;i<rows.length;i++){ const q0=rows[i-1],q1=rows[i], up=(q0.inter+q1.inter)/2>=1; ctx.fillStyle=up?C.aft:C.fore; ctx.globalAlpha=.5; ctx.beginPath(); ctx.moveTo(gA.X(q0.Fn),gA.Y(q0.RW)); ctx.lineTo(gA.X(q1.Fn),gA.Y(q1.RW)); ctx.lineTo(gA.X(q1.Fn),gA.Y(q1.RW/q1.inter)); ctx.lineTo(gA.X(q0.Fn),gA.Y(q0.RW/q0.inter)); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(gB.X(q0.Fn),gB.Y(0)); ctx.lineTo(gB.X(q0.Fn),gB.Y(SL(dd(q0)))); ctx.lineTo(gB.X(q1.Fn),gB.Y(SL(dd(q1)))); ctx.lineTo(gB.X(q1.Fn),gB.Y(0)); ctx.closePath(); ctx.fill(); ctx.globalAlpha=1; }
+    line(rows.map(q=>[gA.X(q.Fn),gA.Y(q.RW/q.inter)]),C.muted,1.4,[5,4]); line(rows.map(q=>[gA.X(q.Fn),gA.Y(q.RW)]),C.aft,2.6); line(rows.map(q=>[gB.X(q.Fn),gB.Y(SL(dd(q)))]),C.ink,2.2);
+    if(!st.full){ const q=rows[rows.length-1]; dot(gA.X(q.Fn),gA.Y(q.RW),C.aft,5); dot(gB.X(q.Fn),gB.Y(SL(dd(q))),C.ink,5); } }
+  const bot=rB.y+rB.h;
+  for(let n=2;n<=7;n++){ const x=Math.sqrt(LAM/(Math.PI*n)); if(x>=0.16&&x<=0.42){ const on=x<=lim; line([[f.X(x),f.Y(8.5)],[f.X(x),bot]],n%2?C.aft:C.fore,on?1.4:0.7,on?[]:[2,4]); if(on&&!small) text(f.X(x),bot-9,'N = '+n,n%2?C.aft:C.fore,'center',11,'700'); } }
+  if(st.full){ const qc=HM({...SHIP,V:vfn(cur)}), d=dd(qc); line([[f.X(cur),f.Y(8.5)],[f.X(cur),bot]],C.ink,1.6,[5,4]); dot(gA.X(cur),gA.Y(qc.RW),C.ink,6); dot(gB.X(cur),gB.Y(SL(d)),C.ink,6);
+    label(gB.X(cur)+10,gB.Y(SL(d))+(d>=0?-22:22),(d>=0?'+':'−')+fmt(Math.abs(d),0)+' kN · '+(d>=0?'+':'−')+fmt(Math.abs(d)*qc.V*KN,0)+' kW · '+fmt(qc.V,1)+' kn',C.ink,'left'); }
+  if(!small) legend(rA.x+rA.w-10,rA.y+14,[[C.aft,'RW',{w:2.6}],[C.muted,'RW without ③',{w:1.4,dash:[5,4]}]],{row:1,align:'r'});
 }
 function drawFactors(st){
   const r=mainRect(), v=st.v, gx=small?40:60, gy=small?44:64, cols2=2, pw=(r.w-gx)/2, ph=(r.h-gy)/2;
@@ -1487,7 +1495,7 @@ const PTS=[
   ['The ITTC-1957 line is a flat-plate-type friction line: $C_F$ falls as $R_n$ grows, yet $R_F$ still rises.','Locally $$R_F\\propto V^{\\,n},\\qquad n\\approx 1.88\\ \\text{for this ship at 25 kn}$$','A real hull is not a plate: the form factor gives $$1+k_1=1.156$$'],
   ['The method is used at full scale: $R_n$ runs from $1.3\\times10^{8}$ to $4.2\\times10^{9}$ across the ships it covers.','$C_F$ moves from $2.0$ to $1.3\\times10^{-3}$: a small, slow ship has a coefficient about half again as large.','The exponent $n$ stays between 1.86 and 1.89.'],
  P6,
-  ['Count the half wave lengths between the bow crest and the stern trough: $$N=\\frac{\\lambda}{\\pi F_n^{2}}$$','Odd $N$: a hump. Even $N$: a hollow.','$N$ falls through 7, 6, 5, 4, 3 and the last hump, $N=1$, is the main one.','Check on the plot below: the wave resistance with the trend taken out ($R_W/V^{5}$) rises above the dashed curve (without ③) where $N$ is odd, a hump, and falls below it where $N$ is even, a hollow. The counting agrees with the calculation.'],
+  ['Count the half wave lengths between the bow crest and the stern trough: $$N=\\frac{\\lambda}{\\pi F_n^{2}}$$','Odd $N$: a hump. Even $N$: a hollow.','$N$ falls through 7, 6, 5, 4, 3 and the last hump, $N=1$, is the main one.','Check on the plots below: the wave resistance $R_W$ lies above the dashed curve (without ③) where $N$ is odd, a hump, and below it where $N$ is even, a hollow. The last strip magnifies the difference, $\\Delta R_W=R_W-R_W^{\\text{without ③}}$, in kN: positive lobes cost resistance, negative lobes save it. The counting agrees with the calculation.'],
   PWA,
   ['Scale the hull, keep every proportion, sail at the same $F_n$: $C_W$ is the same and the humps fall at the same $F_n$.','Against knots the curves separate: the 0.263 hump is at 11.5, 16.2, 22.9 and 32.4 kn for four sizes ($\\propto\\sqrt{L}$).','Friction does not follow $F_n$: a larger ship has a larger $R_n$ and a smaller $C_F$.'],
   ['The 205 m ship and its 102.5 m sister are geometrically similar and sail at $F_n$ 0.263: 22.9 kn and 16.2 kn.','A: $R_W$ follows the displaced volume, $2^{3}=8$. B: $C_W$ equal, $S\\times4$, $V^{2}\\times2$. C: wave height $\\times2$, so $a^{2}\\times4$, and $b\\times2$.','All three give $R_W\\times8$.'],
