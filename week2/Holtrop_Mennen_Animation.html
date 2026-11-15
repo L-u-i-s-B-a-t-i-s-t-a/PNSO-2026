@@ -464,8 +464,9 @@ const PA=['The speed of the ship fixes the length of its transverse waves.','$$\
 const PB=['At particular speeds a whole number of waves fits along the hull: five at $F_n$ 0.178 (15.6 kn) down to one at 0.399 (34.8 kn), $F_n=1/\\sqrt{2\\pi n}$.','Above, friction grows smoothly and the wave resistance $R_W$ climbs steeply.','These whole-wave speeds do not fall on the humps: the two wave systems of the method are $L^{*}=0.65\\,L$ apart, not $L$.'];
 const PC=['Two wave systems: a bow train and a stern train, $L^{*}=\\lambda L$ further aft (about $0.65\\,L$ here).','Trough on trough: they add up and the wave behind is high. Crest on trough: they cancel.','Humps at $F_n$ 0.204, 0.263 and 0.455; hollows at 0.228 and 0.322.'];
 const PD=['Three factors: ① size and shape, the scale; ② smooth growth with speed; ③ bow–stern interference, about ±20 %.','Their product is $R_W$; dashed, $R_W$ without ③.','Dotted lines: the whole-wave speeds of the stage before.'];
-const AMPW=p=>p<4?ease(p/4):p<23?1:p<27?1+ease((p-23)/4):2; // step 8: wave amplitude, in units of a
+const AMPW=p=>p<4?ease(p/4):p<24?1:p<29?1+ease((p-24)/5):2; // step 8: wave amplitude, in units of a
 const PWA=['The waves behind the ship are made by the ship: they carry away the work it does. The higher the wave, the more energy it holds.','A wave of amplitude $a$ holds, per square metre of sea, $$E=\\tfrac12\\rho g\\,a^{2}$$ half as kinetic and half as potential energy.','Twice the height, four times the energy per m²: it goes with $a^{2}$, not with $a$.'];
+const PWALL=['The waves are made by the ship: they carry away its work. A wave of amplitude $a$ holds, per m² of sea, $$E=\\tfrac12\\rho g\\,a^{2}$$','The ship advances at $V$, the wave energy at the group speed $V/2$: the pattern, of width $b$, grows by $V/2$ per second and its energy by $E\\,b\\,V/2$ per second.','The ship pays this power: $R_W V=E\\,b\\,V/2$, so $$R_W=\\tfrac14\\rho g\\,a^{2}\\,b$$','Same ship, same width: a wave twice as high gives four times the wave resistance.','This is what a hump is: the bow and stern waves add up, $a^{2}=a_b^{2}+a_s^{2}-2a_ba_s\\cos(kL^{*})$ (step 6), and a larger $a$ is a larger $R_W$.','Next: a larger ship at the same $F_n$ makes the same pattern, but higher and wider.'];
 const PWB=['The ship advances at $V$, but the energy of the waves travels at the group speed, half the wave speed: $V/2$.','So the pattern, of width $b$, grows longer at $V-V/2=V/2$ metres per second, and its energy grows by $E\\,b\\,V/2$ per second.','That is the power the ship gives to the waves: $R_W V=E\\,b\\,V/2$, so $$R_W=\\tfrac14\\rho g\\,a^{2}\\,b$$'];
 const PWC=['Same ship, same width: a wave twice as high gives four times the wave resistance. $R_W$ is a parabola in $a$.','This is what a hump is. The bow and stern waves add up, $$a^{2}=a_b^{2}+a_s^{2}-2a_ba_s\\cos(kL^{*})$$ and a larger $a$ is a larger $R_W$ (step 6): hump, high wave; hollow, low wave.','Next: a larger ship at the same $F_n$ makes the same pattern, but higher and wider.'];
 const SZ2=24; // step 9: the curves end here, the waves of the two sizes follow
@@ -491,9 +492,9 @@ const S=[
   sub:p=>p<D61?{key:'a',eqs:['lw'],pts:PA}:p<O62?{key:'b',eqs:['lw','fnn'],pts:PB}:p<O63?{key:'c',eqs:['sum'],pts:PC}:{key:'d',eqs:['rw3','rw','humps'],pts:PD}},
  {d:14,t:"Waves 2: count the half waves",eqs:['count'],x:"Count the half wave lengths between the bow crest and the stern trough: N = λ/(π·Fn²). An odd N puts a trough on a trough: a hump of wave resistance. An even N puts a crest on a trough: a hollow. As the speed rises, N falls through 7, 6, 5, 4, 3: humps and hollows alternate, and the last hump, N = 1, is the main one.",
   st:p=>({mode:'count',f:sweep(p,0.16,0.42,1,11)})},
- {d:32,t:"Waves 3: the wave height decides the resistance",eqs:['wha','whb'],x:"The waves are made by the ship, so they carry away its work. A wave of amplitude a holds the energy E = ½ρg·a² per square metre. The ship advances at V while the wave energy travels at V/2, so the wave pattern of width b grows by V/2 per second and RW·V = E·b·V/2, that is RW = ¼ρg·a²·b. Twice the wave height, four times the wave resistance. This is what the humps and hollows are: the sum of the bow and the stern wave is a high or a low wave.",
-  st:p=>({mode:'whres',amp:AMPW(p),stage:p<10?0:p<21?1:2,kb:ease(clamp((p-11)/3,0,1))}),
-  sub:p=>p<10?{key:'a',eqs:['wha'],pts:PWA}:p<21?{key:'b',eqs:['whb'],pts:PWB}:{key:'c',eqs:['whc','sum'],pts:PWC}},
+ {d:36,t:"Waves 3: the wave height decides the resistance",eqs:['wha','whb','whc'],x:"The waves are made by the ship, so they carry away its work. A wave of amplitude a holds the energy E = ½ρg·a² per square metre. The ship advances at V while the wave energy travels at V/2, so the wave pattern of width b grows by V/2 per second and RW·V = E·b·V/2, that is RW = ¼ρg·a²·b. Twice the wave height, four times the wave resistance. This is what the humps and hollows are: the sum of the bow and the stern wave is a high or a low wave.",
+  st:p=>({mode:'whres',amp:AMPW(p),stage:1,kt:ease(clamp((p-5)/3,0,1)),kp:ease(clamp((p-8)/3,0,1)),kb:ease(clamp((p-14)/3,0,1))}),
+  sub:p=>({key:'a',eqs:['wha','whb','whc'],pts:PWALL})},
  {d:40,t:"Same Froude number, same waves: size does not matter",eqs:['size'],x:"Scale the hull by any factor, keeping every proportion, and sail it at the same Fn: by Froude's law the wave pattern scales with it, and in the method CW is exactly the same, so the humps fall at the same Froude numbers: four sizes, one curve. Now redraw the same curves against speed in knots: they separate. The "+fmt(hump(1),3)+" hump is at "+fmt(hump(1)*Math.sqrt(G*SHIP.L/4)/KN,1)+" kn at a quarter of the size, "+fmt(hump(1)*Math.sqrt(G*SHIP.L/2)/KN,1)+" kn at half size, "+fmt(vfn(hump(1)),1)+" kn for the ship and "+fmt(hump(1)*Math.sqrt(G*SHIP.L*2)/KN,1)+" kn at twice the size: the speed of a hump scales with √L. Friction does not follow Fn at all: the larger the ship, the larger Rn and the smaller CF. Seen from the side the waves of the larger ship are higher: the pattern is a scaled copy, twice as long, twice as high and twice as wide, and step 8 has shown that wave height costs resistance.",
   st:p=>p<SZ2?({mode:'size',f:sweep(p,0.15,0.40,2,13),pick:Math.min(3,Math.floor(p/3.5)),kn:ease(clamp((p-15)/4,0,1))}):({mode:'height',amp:ease(clamp((p-SZ2-0.5)/3.5,0,1)),form:1,rows:Math.min(4,(p-SZ2)*0.8),note:ease(clamp((p-SZ2-5)/2.5,0,1)),ph:p}),
   sub:p=>p<SZ2?{key:'a',eqs:['size']}:{key:'b',eqs:['size','hgt'],pts:PSZ2}},
@@ -1102,20 +1103,21 @@ function drawWhres(st){
   if(amp>0.25){ let best=null; pts.forEach(p=>{ if(p[0]<bowX-Lp-10&&p[0]>r.x+20&&(!best||p[1]<best[1])) best=p; });
     if(best){ arrow(best[0],yw,best[0],best[1]+2,C.aft,2); line([[best[0]-10,yw],[best[0]+10,yw]],C.aft,1.2); label(best[0]+8,best[1]-12,amp>1.95?'2a':amp>1.05?fmt(amp,1)+'a':'a',C.aft,'left'); } }
   if(col) text(r.x,yw+sea+16,'the ship, '+fmt(h.L,0)+' m at '+fmt(h.V,1)+' kn, Fn '+fmt(hump(1),3)+': side view; dashed, the wave of height a',C.muted,'left',12);
-  if(col){ const y0=r.y+r.h*0.58, hb=r.h*0.22, lamPx=2*Math.PI/k/mpp, ye=y0+hb/2, hw=hb*0.15;
+  if(col){ ctx.globalAlpha=st.kt; const y0=r.y+r.h*0.58, hb=r.h*0.22, lamPx=2*Math.PI/k/mpp, ye=y0+hb/2, hw=hb*0.15;
     text(r.x,y0-12,'Seen from above: the pattern has the width b',C.ink,'left',fs,'600');
     ctx.fillStyle=C.seas; ctx.fillRect(r.x,y0,lw,hb); ctx.fillStyle=C.aft; ctx.globalAlpha=clamp(0.04+0.34*amp*amp/4,0,0.4); ctx.fillRect(r.x,y0,lw,hb); ctx.globalAlpha=1;
     for(let n=0;n<40;n++){ const x=bowX-Lp-n*lamPx; if(x<r.x) break; line([[x,y0+3],[x,y0+hb-3]],C.sea,2); }
     ctx.beginPath(); ctx.moveTo(bowX-Lp,ye-hw); ctx.lineTo(bowX-Lp*0.3,ye-hw); ctx.quadraticCurveTo(bowX-Lp*0.05,ye-hw*0.8,bowX,ye); ctx.quadraticCurveTo(bowX-Lp*0.05,ye+hw*0.8,bowX-Lp*0.3,ye+hw); ctx.lineTo(bowX-Lp,ye+hw); ctx.closePath(); ctx.fillStyle=C.panel; ctx.fill(); ctx.strokeStyle=C.ink; ctx.lineWidth=1.6; ctx.stroke();
     arrow(r.x+14,ye,r.x+14,y0+2,C.ink,1.6); arrow(r.x+14,ye,r.x+14,y0+hb-2,C.ink,1.6); label(r.x+24,ye-6,'b',C.ink,'left');
-    const yb=y0+hb+22;
-    if(st.stage!==1) text(r.x,yb,'energy per m² of the pattern: ½ρg·a² × '+fmt(amp*amp,1),C.ink,'left',fs,'600');
-    else if(st.kb>0){ const xa=r.x+8; arrow(xa,yb,xa+130*st.kb,yb,C.ink,2.4); text(xa+140,yb,'the ship: V',C.ink,'left',fs,'600'); arrow(xa,yb+24,xa+65*st.kb,yb+24,C.aft,2.4); text(xa+140,yb+24,'the energy of the waves: V/2',C.aft,'left',fs,'600'); } }
+    const yb=y0+hb+22; ctx.globalAlpha=1;
+    text(r.x,yb,'energy per m² of the pattern: ½ρg·a² × '+fmt(amp*amp,1),C.ink,'left',fs,'600');
+    if(st.kb>0){ const xa=r.x+8; arrow(xa,yb+24,xa+130*st.kb,yb+24,C.ink,2.4); text(xa+140,yb+24,'the ship: V',C.ink,'left',fs,'600'); arrow(xa,yb+46,xa+65*st.kb,yb+46,C.aft,2.4); text(xa+140,yb+46,'the energy of the waves: V/2',C.aft,'left',fs,'600'); } }
+  ctx.globalAlpha=st.kp;
   const rc=col?{x:r.x+lw+56,y:r.y+8,w:r.w-lw-64,h:r.h-52}:{x:r.x+36,y:r.y+r.h*0.50,w:r.w-46,h:r.h*0.30};
-  const f=frame(rc,[0,2.2],[0,5],{xt:[0,1,2],xf:x=>x===0?'0':x===1?'a':'2a',yt:col?[0,1,4]:[0,4],yf:y=>String(y),xl:col?'wave height':null,yl:col?(st.stage===0?'energy per m²  (a → 1)':'RW  (a → 1)'):null});
+  const f=frame(rc,[0,2.2],[0,5],{xt:[0,1,2],xf:x=>x===0?'0':x===1?'a':'2a',yt:col?[0,1,4]:[0,4],yf:y=>String(y),xl:col?'wave height':null,yl:col?'RW = ¼ρg·a²·b  (a → 1)':null});
   const cu=[]; for(let x=0;x<=2.2;x+=0.05) cu.push([f.X(x),f.Y(x*x)]); line(cu,C.aft,3);
   const X=f.X(amp), Y=f.Y(amp*amp); line([[X,f.Y(0)],[X,Y]],C.muted,1,[4,3]); line([[f.X(0),Y],[X,Y]],C.muted,1,[4,3]);
-  dot(f.X(1),f.Y(1),C.ink,4); dot(X,Y,C.aft,6); if(amp>0.3) label(amp>1.5?X-12:X+12,Y-6,'× '+fmt(amp*amp,1),C.aft,amp>1.5?'right':'left');
+  dot(f.X(1),f.Y(1),C.ink,4); dot(X,Y,C.aft,6); if(amp>0.3) label(amp>1.5?X-12:X+12,Y-6,'× '+fmt(amp*amp,1),C.aft,amp>1.5?'right':'left'); ctx.globalAlpha=1;
 }
 function drawInputs(st){
   const r=mainRect(), gap=small?8:22, col=!small;
