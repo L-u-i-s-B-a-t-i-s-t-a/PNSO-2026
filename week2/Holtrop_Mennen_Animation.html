@@ -1109,23 +1109,23 @@ function isoCube(ox,oy,u,i,j,k,col,al){ const x=ox+(i-j)*u*0.86, y=oy+(i+j)*u*0.
   const P=(a,b2)=>[x+a,y+b2]; const top=[P(0,-u),P(dx,-u+dy),P(0,-u+2*dy),P(-dx,-u+dy)], L=[P(-dx,-u+dy),P(0,-u+2*dy),P(0,2*dy),P(-dx,dy)], R2=[P(dx,-u+dy),P(0,-u+2*dy),P(0,2*dy),P(dx,dy)];
   [[top,.55],[L,.85],[R2,.7]].forEach(([pp,a])=>{ ctx.globalAlpha=a*al; ctx.fillStyle=col; ctx.beginPath(); pp.forEach((q,n)=>n?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1])); ctx.closePath(); ctx.fill(); ctx.globalAlpha=al; ctx.strokeStyle=C.panel; ctx.lineWidth=1.2; ctx.setLineDash([]); ctx.stroke(); }); ctx.globalAlpha=1; }
 function drawEight(st){
-  const r=mainRect(), q0=HQ[0].q, q1=HQ[1].q, gap=small?8:22, col=!small;
-  const x0=col?r.x-46:r.x-30, tw=col?r.w+56:r.w+30, pw=col?(tw-2*gap)/3:tw, top=r.y-(small?20:16), ph=col?r.h+12:(r.h+50-2*gap)/3;
+  const r=mainRect(), q0=HQ[0].q, q1=HQ[1].q, gap=small?8:22, col=!small, tight=W<1500, stripH=col?(tight?62:66):0, calcH=col?(tight?64:88):0, ln=tight?15:19;
+  const x0=col?r.x-46:r.x-30, tw=col?r.w+56:r.w+30, pw=col?(tw-2*gap)/3:tw, top=r.y-(small?20:16)+(col?stripH:0), ph=col?r.h+12-stripH+26:(r.h+50-2*gap)/3;
   const fs=small?10:13, fb=small?11:15;
   const panel=(m)=>col?{x:x0+m*(pw+gap),y:top,w:pw,h:ph}:{x:x0,y:top+m*(ph+gap),w:pw,h:ph};
   const head=(rc,t,on)=>{ ctx.globalAlpha=on?1:.3; ctx.setLineDash([]); ctx.strokeStyle=C.rule; ctx.lineWidth=1; ctx.strokeRect(rc.x+.5,rc.y+.5,rc.w-1,rc.h-1); text(rc.x+10,rc.y+(small?11:18),t,C.ink,'left',fb,'700'); ctx.globalAlpha=1; };
   const result=(rc,t,a)=>{ if(a<=0) return; if(col){ ctx.fillStyle=C.aft; ctx.globalAlpha=.13*a; ctx.fillRect(rc.x+1,rc.y+rc.h-36,rc.w-2,35); ctx.globalAlpha=a; text(rc.x+rc.w/2,rc.y+rc.h-18,t,C.aft,'center',16,'700'); } else { ctx.globalAlpha=a; text(rc.x+rc.w-8,rc.y+11,t,C.aft,'right',11,'700'); } ctx.globalAlpha=1; };
   // A: the formula, volume as cubes
-  { const rc=panel(0), p=st.a; head(rc,col?'A · The formula: RW ∝ ∇':'A · Formula: RW ∝ ∇',true);
-    const u=col?Math.min(rc.w*0.125,rc.h*0.12):rc.h*0.16, oy=col?rc.y+rc.h*0.48:rc.y+rc.h*0.62, xs=col?rc.x+rc.w*0.2:rc.x+rc.w*0.1, xl=col?rc.x+rc.w*0.66:rc.x+rc.w*0.36;
+  { const rcF=panel(0), rc={...rcF,h:rcF.h-calcH}, p=st.a; head(rcF,col?'A · The formula: RW ∝ ∇':'A · Formula: RW ∝ ∇',true);
+    const u=col?Math.min(rc.w*0.125,rc.h*(tight?0.082:0.12)):rc.h*0.16, oy=col?rc.y+rc.h*(tight?0.4:0.48):rc.y+rc.h*0.62, xs=col?rc.x+rc.w*0.2:rc.x+rc.w*0.1, xl=col?rc.x+rc.w*0.66:rc.x+rc.w*0.36;
     isoCube(xs,oy+u,u,0,0,0,C.fore,1); const nb=Math.min(8,Math.floor(p*9)), order=[[0,0,0],[1,0,0],[0,1,0],[1,1,0],[0,0,1],[1,0,1],[0,1,1],[1,1,1]];
     for(let m=0;m<nb;m++){ const [i,j,k]=order[m]; isoCube(xl,oy,u,i,j,k,C.aft,1); }
     if(col){ const yl=oy+u*2.9; text(xs,yl,'sister',C.fore,'center',fs,'600'); text(xs,yl+18,'∇ '+fmt(SHIP.vol/8,0)+' m³',C.ink,'center',fs); text(xl,yl,'ship',C.aft,'center',fs,'600'); text(xl,yl+18,'∇ '+fmt(SHIP.vol,0)+' m³',C.ink,'center',fs);
       text(rc.x+10,rc.y+46,'RW = c1c2c5 · ∇ρg · exp{…}',C.ink,'left',fs,'600'); text(rc.x+10,rc.y+65,'c1c2c5, exp{…}: shape and Fn only, equal',C.muted,'left',fs-1); }
     else text(rc.x+rc.w*0.56,rc.y+rc.h*0.6,'∇ '+fmt(SHIP.vol/8,0)+' → '+fmt(SHIP.vol,0)+' m³',C.ink,'left',fs);
-    result(rc,col?'2 × 2 × 2: ∇ × 8, RW × 8':'∇ × 8 → RW × 8',clamp(p*9-8,0,1)); }
+    result(rcF,col?'2 × 2 × 2: ∇ × 8, RW × 8':'∇ × 8 → RW × 8',clamp(p*9-8,0,1)); }
   // B: the coefficient, S and V²
-  { const rc=panel(1), p=st.b, on=st.b>0; head(rc,col?'B · The coefficient: RW = CW·½ρ·S·V²':'B · Coefficient: RW = CW·½ρ·S·V²',on);
+  { const rcF=panel(1), rc={...rcF,h:rcF.h-calcH}, p=st.b, on=st.b>0; head(rcF,col?'B · The coefficient: RW = CW·½ρ·S·V²':'B · Coefficient: RW = CW·½ρ·S·V²',on);
     if(on){ const u=col?Math.min(rc.w*0.1,rc.h*0.095):rc.h*0.24, ys=col?rc.y+rc.h*0.2:rc.y+rc.h*0.34, xa=col?rc.x+rc.w*0.08:rc.x+rc.w*0.04, xb=col?rc.x+rc.w*0.44:rc.x+rc.w*0.14;
       const sq=(x,y,c)=>{ ctx.fillStyle=c; ctx.globalAlpha=.75; ctx.fillRect(x,y,u-2,u-2); ctx.globalAlpha=1; };
       sq(xa,ys+u,C.fore); const ns=Math.min(4,Math.floor(clamp(p/0.45,0,1)*5)); [[0,1],[1,1],[0,0],[1,0]].slice(0,ns).forEach(([i,j])=>sq(xb+i*u,ys+j*u,C.aft));
@@ -1135,9 +1135,9 @@ function drawEight(st){
         ctx.fillStyle=C.fore; ctx.globalAlpha=.75; ctx.fillRect(bx,yb,bl,bh); ctx.fillStyle=C.aft; ctx.fillRect(bx,yb+bh+6,bl*(1+ease(pv)),bh); ctx.globalAlpha=1;
         if(col){ text(bx+bl+8,yb+bh/2,fmt((HQ[0].V*KN)**2,1)+' m²/s²',C.fore,'left',fs); text(bx+bl*2+8,yb+bh+6+bh/2,fmt((HQ[1].V*KN)**2,1)+' m²/s²  × 2',C.aft,'left',fs,'600'); if(pv>=1) text(bx,yb+2*bh+28,'CW × 10³: '+fmt(q0.CW*1000,3)+' = '+fmt(q1.CW*1000,3)+'  × 1',C.ink,'left',fs,'600'); }
         else text(rc.x+rc.w*0.68,rc.y+rc.h*0.6,'S × 4, V² × 2',C.ink,'left',fs); }
-      result(rc,col?'S × 4, V² × 2: RW × 8':'RW × 8',clamp((p-0.9)/0.1,0,1)); } }
+      result(rcF,col?'S × 4, V² × 2: RW × 8':'RW × 8',clamp((p-0.9)/0.1,0,1)); } }
   // C: the waves
-  { const rc=panel(2), p=st.c, on=st.c>0; head(rc,col?'C · The waves: RW ∝ ρg·a²·b':'C · Waves: RW ∝ ρg·a²·b',on);
+  { const rcF=panel(2), rc={...rcF,h:rcF.h-calcH}, p=st.c, on=st.c>0; head(rcF,col?'C · The waves: RW ∝ ρg·a²·b':'C · Waves: RW ∝ ρg·a²·b',on);
     if(on){ const Lp=col?rc.w*0.44:rc.w*0.2, mpp=SHIP.L/Lp, A=col?7:3, bowX=col?rc.x+rc.w*0.95:rc.x+rc.w*0.5, ys=col?[rc.y+rc.h*0.2,rc.y+rc.h*0.42]:[rc.y+rc.h*0.45,rc.y+rc.h*0.82];
       ctx.save(); ctx.beginPath(); ctx.rect(rc.x+1,rc.y+(small?18:30),col?rc.w-2:rc.w*0.52,col?rc.h*0.5:rc.h-19); ctx.clip();
       HQ.forEach((h,i)=>{ const yw=ys[i], Lpx=h.L/mpp, k=G/(h.V*KN)**2, amp=A*h.s*2*ease(clamp(p/0.35,0,1)), Ls=LAM*h.L; const pts=[];
@@ -1149,8 +1149,28 @@ function drawEight(st){
         text(rc.x+10,yb-16,'Seen from above: width b of the pattern',C.ink,'left',fs,'600');
         [[xb1,h1,C.fore,'b'],[xb2,h1*(1+ease(pb)),C.aft,'2b']].forEach(([x,hh,c,lb])=>{ ctx.fillStyle=C.seas; ctx.fillRect(x,yb,bw,hh); const nl=6, off=(st.ph*10)%(bw/nl); for(let m=0;m<nl;m++){ const xx=x+m*bw/nl+off; if(xx<x+bw) line([[xx,yb+1],[xx,yb+hh-1]],c,1.6); } ctx.setLineDash([]); ctx.strokeStyle=c; ctx.lineWidth=1.2; ctx.strokeRect(x,yb,bw,hh); text(x+bw+6,yb+hh/2,lb,c,'left',fs,'700'); }); }
       if(!col&&p>0.4) text(rc.x+rc.w*0.6,rc.y+rc.h*0.6,'a² × 4, b × 2',C.ink,'left',fs);
-      result(rc,col?'a² × 4, b × 2: RW × 8':'RW × 8',clamp((p-0.9)/0.1,0,1)); } }
+      result(rcF,col?'a² × 4, b × 2: RW × 8':'RW × 8',clamp((p-0.9)/0.1,0,1)); } }
   if(st.chk>0&&col){ ctx.globalAlpha=st.chk; const y=top+ph+18; text(x0,y,'The method: RW '+fmt(q0.RW,0)+' → '+fmt(q1.RW,0)+' kN (× '+fmt(q1.RW/q0.RW,1)+').  Friction does not follow: CF × '+fmt(q1.CF/q0.CF,2)+', so RF(1+k1)/RW '+fmt(q0.RFk/q0.RW,2)+' → '+fmt(q1.RFk/q1.RW,2)+'.',C.ink,'left',13,'600'); ctx.globalAlpha=1; }
+  if(col){ const sM=SHIP.L, B0=SHIP.B*HQ[0].s, T0=SHIP.T*HQ[0].s, ls=v=>(a,b2,c2,cl,y,al)=>{}; 
+    const row=(rc,y,t,c,al,w)=>{ ctx.globalAlpha=al; text(rc.x+10,y,t,c||C.ink,'left',fs,w||'500'); ctx.globalAlpha=1; };
+    const cy=m=>panel(m).y+panel(m).h-36-calcH+(tight?10:14);
+    const rw0=q0.RW, rw1=q1.RW, ref0=q0.q*q0.S, ref1=q1.q*q1.S, b0=50, ab0=Math.sqrt(4*rw0*1000/(1025*G*b0)), ab1=Math.sqrt(4*rw1*1000/(1025*G*2*b0));
+    { const al=clamp((st.a-0.9)/0.1,0,1), y=cy(0), rc=panel(0); ctx.globalAlpha=al; line([[rc.x+10,y-14],[rc.x+rc.w-10,y-14]],C.rule,1); ctx.globalAlpha=1;
+      row(rc,y,'∇: '+fmt(SHIP.vol/8,0)+' → '+fmt(SHIP.vol,0)+' m³  (× 8.0)',C.ink,al,'600');
+      row(rc,y+ln,'RW ∝ ∇: same shape, same Fn',C.muted,al); row(rc,y+2*ln,'RW: '+fmt(rw0,0)+' → '+fmt(rw1,0)+' kN  (× '+fmt(rw1/rw0,1)+')',C.aft,al,'700'); }
+    { const al=clamp((st.b-0.9)/0.1,0,1), y=cy(1), rc=panel(1); ctx.globalAlpha=al; line([[rc.x+10,y-14],[rc.x+rc.w-10,y-14]],C.rule,1); ctx.globalAlpha=1;
+      row(rc,y,'S × '+fmt(q1.S/q0.S,2)+' · V² × '+fmt(((HQ[1].V*KN)**2)/((HQ[0].V*KN)**2),2)+' → ½ρSV² × '+fmt(ref1/ref0,1),C.ink,al,'600');
+      row(rc,y+ln,'CW × 10³ = '+fmt(q0.CW*1000,3)+' on both ships',C.muted,al); row(rc,y+2*ln,'RW = CW·½ρSV²: '+fmt(rw0,0)+' → '+fmt(rw1,0)+' kN',C.aft,al,'700'); }
+    { const al=clamp((st.c-0.9)/0.1,0,1), y=cy(2), rc=panel(2); ctx.globalAlpha=al; line([[rc.x+10,y-14],[rc.x+rc.w-10,y-14]],C.rule,1); ctx.globalAlpha=1;
+      row(rc,y,'a × 2, b × 2 ⇒ a²·b × 2²·2 = 8',C.ink,al,'600');
+      row(rc,y+ln,'b '+fmt(b0,0)+' → '+fmt(2*b0,0)+' m, a '+fmt(ab0,2)+' → '+fmt(ab1,2)+' m (from RW)',C.muted,al); row(rc,y+2*ln,'RW = ¼ρg·a²·b: '+fmt(rw0,0)+' → '+fmt(rw1,0)+' kN',C.aft,al,'700'); }
+    // the geometric scale, on top
+    { const y0=r.y-(small?20:16)+2, sc=HQ[1].s/HQ[0].s, ax=r.x-46, aw=r.w+56, al=ease(clamp(st.ph/2,0,1)); ctx.globalAlpha=al;
+      text(ax,y0+8,'The geometric scale: the ship is the sister ship, every length × '+fmt(sc,0)+'   (λ = '+fmt(HQ[1].L,0)+' / '+fmt(HQ[0].L,1)+' = '+fmt(sc,0)+')',C.ink,'left',fb,'700');
+      const items=[['L',fmt(HQ[0].L,1)+' → '+fmt(HQ[1].L,0)+' m','× 2'],['B',fmt(B0,1)+' → '+fmt(SHIP.B,0)+' m','× 2'],['T',fmt(T0,1)+' → '+fmt(SHIP.T,0)+' m','× 2'],['areas S, a, b…','','× 2² = 4'],['volume ∇','','× 2³ = 8'],['same Fn: V² = Fn²·g·L','','× 2']], cw=aw/items.length;
+      items.forEach(([n,v,f],i)=>{ const x=ax+i*cw; ctx.strokeStyle=C.rule; ctx.lineWidth=1; ctx.strokeRect(x+.5,y0+22,cw-8,tight?30:34); text(x+8,y0+(tight?33:35),n+(v?'  '+v:''),C.muted,'left',fs-1,'500'); text(x+8,y0+(tight?46:50),f,i>=3?C.aft:C.fore,'left',fs+1,'700'); });
+      ctx.globalAlpha=1; } }
+
 }
 
 function drawWhres(st){
@@ -1498,7 +1518,7 @@ const PTS=[
   ['Count the half wave lengths between the bow crest and the stern trough: $$N=\\frac{\\lambda}{\\pi F_n^{2}}$$','Odd $N$: a hump. Even $N$: a hollow.','$N$ falls through 7, 6, 5, 4, 3 and the last hump, $N=1$, is the main one.','Check on the plots below: the wave resistance $R_W$ lies above the dashed curve (without ③) where $N$ is odd, a hump, and below it where $N$ is even, a hollow. The last strip magnifies the difference, $\\Delta R_W=R_W-R_W^{\\text{without ③}}$, in kN: positive lobes cost resistance, negative lobes save it. The counting agrees with the calculation.'],
   PWA,
   ['Scale the hull, keep every proportion, sail at the same $F_n$: $C_W$ is the same and the humps fall at the same $F_n$.','Against knots the curves separate: the 0.263 hump is at 11.5, 16.2, 22.9 and 32.4 kn for four sizes ($\\propto\\sqrt{L}$).','Friction does not follow $F_n$: a larger ship has a larger $R_n$ and a smaller $C_F$.'],
-  ['The 205 m ship and its 102.5 m sister are geometrically similar and sail at $F_n$ 0.263: 22.9 kn and 16.2 kn.','A: $R_W$ follows the displaced volume, $2^{3}=8$. B: $C_W$ equal, $S\\times4$, $V^{2}\\times2$. C: wave height $\\times2$, so $a^{2}\\times4$, and $b\\times2$.','All three give $R_W\\times8$.'],
+  ['The scale is $\\lambda=2$: every length ($L$, $B$, $T$) doubles, every area grows by $2^2=4$, every volume by $2^3=8$. At the same $F_n$, $V^2=F_n^2\\,g\\,L$ doubles too.','The 205 m ship and its 102.5 m sister are geometrically similar and sail at $F_n$ 0.263: 22.9 kn and 16.2 kn.','A: $R_W$ follows the displaced volume, $2^{3}=8$. B: $C_W$ equal, $S\\times4$, $V^{2}\\times2$. C: wave height $\\times2$, so $a^{2}\\times4$, and $b\\times2$.','All three give $R_W\\times8$.'],
   ['The humps are set by a shape ratio: $$\\lambda=1.446\\,C_P-0.03\\,\\frac{L}{B}$$','A fuller hull ($C_P$ 0.75, $L/B$ 6.4) has humps near $F_n$ 0.24 and 0.31; this fine hull ($C_P$ 0.58) near 0.20 and 0.26.'],
   ['The correlation allowance $R_A$ is 221 kN at 25 kn, 12 % of the total, and depends on L.','Friction dominates at low speed (75 % at 14 kn); the waves take over (31 % at 25 kn, 61 % at 35 kn).','Bands mark this hull’s humps (orange) and hollows (blue).'],
   ['$$P_E=R_T\\,V=23{,}063\\ \\text{kW at 25 kn}$$','With wake $w=0.258$ and thrust deduction $t=0.175$: $$\\eta_H=\\frac{1-t}{1-w}=1.112$$ With $\\eta_R$, the propeller and the shaft losses, the shaft power is 32,621 kW.'],
