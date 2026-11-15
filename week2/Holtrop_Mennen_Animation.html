@@ -661,17 +661,19 @@ const SCSLIDE=`<div class="kccard"><h3>Scale the hull yourself</h3>
 <label>Draught ×<input id="sT" type="range" min="1" max="3" step="0.25" value="2"><output id="oT">2.00</output></label>
 <label>Rotate<input id="sR" type="range" min="0" max="360" step="5" value="40"><output id="oR">40°</output></label></div>
 <div class="sc3b"><button type="button" data-sc="2,2,2">×2 in all three</button><button type="button" data-sc="2,1,1">×2 length only</button><button type="button" data-sc="2,2,1">×2 length and beam</button><button type="button" data-sc="1,2,2">×2 beam and draught</button><button type="button" data-sc="1,1,1">reset</button></div>
-<div class="sc3b"><span style="align-self:center">Shape:</span><button type="button" data-shape="box" id="shBox">Box</button><button type="button" data-shape="ship" id="shShip">Ship</button></div>
-<p class="sm" style="margin:6px 0 0">Drag the block on the left of the plot to turn it. An area scales with two of the factors multiplied, a volume with all three. Only when all three are equal is the shape the same, and then the area goes as the square of the scale. A box and a ship of the same L, B and T have the same scale law but different Cb and Cp.</p></div>`;
-let SHP='box'; const ROT={yaw:0.7,pit:0.8}, SD={moved:false};
+<div class="sc3b"><span style="align-self:center">Shape:</span><button type="button" data-shape="ship" id="shShip">Wigley hull</button><button type="button" data-shape="box" id="shBox">Box</button></div>
+<p class="sm" style="margin:6px 0 0">Drag the block on the left of the plot to turn it. An area scales with two of the factors multiplied, a volume with all three. Only when all three are equal is the shape the same, and then the area goes as the square of the scale. A Wigley hull (the classical test hull, Cb = 4/9) and a box of the same L, B and T have the same scale law but different Cb and Cp.</p></div>`;
+let SHP='ship'; const ROT={yaw:0.7,pit:0.8}, SD={moved:false};
 // a simplified ship: planform power 1.4, superelliptic section n = 8; Cb and Cp come out of the same numbers
 const HULLC=(()=>{ let cp=0; const N=400; for(let i=0;i<N;i++){ const t=Math.abs((i+.5)/N*2-1); cp+=1-Math.pow(t,1.4); } cp/=N; let cm=0; for(let i=0;i<N;i++){ const y=(i+.5)/N; cm+=Math.pow(1-Math.pow(y,8),1/8); } cm/=N; return {Cp:cp,Cm:cm,Cb:cp*cm}; })();
-function hullFaces(A,B,H){ // x along the length, y to starboard, z up; the waterline is z = 0
-  const nx=30, nt=8, f=[], ws=[], X=[]; for(let i=0;i<=nx;i++){ const u=i/nx, t=Math.abs(2*u-1); X.push((u-0.5)*A); ws.push(B/2*Math.max(0,1-Math.pow(t,1.4))); }
-  const Pt=(i,j,s)=>{ const t=j/nt*Math.PI/2; return [X[i],s*ws[i]*Math.pow(Math.sin(t),0.25),-H*Math.pow(Math.cos(t),0.25)]; };
+function hullFaces(A,B,H){ // the Wigley hull: y = (B/2)(1-(2x/L)^2)(1-(z/T)^2); x along the length, z up, waterline at z = 0
+  const nx=36, nt=10, f=[], X=[]; for(let i=0;i<=nx;i++) X.push((i/nx-0.5)*A);
+  const yy=(x,z)=>(B/2)*(1-(2*x/A)**2)*(1-(z/H)**2), Pt=(i,j,s)=>{ const z=-H*(1-j/nt); return [X[i],s*yy(X[i],z),z]; };
   for(let i=0;i<nx;i++){ for(let j=0;j<nt;j++) for(const s of [1,-1]) f.push([Pt(i,j,s),Pt(i+1,j,s),Pt(i+1,j+1,s),Pt(i,j+1,s)]);
-    f.push([[X[i],-ws[i],0],[X[i+1],-ws[i+1],0],[X[i+1],ws[i+1],0],[X[i],ws[i],0]]); }
+    f.push([Pt(i,nt,-1),Pt(i+1,nt,-1),Pt(i+1,nt,1),Pt(i,nt,1)]); }
   return f; }
+const faceArea=f=>{ const e=(p,q)=>[q[0]-p[0],q[1]-p[1],q[2]-p[2]], cr=(u,v)=>[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]], n=(u)=>Math.hypot(...u)/2; return n(cr(e(f[0],f[1]),e(f[0],f[2])))+n(cr(e(f[0],f[2]),e(f[0],f[3]))); };
+const wetArea=fs=>fs.reduce((s,f)=>s+(f.every(p=>p[2]===0)?0:faceArea(f)),0);
 function boxFaces(A,B,H){ const x=A/2,y=B/2,P=(a,b,c)=>[a*x,b*y,-c*H];
   return [[P(-1,-1,0),P(1,-1,0),P(1,1,0),P(-1,1,0)],[P(-1,-1,1),P(-1,1,1),P(1,1,1),P(1,-1,1)],[P(-1,1,0),P(1,1,0),P(1,1,1),P(-1,1,1)],[P(-1,-1,0),P(-1,-1,1),P(1,-1,1),P(1,-1,0)],[P(1,-1,0),P(1,-1,1),P(1,1,1),P(1,1,0)],[P(-1,-1,0),P(-1,1,0),P(-1,1,1),P(-1,-1,1)]]; }
 function scaledS(x,y,z){ return HM({...SHIP,L:SHIP.L*x,B:SHIP.B*y,T:SHIP.T*z,vol:SHIP.vol*x*y*z,ABT:SHIP.ABT*y*z,hB:SHIP.hB*z,AT:SHIP.AT*y*z,V:25}); }
@@ -690,19 +692,22 @@ function drawScale3(st){
   const prj=p=>{ const x1=p[0]*cyw-p[1]*syw, y1=p[0]*syw+p[1]*cyw; return [cx0+x1*u, cy0+(y1*spt-p[2]*cpt)*u, y1*cpt+p[2]*spt]; };
   const wire=(A,B,H,col)=>{ const q=boxFaces(A,B,H); ctx.setLineDash([5,4]); ctx.strokeStyle=col; ctx.lineWidth=1.2; [q[0],q[1]].forEach(f=>{ ctx.beginPath(); f.forEach((p,k)=>{ const s=prj(p); k?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]); }); ctx.closePath(); ctx.stroke(); });
     q[0].forEach((p,k)=>{ const s=prj(p), t=prj(q[1][[0,3,2,1][k]]); ctx.beginPath(); ctx.moveTo(s[0],s[1]); ctx.lineTo(t[0],t[1]); ctx.stroke(); }); ctx.setLineDash([]); };
-  wire(a0,b0,h0,C.muted);
+  if(SHP==='ship'){ const pg=(pts)=>{ ctx.beginPath(); pts.forEach((p,k)=>{ const s=prj(p); k?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]); }); ctx.stroke(); };
+    ctx.setLineDash([5,4]); ctx.strokeStyle=C.muted; ctx.lineWidth=1.3; const gw=(x,z)=>(b0/2)*(1-(2*x/a0)**2)*(1-(z/h0)**2), xs=vs(-a0/2,a0/2,30), zs=vs(-h0,0,10);
+    pg(xs.map(x=>[x,gw(x,0),0]).concat(xs.slice().reverse().map(x=>[x,-gw(x,0),0]))); pg(xs.map(x=>[x,0,-h0])); pg(zs.map(z=>[0,gw(0,z),z]).concat(zs.slice().reverse().map(z=>[0,-gw(0,z),z]))); ctx.setLineDash([]); }
+  else wire(a0,b0,h0,C.muted);
   const A=a0*sx,Bb=b0*sy,H=h0*sz, faces=(SHP==='ship'?hullFaces(A,Bb,H):boxFaces(A,Bb,H)), cen=[0,0,-H/2], L0=[-0.35,-0.5,0.8], ln=Math.hypot(...L0);
   const out=[]; faces.forEach(f=>{ const e1=[f[1][0]-f[0][0],f[1][1]-f[0][1],f[1][2]-f[0][2]], e2=[f[3][0]-f[0][0],f[3][1]-f[0][1],f[3][2]-f[0][2]]; let n=[e1[1]*e2[2]-e1[2]*e2[1],e1[2]*e2[0]-e1[0]*e2[2],e1[0]*e2[1]-e1[1]*e2[0]]; const m=Math.hypot(...n); if(m<1e-9) return; n=n.map(v=>v/m);
     const c=[0,1,2].map(k=>(f[0][k]+f[1][k]+f[2][k]+f[3][k])/4); if(n[0]*(c[0]-cen[0])+n[1]*(c[1]-cen[1])+n[2]*(c[2]-cen[2])<0) n=n.map(v=>-v);
     const nx_=n[0]*cyw-n[1]*syw, ny_=n[0]*syw+n[1]*cyw, nv=ny_*cpt+n[2]*spt; if(nv<=0) return; const pr=f.map(prj); out.push({top:f.every(p=>p[2]===0),pr,d:pr.reduce((s,p)=>s+p[2],0)/4,sh:Math.max(0,(n[0]*L0[0]+n[1]*L0[1]+n[2]*L0[2])/ln)}); });
   out.sort((p,q)=>p.d-q.d);
   out.forEach(o=>{ ctx.beginPath(); o.pr.forEach((p,k)=>k?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.closePath(); ctx.globalAlpha=o.top?0.5:1; ctx.fillStyle=C.fore; ctx.fill(); ctx.globalAlpha=1; ctx.fillStyle='rgba(10,30,60,'+(0.42*(1-o.sh)).toFixed(3)+')'; if(!o.top) ctx.fill(); ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=0.6; ctx.stroke(); });
-  text(x0,r.y+12,(SHP==='ship'?'A simplified ship':'A box')+', underwater part: L ×'+fmt(sx,2)+', B ×'+fmt(sy,2)+', T ×'+fmt(sz,2),C.ink,'left',15,'700');
+  text(x0,r.y+12,(SHP==='ship'?'A Wigley hull':'A box')+', underwater part: L ×'+fmt(sx,2)+', B ×'+fmt(sy,2)+', T ×'+fmt(sz,2),C.ink,'left',15,'700');
   text(x0+w0,r.y+30,'drag to rotate',C.muted,'right',11);
   // numbers: now against the paper's ship (was)
-  const q=scaledS(sx,sy,sz), L1=SHIP.L*sx, B1=SHIP.B*sy, T1=SHIP.T*sz, cb=SHP==='ship'?HULLC.Cb:1, cpp=SHP==='ship'?HULLC.Cp:1, kv=SHP==='ship'?SHIP.vol/(SHIP.L*SHIP.B*SHIP.T):1;
-  const Sof=(L,B,T,qq)=>SHP==='ship'?qq.S:L*B+2*(L+B)*T, q1=scaledS(1,1,1);
-  const Vn=L1*B1*T1*kv, Sn=Sof(L1,B1,T1,q), V0=SHIP.L*SHIP.B*SHIP.T*kv, S0=Sof(SHIP.L,SHIP.B,SHIP.T,q1);
+  const L1=SHIP.L*sx, B1=SHIP.B*sy, T1=SHIP.T*sz, cb=SHP==='ship'?4/9:1, cpp=SHP==='ship'?2/3:1;
+  const Sof=(L,B,T)=>SHP==='ship'?wetArea(hullFaces(L,B,T)):L*B+2*(L+B)*T;
+  const Vn=L1*B1*T1*cb, Sn=Sof(L1,B1,T1), V0=SHIP.L*SHIP.B*SHIP.T*cb, S0=Sof(SHIP.L,SHIP.B,SHIP.T);
   const ty=r.y+r.h*0.645, dy=small?15:17, cx=[x0,x0+w0*0.55,x0+w0*0.78,x0+w0];
   const rows=[['','now','was','ratio'],['Length L, m',fmt(L1,0),'205','×'+fmt(sx,2)],['Beam B, m',fmt(B1,1),'32','×'+fmt(sy,2)],['Draught T, m',fmt(T1,1),'10','×'+fmt(sz,2)],['Volume ∇, m³',fmt(Vn,0),fmt(V0,0),'×'+fmt(Vn/V0,2)],['Wetted surface S, m²',fmt(Sn,0),fmt(S0,0),'×'+fmt(Sn/S0,2)],
     ['Coefficients','now','was','paper ship'],['L/B',fmt(L1/B1,2),fmt(SHIP.L/SHIP.B,2),fmt(SHIP.L/SHIP.B,2)],['B/T',fmt(B1/T1,2),fmt(SHIP.B/SHIP.T,2),fmt(SHIP.B/SHIP.T,2)],['Cb',fmt(cb,3),fmt(cb,3),fmt(SHIP.vol/(SHIP.L*SHIP.B*SHIP.T),3)],['Cp',fmt(cpp,3),fmt(cpp,3),fmt(P25.CP,3)]];
@@ -1305,7 +1310,7 @@ const chips=k=>k<1?'':'<span class="chip'+(k>=11?' on':'')+'" title="Question 1:
 const PTS=[
  ['A ship makes a bow wave and a stern wave. The thick line is their sum.','Orange bands: the two waves add up, a <b>hump</b>. Blue bands: they cancel, a <b>hollow</b>.','The humps of this 205 m ship: 13.2, 15.0, 17.7 and 22.9 kn, and one more at 39.7 kn, above the ruler.'],
  ['The example ship of the paper: 205 m, 32 m beam, 10 m draught, at 25 kn.','The total resistance R<sub>T</sub> is split into six parts that obey different laws; the plot shows their share against speed.','Friction and waves dominate; appendages, bulb and transom are small.'],
- ['Friction acts on the wetted surface S: here 7,381 m², as in the paper.','Scale a ship in the same shape by λ: lengths ×λ, areas ×λ², volume ×λ³.','Try it on the right: scale one, two or three directions, turn the solid, and switch between a box and a simplified ship. Read S, the volume and the coefficients.'],
+ ['Friction acts on the wetted surface S: here 7,381 m², as in the paper.','Scale a ship in the same shape by λ: lengths ×λ, areas ×λ², volume ×λ³.','Try it on the right: scale one, two or three directions, turn the solid, and switch between a Wigley hull and a box. Read S, the volume and the coefficients.'],
  ['The ITTC-1957 line is a flat-plate-type friction line: C<sub>F</sub> falls as R<sub>n</sub> grows, yet R<sub>F</sub> still rises.','R<sub>F</sub> ∝ V<sup>n</sup> with n ≈ 1.88 for this ship at 25 kn.','A real hull is not a plate: the form factor gives 1 + k<sub>1</sub> = 1.156.'],
  ['The method is used at full scale: R<sub>n</sub> runs from 1.3×10⁸ to 4.2×10⁹ across the ships it covers.','C<sub>F</sub> moves from 2.0 to 1.3 ×10⁻³: a small, slow ship has a coefficient about half again as large.','The exponent n stays between 1.86 and 1.89.'],
  ['The transverse waves travel with the ship, so the speed fixes their length.','λ<sub>w</sub>/L = 2π·Fn²: at Fn 0.15 many short waves; at 0.32 about L* = 0.65 L; at 0.40 one wave per ship length.'],
