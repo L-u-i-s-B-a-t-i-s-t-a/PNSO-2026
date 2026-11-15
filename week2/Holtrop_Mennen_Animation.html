@@ -447,12 +447,12 @@ const S=[
   st:p=>({mode:'hook',man:(p>=17&&HOOKV!=null)?HOOKV:null,a:ease(clamp(p/1.5,0,1)),sw:clamp((p-2)/12,0,1),hum:ease(clamp((p-13.5)/1.5,0,1)),v:(p>=17&&HOOKV!=null)?HOOKV:13+(FNV(0.263)-13)*clamp((p-2)/12,0,1)}),
   sub:p=>p>=17?{key:'sl',eqs:['rt','pe'],html:HSLIDE}:{key:'a',eqs:['rt','pe']}},
  {d:18,t:"Six parts of the resistance",eqs:['rt'],x:"",
-  st:p=>({mode:'parts',v:p<10?sweep(p,10,35,0.5,9.5):sweep(p,35,25,10,14)})},
+  st:p=>({mode:'parts',v:sweep(p,10,25,0.5,13)})},
  {d:26,t:"Wetted surface, and why areas grow as the square",eqs:['s','sscale'],x:"",
   st:p=>({mode:'scale3',skin:ease(clamp((p-1)/4,0,1)),s:(p>=10&&SCU)?SCU:(p<10?[sweep(p,1,2,6,9),sweep(p,1,2,6,9),sweep(p,1,2,6,9)]:[2,2,2])}),
   sub:p=>p>=10?{key:'sc',eqs:['s','sscale'],html:SCSLIDE}:{key:'a',eqs:['s','sscale']}},
  {d:36,t:"Friction: the coefficient falls, the resistance rises, and the hull adds its form",eqs:['rn','cfn','rf','nfric'],x:"",
-  st:p=>({mode:'fric2',v:p<14?sweep(p,10,35,1,12):sweep(p,35,25,14,16),b:ease(clamp((p-16)/1.5,0,1)),cp:p<16?P25.CP:sweep(p,0.55,0.75,20,28)}),
+  st:p=>({mode:'fric2',v:sweep(p,1,25,1,14),b:1,cp:p<16?P25.CP:sweep(p,0.55,0.75,20,28)}),
   sub:p=>p>=16?{key:'b',eqs:['cfn','rv','k1']}:{key:'a',eqs:['rn','cfn','rf','nfric']}},
  {d:17,t:"The Reynolds numbers of real ships",eqs:['rn','fleet'],x:"The method is used at full scale, with the ship's own length and speed. Across the ships it covers, from 30 m tugs to 400 m container ships, Rn = VL/ν runs from about 1.3×10⁸ to 4.2×10⁹: about one and a half decades. On the ITTC line that moves CF from 2.0 to 1.3 × 10⁻³, so a small, slow ship has a coefficient about half again as large as a large, fast one. The exponent n of RF ∝ V^n stays between 1.86 and 1.89 everywhere. Ship-type regions are typical values, approximate.",
   st:p=>({mode:'fleet',lines:ease(clamp(p/3,0,1)),regions:clamp((p-3)/5,0,1),pts:ease(clamp((p-8)/2,0,1)),cf:clamp((p-10)/5,0,1),v:25})},
@@ -639,7 +639,7 @@ function drawParts(st){
   if(small){ const h=(r.h-46)/2; r1={x:r.x,y:r.y,w:r.w,h}; r2={x:r.x,y:r.y+h+46,w:r.w,h}; } else { const w1=r.w*0.6; r1={x:r.x,y:r.y,w:w1-g/2,h:r.h}; r2={x:r.x+w1+g/2+34,y:r.y,w:r.w-w1-g/2-34,h:r.h}; }
   const f1=frame(r1,[10,35],[0,6500],{xt:[10,15,20,25,30,35],yt:[0,2000,4000,6000],yf:y=>fmt(y,0),xl:'Speed V, kn',yl:'Total resistance RT, kN (stacked parts)',bandsFn:fn=>fn*Math.sqrt(G*SHIP.L)/KN});
   const f2=frame(r2,[10,35],[0,100],{xt:[10,20,30],yt:[0,25,50,75,100],yf:y=>y+' %',xl:'Speed V, kn',yl:'Share of RT'});
-  const v=st.v, rows=R.filter(q=>q.V<=v+1e-9); if(rows.length<2) return;
+  const v=st.v, rows=R;
   const order=['RFk','RAPP','RB','RTR','RA','RW'], col=k=>C[PNAMES.find(p=>p[0]===k)[3]];
   [[f1,false],[f2,true]].forEach(([f,pct])=>{ let base=rows.map(()=>0);
     order.forEach(k=>{ const top=rows.map((q,i)=>base[i]+(pct?100*q[k]/q.RT:q[k])); ctx.fillStyle=col(k); ctx.globalAlpha=k==='RFk'||k==='RW'||k==='RA'?.72:.95; ctx.beginPath();
@@ -656,9 +656,22 @@ let SCU=null; // the scale factors the user has chosen in step 3; null = the ani
 const SCSLIDE=`<div class="kccard"><h3>Scale the hull yourself</h3>
 <div class="sc3"><label>Length ×<input id="sL" type="range" min="1" max="3" step="0.25" value="2"><output id="oL">2.00</output></label>
 <label>Beam ×<input id="sB" type="range" min="1" max="3" step="0.25" value="2"><output id="oB">2.00</output></label>
-<label>Draught ×<input id="sT" type="range" min="1" max="3" step="0.25" value="2"><output id="oT">2.00</output></label></div>
+<label>Draught ×<input id="sT" type="range" min="1" max="3" step="0.25" value="2"><output id="oT">2.00</output></label>
+<label>Rotate<input id="sR" type="range" min="0" max="360" step="5" value="40"><output id="oR">40°</output></label></div>
 <div class="sc3b"><button type="button" data-sc="2,2,2">×2 in all three</button><button type="button" data-sc="2,1,1">×2 length only</button><button type="button" data-sc="2,2,1">×2 length and beam</button><button type="button" data-sc="1,2,2">×2 beam and draught</button><button type="button" data-sc="1,1,1">reset</button></div>
-<p class="sm" style="margin:6px 0 0">An area scales with two of the factors multiplied, a volume with all three. Only when all three are equal is the shape the same, and then the area goes as the square of the scale.</p></div>`;
+<div class="sc3b"><span style="align-self:center">Shape:</span><button type="button" data-shape="box" id="shBox">Box</button><button type="button" data-shape="ship" id="shShip">Ship</button></div>
+<p class="sm" style="margin:6px 0 0">Drag the block on the left of the plot to turn it. An area scales with two of the factors multiplied, a volume with all three. Only when all three are equal is the shape the same, and then the area goes as the square of the scale. A box and a ship of the same L, B and T have the same scale law but different Cb and Cp.</p></div>`;
+let SHP='box'; const ROT={yaw:0.7,pit:0.8}, SD={moved:false};
+// a simplified ship: planform power 1.4, superelliptic section n = 8; Cb and Cp come out of the same numbers
+const HULLC=(()=>{ let cp=0; const N=400; for(let i=0;i<N;i++){ const t=Math.abs((i+.5)/N*2-1); cp+=1-Math.pow(t,1.4); } cp/=N; let cm=0; for(let i=0;i<N;i++){ const y=(i+.5)/N; cm+=Math.pow(1-Math.pow(y,8),1/8); } cm/=N; return {Cp:cp,Cm:cm,Cb:cp*cm}; })();
+function hullFaces(A,B,H){ // x along the length, y to starboard, z up; the waterline is z = 0
+  const nx=30, nt=8, f=[], ws=[], X=[]; for(let i=0;i<=nx;i++){ const u=i/nx, t=Math.abs(2*u-1); X.push((u-0.5)*A); ws.push(B/2*Math.max(0,1-Math.pow(t,1.4))); }
+  const Pt=(i,j,s)=>{ const t=j/nt*Math.PI/2; return [X[i],s*ws[i]*Math.pow(Math.sin(t),0.25),-H*Math.pow(Math.cos(t),0.25)]; };
+  for(let i=0;i<nx;i++){ for(let j=0;j<nt;j++) for(const s of [1,-1]) f.push([Pt(i,j,s),Pt(i+1,j,s),Pt(i+1,j+1,s),Pt(i,j+1,s)]);
+    f.push([[X[i],-ws[i],0],[X[i+1],-ws[i+1],0],[X[i+1],ws[i+1],0],[X[i],ws[i],0]]); }
+  return f; }
+function boxFaces(A,B,H){ const x=A/2,y=B/2,P=(a,b,c)=>[a*x,b*y,-c*H];
+  return [[P(-1,-1,0),P(1,-1,0),P(1,1,0),P(-1,1,0)],[P(-1,-1,1),P(-1,1,1),P(1,1,1),P(1,-1,1)],[P(-1,1,0),P(1,1,0),P(1,1,1),P(-1,1,1)],[P(-1,-1,0),P(-1,-1,1),P(1,-1,1),P(1,-1,0)],[P(1,-1,0),P(1,-1,1),P(1,1,1),P(1,1,0)],[P(-1,-1,0),P(-1,1,0),P(-1,1,1),P(-1,-1,1)]]; }
 function scaledS(x,y,z){ return HM({...SHIP,L:SHIP.L*x,B:SHIP.B*y,T:SHIP.T*z,vol:SHIP.vol*x*y*z,ABT:SHIP.ABT*y*z,hB:SHIP.hB*z,AT:SHIP.AT*y*z,V:25}); }
 function drawScale3(st){
   const r=mainRect(), Lw=r.w*(small?1:0.46), yw=r.y+r.h*(small?0.3:0.44), Lp=Lw*0.9, bowX=r.x+Lw*0.96;
@@ -669,59 +682,68 @@ function drawScale3(st){
   if(!small){ ctx.font=FS+'px '+MONO; ctx.fillStyle=C.muted; ctx.textAlign='left'; ctx.textBaseline='top'; const yd=yw+g.T+(r.h*0.34)+8;
     ctx.fillText('LWL 205 m · B 32 m · T 10 m',r.x+4,yd); ctx.fillText('∇ 37,500 m³ · S 7,381 m²',r.x+4,yd+18); }
   if(small) return;
-  // right: a block standing for the underwater hull, scaled by the three factors
-  const [sx,sy,sz]=st.s, x0=r.x+r.w*0.52, w0=r.w*0.48, k=0.866;
-  const a0=4, b0=1.6, h0=0.8, amax=a0*3, bmax=b0*3, hmax=h0*3;
-  const regionH=r.h*0.60, u=Math.min(w0*0.92/((amax+bmax)*k), regionH/((amax+bmax)*0.5+hmax));
-  const ox=x0+w0*0.5-(amax-bmax)/2*k*u, oy=r.y+34+hmax*u;
-  const P=(x,y,z)=>[ox+(x-y)*k*u-(bmax-0)*k*u*0.0, oy+(x+y)*0.5*u-z*u];
-  const poly=(pts,fill,al,stroke,dash)=>{ ctx.beginPath(); pts.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.closePath(); if(fill){ ctx.globalAlpha=al; ctx.fillStyle=fill; ctx.fill(); ctx.globalAlpha=1; } if(stroke){ ctx.setLineDash(dash||[]); ctx.strokeStyle=stroke; ctx.lineWidth=1.6; ctx.stroke(); ctx.setLineDash([]); } };
-  const box=(a,b,h,fill,al,stroke,dash)=>{ // faces seen from above: the top (x,y), the long side (y=b), the end (x=a)
-    poly([P(0,0,h),P(a,0,h),P(a,b,h),P(0,b,h)],fill,al*0.5,stroke,dash); poly([P(0,b,h),P(a,b,h),P(a,b,0),P(0,b,0)],fill,al*0.85,stroke,dash); poly([P(a,0,h),P(a,b,h),P(a,b,0),P(a,0,0)],fill,al*0.7,stroke,dash); };
-  const A=a0*sx,Bb=b0*sy,H=h0*sz;
-  box(a0,b0,h0,null,0,C.muted,[5,4]);
-  box(A,Bb,H,C.fore,.55,C.ink);
-  // the faces are areas: the long side L·T, the end B·T, the bottom (as the top here) L·B
-  const lab=(p,t)=>label(p[0],p[1],t,C.ink,'center');
-  lab(P(A*0.5,Bb,H*0.5),'L·T  ×'+fmt(sx*sz,2)); lab(P(A,Bb*0.5,H*0.5),'B·T  ×'+fmt(sy*sz,2)); lab(P(A*0.5,Bb*0.5,H),'L·B  ×'+fmt(sx*sy,2));
-  text(x0,r.y+12,'The underwater hull as a block: factors L ×'+fmt(sx,2)+', B ×'+fmt(sy,2)+', T ×'+fmt(sz,2),C.ink,'left',15,'700');
-  // numbers for the real ship
-  const q=scaledS(sx,sy,sz), V=SHIP.vol*sx*sy*sz, ty=r.y+r.h*0.72, dy=19, cx=[x0,x0+w0*0.33,x0+w0*0.62,x0+w0*0.9];
-  ctx.font='600 12px '+MONO; ctx.fillStyle=C.muted; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText('',cx[0],ty-dy);
-  [['','now','was','ratio'],['Length L, m',fmt(SHIP.L*sx,0),'205',' ×'+fmt(sx,2)],['Beam B, m',fmt(SHIP.B*sy,1),'32',' ×'+fmt(sy,2)],['Draught T, m',fmt(SHIP.T*sz,1),'10',' ×'+fmt(sz,2)],['Volume ∇, m³',fmt(V,0),'37,500',' ×'+fmt(sx*sy*sz,2)],['Wetted surface S, m²',fmt(q.S,0),fmt(P25.S,0),' ×'+fmt(q.S/P25.S,2)]].forEach((row,i)=>{ const yy=ty+(i-1)*dy+4; ctx.textBaseline='middle';
-    row.forEach((t,c)=>{ ctx.textAlign=c?'right':'left'; ctx.font=(i===0?'600 11px ':(c===3&&i>3?'700 13px ':'500 13px '))+MONO; ctx.fillStyle=(i===0)?C.muted:(c===3&&i>=4?C.aft:C.ink); ctx.fillText(t,c?cx[c]+w0*(c===1?0.18:c===2?0.2:0.1)-(c===3?0:0):cx[0],yy); }); });
-  if(Math.abs(sx-sy)<1e-6&&Math.abs(sy-sz)<1e-6&&sx>1) text(x0,r.y+r.h-4,'Same shape: S × '+fmt(sx*sx,2)+' = '+fmt(sx,2)+'², ∇ × '+fmt(sx**3,2)+' = '+fmt(sx,2)+'³',C.aft,'left',14,'700');
+  // right: the underwater hull as a rotating solid, a box or a simplified ship, scaled by the three factors
+  const [sx,sy,sz]=st.s, x0=r.x+r.w*0.52, w0=r.w*0.48, a0=5, b0=1.3, h0=0.7, cyw=Math.cos(ROT.yaw), syw=Math.sin(ROT.yaw), cpt=Math.cos(ROT.pit), spt=Math.sin(ROT.pit);
+  const rad=Math.sqrt((a0*3)**2+(b0*3)**2)/2, regionH=r.h*0.50, u=Math.min(w0*1.12/(2*rad),regionH/(2*rad*0.50)), cx0=x0+w0*0.5, cy0=r.y+30+regionH*0.52;
+  const prj=p=>{ const x1=p[0]*cyw-p[1]*syw, y1=p[0]*syw+p[1]*cyw; return [cx0+x1*u, cy0+(y1*spt-p[2]*cpt)*u, y1*cpt+p[2]*spt]; };
+  const wire=(A,B,H,col)=>{ const q=boxFaces(A,B,H); ctx.setLineDash([5,4]); ctx.strokeStyle=col; ctx.lineWidth=1.2; [q[0],q[1]].forEach(f=>{ ctx.beginPath(); f.forEach((p,k)=>{ const s=prj(p); k?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]); }); ctx.closePath(); ctx.stroke(); });
+    q[0].forEach((p,k)=>{ const s=prj(p), t=prj(q[1][[0,3,2,1][k]]); ctx.beginPath(); ctx.moveTo(s[0],s[1]); ctx.lineTo(t[0],t[1]); ctx.stroke(); }); ctx.setLineDash([]); };
+  wire(a0,b0,h0,C.muted);
+  const A=a0*sx,Bb=b0*sy,H=h0*sz, faces=(SHP==='ship'?hullFaces(A,Bb,H):boxFaces(A,Bb,H)), cen=[0,0,-H/2], L0=[-0.35,-0.5,0.8], ln=Math.hypot(...L0);
+  const out=[]; faces.forEach(f=>{ const e1=[f[1][0]-f[0][0],f[1][1]-f[0][1],f[1][2]-f[0][2]], e2=[f[3][0]-f[0][0],f[3][1]-f[0][1],f[3][2]-f[0][2]]; let n=[e1[1]*e2[2]-e1[2]*e2[1],e1[2]*e2[0]-e1[0]*e2[2],e1[0]*e2[1]-e1[1]*e2[0]]; const m=Math.hypot(...n); if(m<1e-9) return; n=n.map(v=>v/m);
+    const c=[0,1,2].map(k=>(f[0][k]+f[1][k]+f[2][k]+f[3][k])/4); if(n[0]*(c[0]-cen[0])+n[1]*(c[1]-cen[1])+n[2]*(c[2]-cen[2])<0) n=n.map(v=>-v);
+    const nx_=n[0]*cyw-n[1]*syw, ny_=n[0]*syw+n[1]*cyw, nv=ny_*cpt+n[2]*spt; if(nv<=0) return; const pr=f.map(prj); out.push({top:f.every(p=>p[2]===0),pr,d:pr.reduce((s,p)=>s+p[2],0)/4,sh:Math.max(0,(n[0]*L0[0]+n[1]*L0[1]+n[2]*L0[2])/ln)}); });
+  out.sort((p,q)=>p.d-q.d);
+  out.forEach(o=>{ ctx.beginPath(); o.pr.forEach((p,k)=>k?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.closePath(); ctx.globalAlpha=o.top?0.5:1; ctx.fillStyle=C.fore; ctx.fill(); ctx.globalAlpha=1; ctx.fillStyle='rgba(10,30,60,'+(0.42*(1-o.sh)).toFixed(3)+')'; if(!o.top) ctx.fill(); ctx.strokeStyle='rgba(255,255,255,.35)'; ctx.lineWidth=0.6; ctx.stroke(); });
+  text(x0,r.y+12,(SHP==='ship'?'A simplified ship':'A box')+', underwater part: L ×'+fmt(sx,2)+', B ×'+fmt(sy,2)+', T ×'+fmt(sz,2),C.ink,'left',15,'700');
+  text(x0+w0,r.y+30,'drag to rotate',C.muted,'right',11);
+  // numbers: now against the paper's ship (was)
+  const q=scaledS(sx,sy,sz), L1=SHIP.L*sx, B1=SHIP.B*sy, T1=SHIP.T*sz, cb=SHP==='ship'?HULLC.Cb:1, cpp=SHP==='ship'?HULLC.Cp:1, kv=SHP==='ship'?SHIP.vol/(SHIP.L*SHIP.B*SHIP.T):1;
+  const Sof=(L,B,T,qq)=>SHP==='ship'?qq.S:L*B+2*(L+B)*T, q1=scaledS(1,1,1);
+  const Vn=L1*B1*T1*kv, Sn=Sof(L1,B1,T1,q), V0=SHIP.L*SHIP.B*SHIP.T*kv, S0=Sof(SHIP.L,SHIP.B,SHIP.T,q1);
+  const ty=r.y+r.h*0.645, dy=small?15:17, cx=[x0,x0+w0*0.55,x0+w0*0.78,x0+w0];
+  const rows=[['','now','was','ratio'],['Length L, m',fmt(L1,0),'205','×'+fmt(sx,2)],['Beam B, m',fmt(B1,1),'32','×'+fmt(sy,2)],['Draught T, m',fmt(T1,1),'10','×'+fmt(sz,2)],['Volume ∇, m³',fmt(Vn,0),fmt(V0,0),'×'+fmt(Vn/V0,2)],['Wetted surface S, m²',fmt(Sn,0),fmt(S0,0),'×'+fmt(Sn/S0,2)],
+    ['Coefficients','now','was','paper ship'],['L/B',fmt(L1/B1,2),fmt(SHIP.L/SHIP.B,2),fmt(SHIP.L/SHIP.B,2)],['B/T',fmt(B1/T1,2),fmt(SHIP.B/SHIP.T,2),fmt(SHIP.B/SHIP.T,2)],['Cb',fmt(cb,3),fmt(cb,3),fmt(SHIP.vol/(SHIP.L*SHIP.B*SHIP.T),3)],['Cp',fmt(cpp,3),fmt(cpp,3),fmt(P25.CP,3)]];
+  rows.forEach((row,i)=>{ const yy=ty+i*dy, hd=(i===0||i===6), hl=(i===4||i===5); ctx.textBaseline='middle'; row.forEach((t,c)=>{ ctx.textAlign=c?'right':'left'; ctx.font=(hd?'600 11px ':(c===3&&hl?'700 12px ':'500 12px '))+MONO; ctx.fillStyle=hd?C.muted:(c===3&&hl?C.aft:(i>6&&c===1?C.fore:C.ink)); ctx.fillText(t,cx[c],yy); }); });
+  if(Math.abs(sx-sy)<1e-6&&Math.abs(sy-sz)<1e-6&&sx>1) text(x0,r.y+30,'Same shape: S × '+fmt(sx*sx,2)+' = '+fmt(sx,2)+'², ∇ × '+fmt(sx**3,2)+' = '+fmt(sx,2)+'³',C.aft,'left',14,'700');
 }
+const RZ=(()=>{ const o=[{V:0,RF:0,RFk:0}]; for(let V=0.5;V<=35.001;V+=0.5){ const q=HM({...SHIP,V}); o.push({V,RF:q.RF,RFk:q.RFk}); } return o; })();
+const rzAt=(key,v)=>{ const i=Math.min(RZ.length-2,Math.floor(v/0.5)), t=(v-RZ[i].V)/0.5; return RZ[i][key]*(1-t)+RZ[i+1][key]*t; };
+const k1OfCp=cp=>HM({...SHIP,vol:cp*SHIP.CM*SHIP.L*SHIP.B*SHIP.T,CWP:null,V:25}).k1;
 function drawFric2(st){
-  const r=mainRect(), g=small?0:34, B=st.b>0.5; let r1,r2,r3;
+  const r=mainRect(), g=small?0:34; let r1,r2,r3;
   if(small){ const h=(r.h-46)/2; r1={x:r.x,y:r.y,w:r.w,h}; r3={x:r.x,y:r.y+h+46,w:r.w,h}; r2=null; }
-  else { const w=r.w-2*g, w1=w*0.34, w2=w*0.27, w3=w-w1-w2; r1={x:r.x,y:r.y+22,w:w1-12,h:r.h-22}; r2={x:r.x+w1+g+20,y:r.y+22,w:w2-24,h:r.h-22}; r3={x:r.x+w1+w2+2*g+30,y:r.y+22,w:w3-34,h:r.h-22}; }
+  else { const w=r.w-2*g, w1=w*0.30, w2=w*0.25, w3=w-w1-w2; r1={x:r.x,y:r.y+22,w:w1-12,h:r.h-22}; r2={x:r.x+w1+g+20,y:r.y+22,w:w2-24,h:r.h-22}; r3={x:r.x+w1+w2+2*g+30,y:r.y+22,w:w3-34,h:r.h-22}; }
   const NUk=1.1883e-6, v=st.v, Rn=v*KN*SHIP.L/NUk, CF=0.075/(Math.log10(Rn)-2)**2;
-  // 1: CF against Rn
+  // 1: CF against Rn, drawn complete
   const f1=frame(r1,[3e8,5e9],[1.2,2.0],{logx:true,xt:[3e8,1e9,3e9],xf:x=>x>=1e9?(x/1e9)+'·10⁹':(x/1e8)+'·10⁸',yt:[1.2,1.4,1.6,1.8,2.0],yf:y=>y.toFixed(1),xl:small?null:'Reynolds number Rn',yl:'CF × 10³'});
   line(vs(Math.log10(3e8),Math.log10(5e9),100).map(e=>[f1.X(10**e),f1.Y(1000*0.075/(e-2)**2)]),C.fore,2.6);
   { const a0=10*KN*SHIP.L/NUk, b0=35*KN*SHIP.L/NUk; ctx.fillStyle=C.fs; ctx.globalAlpha=.8; ctx.fillRect(f1.X(a0),r1.y,f1.X(b0)-f1.X(a0),r1.h); ctx.globalAlpha=1; }
-  dot(f1.X(Rn),f1.Y(CF*1000),C.fore,6); if(!small) label(f1.X(Rn),f1.Y(CF*1000)-24,fmt(v,0)+' kn: CF '+fmt(CF*1000,2),C.fore);
+  if(Rn>3e8){ dot(f1.X(Rn),f1.Y(CF*1000),C.fore,6); if(!small) label(f1.X(Rn),f1.Y(CF*1000)-24,fmt(v,0)+' kn: CF '+fmt(CF*1000,2),C.fore); }
   if(!small) text(r1.x+r1.w-4,r1.y+12,'ITTC-1957 line, flat-plate type',C.ink,'right',12,'600');
-  // 2: Reynolds number against speed, then (second half) the form factor against CP
-  if(r2){ if(!B){
-      const f2=frame(r2,[10,35],[0,3.5],{xt:[10,20,30],yt:[0,1,2,3],yf:y=>y+'·10⁹',xl:'Speed V, kn',yl:'Rn = VL/ν'});
-      line(vs(10,35,60).map(V=>[f2.X(V),f2.Y(V*KN*SHIP.L/NUk/1e9)]),C.pb,2.6); dot(f2.X(v),f2.Y(Rn/1e9),C.pb,6); vmark(f2.X,v,r2.y,r2.y+r2.h,C.muted);
-      label(f2.X(Math.min(v,28)),f2.Y(Rn/1e9)-24,'Rn '+fmt(Rn/1e9,2)+'·10⁹',C.pb);
-    } else {
-      const f2=frame(r2,[0.55,0.78],[1.0,1.5],{xt:[0.55,0.65,0.75],xf:x=>x.toFixed(2),yt:[1.0,1.2,1.4],yf:y=>y.toFixed(1),xl:'Prismatic coefficient CP',yl:'1 + k1, same L, B, T'});
-      line(vs(0.55,0.78,46).map(cp=>[f2.X(cp),f2.Y(HM({...SHIP,vol:cp*SHIP.CM*SHIP.L*SHIP.B*SHIP.T,CWP:null,V:25}).k1)]),C.aft,2.6);
-      dot(f2.X(P25.CP),f2.Y(P25.k1),C.ink,6); label(f2.X(P25.CP)+8,f2.Y(P25.k1)+22,'this ship '+fmt(P25.k1,3),C.ink,'left');
-      const cp=st.cp, k=HM({...SHIP,vol:cp*SHIP.CM*SHIP.L*SHIP.B*SHIP.T,CWP:null,V:25}).k1; vmark(f2.X,cp,r2.y,r2.y+r2.h,C.muted); dot(f2.X(cp),f2.Y(k),C.aft,6); label(f2.X(Math.min(cp,0.7)),f2.Y(k)-24,'CP '+fmt(cp,2)+': '+fmt(k,3),C.aft); } }
-  // 3: RF against speed, and with the form factor
-  const f3=frame(r3,[10,35],[0,1950],{xt:[10,15,20,25,30,35],yt:[0,500,1000,1500],yl:'Resistance, kN',xl:small?null:'Speed V, kN'.replace('kN','kn')});
-  const rows=R.filter(q=>q.V<=v+1e-9);
-  if(rows.length>1){ line(rows.map(q=>[f3.X(q.V),f3.Y(q.RF)]),C.fore,2.6);
-    if(B){ ctx.fillStyle=C.aft; ctx.globalAlpha=.25*st.b; ctx.beginPath(); rows.forEach((q,i)=>i?ctx.lineTo(f3.X(q.V),f3.Y(q.RFk)):ctx.moveTo(f3.X(q.V),f3.Y(q.RFk))); for(let i=rows.length-1;i>=0;i--) ctx.lineTo(f3.X(rows[i].V),f3.Y(rows[i].RF)); ctx.closePath(); ctx.fill(); ctx.globalAlpha=1; line(rows.map(q=>[f3.X(q.V),f3.Y(q.RFk)]),C.aft,2.8); } }
-  dot(f3.X(v),f3.Y(at('RF',v)),C.fore,5.5); if(B) dot(f3.X(v),f3.Y(at('RFk',v)),C.aft,5.5);
-  if(!small){ legend(r3.x+10,r3.y+12,B?[[C.fore,'RF, flat-plate friction',{w:2.6}],[C.aft,'RF(1 + k1), with the form factor',{w:2.8}]]:[[C.fore,'RF = ½ρSV²·CF',{w:2.6}]]);
-    const nloc=2-2/(Math.LN10*(Math.log10(Rn)-2)); label(f3.X(Math.min(v,29)),f3.Y(at('RF',v))+(B?26:-26),'RF ∝ V^'+fmt(nloc,2)+' here',C.fore); 
-    if(B&&v>20) label(f3.X(Math.min(v,29)),f3.Y(at('RFk',v))-26,'+'+fmt((P25.k1-1)*100,0)+' % form',C.aft); }
+  // 2: Reynolds number against speed from zero
+  if(r2){ const f2=frame(r2,[0,35],[0,3.5],{xt:[0,10,20,30],yt:[0,1,2,3],yf:y=>y+'·10⁹',xl:'Speed V, kn',yl:'Rn = VL/ν'});
+    line([[f2.X(0),f2.Y(0)],[f2.X(35),f2.Y(35*KN*SHIP.L/NUk/1e9)]],C.pb,2.6); vmark(f2.X,v,r2.y,r2.y+r2.h,C.muted); dot(f2.X(v),f2.Y(Rn/1e9),C.pb,6);
+    label(f2.X(Math.min(v,24)),f2.Y(Rn/1e9)-24,'Rn '+fmt(Rn/1e9,2)+'·10⁹',C.pb);
+    text(f2.X(1),r2.y+14,'a straight line: Rn ∝ V',C.pb,'left',12,'600');
+    text(f2.X(1),r2.y+30,'flat plate: Rn,x = V x / ν, same law',C.muted,'left',11);
+    text(f2.X(1),r2.y+44,'(x from the leading edge; x = L at the stern)',C.muted,'left',11); }
+  // 3: RF against speed from zero: flat plate, form factor, and the V² reference
+  const f3=frame(r3,[0,35],[0,2300],{xt:[0,10,20,30],yt:[0,500,1000,1500,2000],yl:'Resistance, kN',xl:small?null:'Speed V, kn'});
+  const c10=rzAt('RF',10), ref=V=>c10*(V/10)**2;
+  line(vs(0,35,70).map(V=>[f3.X(V),f3.Y(ref(V))]).filter(p=>p[1]>=r3.y-2),C.ghost,1.4,[6,4]);
+  ctx.fillStyle=C.aft; ctx.globalAlpha=.25; ctx.beginPath(); RZ.forEach((q,i)=>i?ctx.lineTo(f3.X(q.V),f3.Y(q.RFk)):ctx.moveTo(f3.X(q.V),f3.Y(q.RFk))); for(let i=RZ.length-1;i>=0;i--) ctx.lineTo(f3.X(RZ[i].V),f3.Y(RZ[i].RF)); ctx.closePath(); ctx.fill(); ctx.globalAlpha=1;
+  line(RZ.map(q=>[f3.X(q.V),f3.Y(q.RF)]),C.fore,2.6); line(RZ.map(q=>[f3.X(q.V),f3.Y(q.RFk)]),C.aft,2.8);
+  vmark(f3.X,v,r3.y,r3.y+r3.h,C.muted); dot(f3.X(v),f3.Y(rzAt('RF',v)),C.fore,5.5); dot(f3.X(v),f3.Y(rzAt('RFk',v)),C.aft,5.5);
+  if(!small){ legend(r3.x+10,r3.y+12,[[C.fore,'RF, flat-plate friction',{w:2.6}],[C.aft,'RF(1 + k1), with the form factor',{w:2.8}],[C.ghost,'if CF stayed constant (V²)',{w:1.4,dash:[6,4]}]]);
+    const nloc=Rn>1e7?2-2/(Math.LN10*(Math.log10(Rn)-2)):2;
+    label(f3.X(Math.min(v,17)),f3.Y(rzAt('RF',Math.min(v,17)))+26,'RF ∝ V^'+fmt(nloc,2)+' here',C.fore); if(v>5) label(f3.X(Math.min(v,17)),f3.Y(rzAt('RFk',Math.min(v,17)))-26,'+'+fmt((P25.k1-1)*100,0)+' % form',C.aft);
+    // inset: the form factor against CP
+    const ri={x:r3.x+r3.w*0.76,y:r3.y+r3.h*0.66,w:r3.w*0.21,h:r3.h*0.17};
+    ctx.fillStyle=C.panel; ctx.globalAlpha=.92; ctx.fillRect(ri.x-34,ri.y-16,ri.w+44,ri.h+56); ctx.globalAlpha=1;
+    const fi=frame(ri,[0.55,0.78],[1.0,1.5],{xt:[0.55,0.65,0.75],xf:x=>x.toFixed(2),yt:[1.0,1.25,1.5],yf:y=>y.toFixed(2),xl:'Prismatic coefficient CP',yl:'1 + k1'});
+    line(vs(0.55,0.78,30).map(cp=>[fi.X(cp),fi.Y(k1OfCp(cp))]),C.aft,2.2); dot(fi.X(P25.CP),fi.Y(P25.k1),C.ink,5);
+    const cp=st.cp, k=k1OfCp(cp); vmark(fi.X,cp,ri.y,ri.y+ri.h,C.muted); dot(fi.X(cp),fi.Y(k),C.aft,5); label(fi.X(Math.min(cp,0.7)),fi.Y(k)-20,'CP '+fmt(cp,2)+': '+fmt(k,3),C.aft); }
 }
 function drawFric(st){
   const r=mainRect(), g=small?0:48; let r1,r2;
@@ -763,6 +785,7 @@ function drawFleet(st){
   if(st.pts>0){ ctx.globalAlpha=st.pts; dot(f.X(205),f.Y(25),C.aft,7); if(!small) label(f.X(205),f.Y(25)-20,'the paper\'s ship',C.aft); dot(f.X(125),f.Y(14),C.ink,6); if(!small) label(f.X(125),f.Y(14)+22,'125 m feeder, 14 kn',C.ink); ctx.globalAlpha=1; }
   // CF against Rn
   const f2=frame(r2,[1e8,5e9],[1.2,2.2],{logx:true,xt:[1e8,3e8,1e9,3e9],xf:x=>x>=1e9?(x/1e9)+'·10⁹':(x/1e8)+'·10⁸',yt:[1.2,1.4,1.6,1.8,2.0,2.2],yf:y=>y.toFixed(1),xl:'Reynolds number Rn',yl:'CF × 10³, ITTC-1957'});
+  if(!small) text(r2.x+8,r2.y+14,'CF = 0.075 / (log10 Rn − 2)²',C.fore,'left',14,'700');
   if(st.cf>0){
     FLEET.forEach((s,i)=>{ const a=clamp(st.cf*FLEET.length*1.2-i,0,1); if(a<=0) return; const R0=rnOf(s[1],s[3]),R1=rnOf(s[2],s[4]); const yy=r2.y+r2.h-14-i*(small?9:13);
       ctx.globalAlpha=ease(a); line([[f2.X(R0),yy],[f2.X(R1),yy]],cols[i],small?4:6); ctx.globalAlpha=1; });
@@ -1218,6 +1241,12 @@ $('itab').addEventListener('input',e=>{ const id=e.target.id; if(!id) return; co
   draw(); });
 const scSet=(x,y,z)=>{ SCU=[x,y,z]; [['sL',x,'oL'],['sB',y,'oB'],['sT',z,'oT']].forEach(([id,v,oid])=>{ if($(id)) $(id).value=v; if($(oid)) $(oid).textContent=v.toFixed(2); }); state.playing=false; state.last=0; $('play').textContent='Play'; draw(); };
 $('itab').addEventListener('input',e=>{ if(['sL','sB','sT'].includes(e.target.id)) scSet(+$('sL').value,+$('sB').value,+$('sT').value); });
+$('itab').addEventListener('input',e=>{ if(e.target.id==='sR'){ ROT.yaw=+e.target.value*Math.PI/180; $('oR').textContent=e.target.value+'°'; draw(); } });
+const shSync=()=>{ ['box','ship'].forEach(k=>{ const b=$(k==='box'?'shBox':'shShip'); if(b) b.style.fontWeight=SHP===k?'700':'400', b&&(b.style.outline=SHP===k?'2px solid var(--fore,#0b7cb0)':'none'); }); };
+$('itab').addEventListener('click',e=>{ const sb=e.target.closest('button[data-shape]'); if(sb){ SHP=sb.dataset.shape; shSync(); draw(); return; } });
+cv.addEventListener('pointerdown',e=>{ if(curMode()!=='scale3') return; const rc=cv.getBoundingClientRect(); if(e.clientX-rc.left<rc.width*0.5) return; cv.setPointerCapture(e.pointerId); SD.d=[e.clientX,e.clientY,ROT.yaw,ROT.pit]; SD.moved=false; });
+cv.addEventListener('pointermove',e=>{ if(!SD.d) return; if(Math.abs(e.clientX-SD.d[0])+Math.abs(e.clientY-SD.d[1])>3) SD.moved=true; ROT.yaw=SD.d[2]+(e.clientX-SD.d[0])*0.01; ROT.pit=clamp(SD.d[3]+(e.clientY-SD.d[1])*0.006,0.1,1.4); if($('sR')){ const dg=((ROT.yaw*180/Math.PI)%360+360)%360; $('sR').value=Math.round(dg/5)*5; $('oR').textContent=Math.round(dg)+'°'; } draw(); });
+cv.addEventListener('pointerup',()=>{ SD.d=null; setTimeout(()=>{ SD.moved=false; },50); }); cv.addEventListener('pointercancel',()=>{ SD.d=null; });
 $('itab').addEventListener('click',e=>{ const b=e.target.closest('button[data-sc]'); if(b){ const v=b.dataset.sc.split(',').map(Number); scSet(v[0],v[1],v[2]); } });
 $('itab').addEventListener('input',e=>{ if(e.target.id!=='hSpd') return; HOOKV=parseFloat(e.target.value); const vv=$('hSpdV'); if(vv) vv.textContent=HOOKV.toFixed(1)+' kn'; state.playing=false; state.last=0; $('play').textContent='Play'; draw(); });
 $('itab').addEventListener('change',e=>{ if(e.target.id==='xH'){ X3.H=e.target.value; draw(); } });
@@ -1274,7 +1303,7 @@ const chips=k=>k<1?'':'<span class="chip'+(k>=11?' on':'')+'" title="Question 1:
 const PTS=[
  ['A ship makes a bow wave and a stern wave. The thick line is their sum.','Orange bands: the two waves add up, a <b>hump</b>. Blue bands: they cancel, a <b>hollow</b>.','The humps of this 205 m ship: 13.2, 15.0, 17.7 and 22.9 kn, and one more at 39.7 kn, above the ruler.'],
  ['The example ship of the paper: 205 m, 32 m beam, 10 m draught, at 25 kn.','The total resistance R<sub>T</sub> is split into six parts that obey different laws; the plot shows their share against speed.','Friction and waves dominate; appendages, bulb and transom are small.'],
- ['Friction acts on the wetted surface S: here 7,381 m², as in the paper.','Scale a ship in the same shape by λ: lengths ×λ, areas ×λ², volume ×λ³.','Try it on the right: scale one, two or three directions and read S and the volume.'],
+ ['Friction acts on the wetted surface S: here 7,381 m², as in the paper.','Scale a ship in the same shape by λ: lengths ×λ, areas ×λ², volume ×λ³.','Try it on the right: scale one, two or three directions, turn the solid, and switch between a box and a simplified ship. Read S, the volume and the coefficients.'],
  ['The ITTC-1957 line is a flat-plate-type friction line: C<sub>F</sub> falls as R<sub>n</sub> grows, yet R<sub>F</sub> still rises.','R<sub>F</sub> ∝ V<sup>n</sup> with n ≈ 1.88 for this ship at 25 kn.','A real hull is not a plate: the form factor gives 1 + k<sub>1</sub> = 1.156.'],
  ['The method is used at full scale: R<sub>n</sub> runs from 1.3×10⁸ to 4.2×10⁹ across the ships it covers.','C<sub>F</sub> moves from 2.0 to 1.3 ×10⁻³: a small, slow ship has a coefficient about half again as large.','The exponent n stays between 1.86 and 1.89.'],
  ['The transverse waves travel with the ship, so the speed fixes their length.','λ<sub>w</sub>/L = 2π·Fn²: at Fn 0.15 many short waves; at 0.32 about L* = 0.65 L; at 0.40 one wave per ship length.'],
@@ -1413,6 +1442,7 @@ function caption(k){ if(k===shown) return; shown=k; subkey='~'; const s=S[k];
 function subcap(k,p){ const s=S[k], q=s.sub(p);
   { const km=!!q.html&&q.key==='s'; if($('mid').classList.contains('kcmode')!==km){ $('mid').classList.toggle('kcmode',km); resize(); } $('board').classList.toggle('kcmode',km); }
   if(q.key!==subkey){ subkey=q.key; setText(k,s,q); $('seq').innerHTML=(q.eqs||[]).map(e=>'<div>'+(EQ_[e]||'')+'</div>').join(''); fitEq(); $('itab').innerHTML=q.html||'';
+    if(q.key==='sc'){ shSync(); const dg=((ROT.yaw*180/Math.PI)%360+360)%360; $('sR').value=Math.round(dg/5)*5; $('oR').textContent=Math.round(dg)+'°'; if(SCU) [['sL',SCU[0]],['sB',SCU[1]],['sT',SCU[2]]].forEach(([id,v])=>{ $(id).value=v; $('o'+id.slice(1)).textContent=v.toFixed(2); }); }
     if(q.key==='x'){ $('xH').value=X3.H; $('xX').value=X3.AX; $('xY').value=X3.AY; $('xLB').value=X3.LB; $('oLB').textContent=X3.LB.toFixed(2); $('xBT').value=X3.BT; $('oBT').textContent=X3.BT.toFixed(2); $('xS').value=SIZEV.indexOf(X3.S); $('oS').textContent=String(X3.S); $('xF').value=X3.F; $('oF').textContent=X3.F.toFixed(3); $('xC').value=X3.CP; $('oC').textContent=X3.CP.toFixed(3); } } }
 S.forEach((s,i)=>{const b=document.createElement('button'); b.type='button'; b.textContent=i+1; b.setAttribute('aria-label','Go to step '+(i+1)+': '+s.t); b.onclick=()=>go(i); $('dots').appendChild(b);});
 function go(k){ HOOKV=null; SCU=null; state.t=reduce?START[k]+S[k].d-0.001:START[k]; if(!reduce){ state.playing=true; state.last=0; $('play').textContent='Pause'; } render(); }
@@ -1441,6 +1471,6 @@ document.fonts&&document.fonts.ready.then(()=>draw());
 resize(); render(); requestAnimationFrame(tick);
 
 $('auto').addEventListener('change',e=>{ setAuto(e.target.checked); e.target.blur(); }); $('auto').checked=AUTO;
-cv.addEventListener('click',e=>{ if(AUTO||curMode()==='explore'||X3.drag) return; $('next').click(); });
+cv.addEventListener('click',e=>{ if(AUTO||curMode()==='explore'||X3.drag||SD.moved) return; $('next').click(); });
 })();
 </script>
