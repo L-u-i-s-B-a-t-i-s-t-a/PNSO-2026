@@ -1223,7 +1223,7 @@ function setText(k,s,q){
   if(!pts.length){ $('stext').textContent=full; $('more').style.display='none'; }
 }
 function caption(k){ if(k===shown) return; shown=k; subkey='~'; const s=S[k];
-  $('stepno').textContent='Step '+(k+1)+' / '+S.length; $('chap').textContent=PARTN[k]; $('chips').innerHTML=chips(k); $('swhy').textContent=WHY[k]||''; $('stitle').textContent=s.t; setText(k,s,null); $('more').open=false; $('side').scrollTop=0;
+  $('stepno').textContent='Step '+(k+1)+' / '+S.length; { const same=PARTN.map((p,i)=>p===PARTN[k]?i:-1).filter(i=>i>=0); $('chap').textContent=PARTN[k]+(same.length>1?' · stage '+(same.indexOf(k)+1)+' of '+same.length:''); } $('chips').innerHTML=''; $('swhy').textContent=WHY[k]||''; $('stitle').textContent=s.t; setText(k,s,null); $('more').open=false; $('side').scrollTop=0;
   [...$('dots').children].forEach((b,i)=>b.setAttribute('aria-current',i===k?'true':'false'));}
 function subcap(k,p){ const s=S[k], q=s.sub(p);
   { const km=!!q.html&&q.key==='s'; if($('mid').classList.contains('kcmode')!==km){ $('mid').classList.toggle('kcmode',km); resize(); } $('board').classList.toggle('kcmode',km); }
