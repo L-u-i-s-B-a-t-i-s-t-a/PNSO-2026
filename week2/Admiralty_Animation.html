@@ -137,6 +137,7 @@ footer{font-size:13px;color:var(--muted);border-top:1px solid var(--rule);paddin
       <button class="primary" id="play" type="button">Pause</button>
       <button id="prev" type="button" aria-label="Previous step">◀ Step</button>
       <button id="next" type="button" aria-label="Next step">Step ▶</button>
+      <label class="auto" title="On: steps play one after another by themselves. Off: each step plays once and waits for a click, a key (Space, arrows, PageDown) or a presenter clicker." style="display:inline-flex;align-items:center;gap:4px;font:600 12px/1 ui-monospace,Menlo,monospace;color:var(--muted);cursor:pointer"><input type="checkbox" id="auto" checked style="margin:0"><span>Auto</span></label>
       <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Position in the animation">
       <span class="time" id="time">0.0 s</span>
       <div class="dots" id="dots"></div>
@@ -446,13 +447,21 @@ function subcap(k,p){ const s=S[k], q=s.sub(p);
   $('board').classList.toggle('kcmode',!!q.html&&q.key==='s'); $('board').classList.add('wide');
   if(q.key!==subkey){ subkey=q.key; $('stext').textContent=q.text||s.x||''; $('seq').innerHTML=(q.eqs||[]).map(e=>'<div>'+(EQ_[e]||'')+'</div>').join(''); $('itab').innerHTML=q.html||''; } }
 S.forEach((s,i)=>{const b=document.createElement('button'); b.type='button'; b.textContent=i+1; b.setAttribute('aria-label','Go to step '+(i+1)+': '+s.t); b.onclick=()=>go(i); $('dots').appendChild(b);});
-function go(k){ state.t=reduce?START[k]+S[k].d-0.001:START[k]; render(); }
+function go(k){ state.t=reduce?START[k]+S[k].d-0.001:START[k]; if(!reduce){ state.playing=true; state.last=0; $('play').textContent='Pause'; } render(); }
 function render(){ const kk=sceneAt(state.t); caption(kk); subcap(kk,state.t-START[kk]); $('scrub').value=Math.round(state.t/TOTAL*1000); $('time').textContent=state.t.toFixed(1)+' / '+TOTAL+' s'; draw(); }
-function tick(ts){ if(state.playing){ if(state.last) state.t+=(ts-state.last)/1000; state.last=ts;
+let AUTO=true; try{ AUTO=localStorage.getItem('slideAuto')!=='0'; }catch(_){}
+const atEnd=()=>{ const k=sceneAt(state.t); return k<S.length-1 && state.t>=START[k]+S[k].d-0.01; };
+function setAuto(v){ AUTO=v; $('auto').checked=v; try{ localStorage.setItem('slideAuto',v?'1':'0'); }catch(_){} if(v&&atEnd()&&!state.playing){ state.t+=0.02; state.playing=true; state.last=0; $('play').textContent='Pause'; } }
+function tick(ts){ if(state.playing){ const pk=sceneAt(state.t); if(state.last) state.t+=(ts-state.last)/1000; state.last=ts;
+    if(!AUTO&&pk<S.length-1&&sceneAt(state.t)>pk){ state.t=START[pk]+S[pk].d-0.001; state.playing=false; state.last=0; $('play').textContent='Play'; }
     if(state.t>=TOTAL){state.t=TOTAL-0.001; state.playing=false; $('play').textContent='Replay';} render(); } else state.last=0; requestAnimationFrame(tick);}
-$('play').onclick=()=>{ if(state.t>=TOTAL-0.01) state.t=0; state.playing=!state.playing; state.last=0; $('play').textContent=state.playing?'Pause':'Play'; render();};
+$('play').onclick=()=>{ if(!AUTO&&!state.playing&&atEnd()){ $('next').click(); return; } if(state.t>=TOTAL-0.01) state.t=0; state.playing=!state.playing; state.last=0; $('play').textContent=state.playing?'Pause':'Play'; render();};
 $('prev').onclick=()=>{const k=sceneAt(state.t); go(Math.max(0,(state.t-START[k]>0.6&&!reduce)?k:k-1));};
 $('next').onclick=()=>{const k=sceneAt(state.t); go(Math.min(S.length-1,k+1));};
+$('auto').addEventListener('change',e=>{ setAuto(e.target.checked); e.target.blur(); }); $('auto').checked=AUTO;
+cv.addEventListener('click',()=>{ if(!AUTO) $('next').click(); });
+window.addEventListener('keydown',e=>{ if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return; if(e.key===' '&&e.target.tagName==='BUTTON') return;
+  if(e.key===' '){ e.preventDefault(); if(AUTO) $('play').click(); else $('next').click(); } else if(e.key==='ArrowRight'||e.key==='PageDown') $('next').click(); else if(e.key==='ArrowLeft'||e.key==='PageUp') $('prev').click(); else if(e.key==='f'||e.key==='F'){ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(_){} } });
 $('scrub').oninput=e=>{state.t=e.target.value/1000*TOTAL; if(state.t>=TOTAL) state.t=TOTAL-0.001; render();};
 if(reduce){ state.t=START[0]+S[0].d-0.001; $('play').textContent='Play'; }
 window.addEventListener('resize',resize);

@@ -1238,8 +1238,8 @@ function render(){ const kk=sceneAt(state.t); caption(kk); subcap(kk,state.t-STA
 let AUTO=true; try{ AUTO=localStorage.getItem('hmAuto')!=='0'; }catch(_){} 
 const atEnd=()=>{ const k=sceneAt(state.t); return k<S.length-1 && state.t>=START[k]+S[k].d-0.01; };
 function setAuto(v){ AUTO=v; $('auto').checked=v; try{ localStorage.setItem('hmAuto',v?'1':'0'); }catch(_){} if(v&&atEnd()&&!state.playing){ state.t+=0.02; state.playing=true; state.last=0; $('play').textContent='Pause'; } }
-function tick(ts){ if(state.playing){ if(state.last) state.t+=(ts-state.last)/1000; state.last=ts;
-    if(!AUTO){ const k=sceneAt(state.t), end=START[k]+S[k].d; if(k<S.length-1&&state.t>=end-0.001){ state.t=end-0.001; state.playing=false; state.last=0; $('play').textContent='Play'; } }
+function tick(ts){ if(state.playing){ const pk=sceneAt(state.t); if(state.last) state.t+=(ts-state.last)/1000; state.last=ts;
+    if(!AUTO&&pk<S.length-1&&sceneAt(state.t)>pk){ state.t=START[pk]+S[pk].d-0.001; state.playing=false; state.last=0; $('play').textContent='Play'; }
     if(state.t>=TOTAL){state.t=TOTAL-0.001; state.playing=false; $('play').textContent='Replay';} render(); } else { state.last=0; const m=curMode(); if(m==='ship'||m==='wave') draw(); } requestAnimationFrame(tick);}
 $('play').onclick=()=>{ if(!AUTO&&!state.playing&&atEnd()){ $('next').click(); return; } HOOKV=null; if(state.t>=TOTAL-0.01) state.t=0; state.playing=!state.playing; state.last=0; $('play').textContent=state.playing?'Pause':'Play'; render();};
 $('prev').onclick=()=>{const k=sceneAt(state.t); go(Math.max(0,(state.t-START[k]>0.6&&!reduce)?k:k-1));};
