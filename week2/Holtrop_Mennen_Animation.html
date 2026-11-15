@@ -944,7 +944,7 @@ function drawHook(st){
   ctx.strokeStyle=C.rule; ctx.lineWidth=1; ctx.setLineDash([]); ctx.strokeRect(rl.x+.5,rl.y+.5,rl.w-1,rl.h-1);
   ctx.fillStyle=C.ink; ctx.beginPath(); ctx.moveTo(f.X(cur),rl.y+rl.h+1); ctx.lineTo(f.X(cur)-7,rl.y+rl.h+13); ctx.lineTo(f.X(cur)+7,rl.y+rl.h+13); ctx.closePath(); ctx.fill();
   if(man){ const dd=(arr,c)=>arr.forEach(v=>{ const d=Math.abs(cur-v)/(1.5*hw); if(d<1&&v>=13&&v<=35){ ctx.globalAlpha=st.a*(1-d*0.5)*(0.45+0.55*blink); dot(f.X(v),rl.y+rl.h/2,c,small?5:7.5); ctx.globalAlpha=st.a; } }); dd(HU,RED); dd(HO,GRN); }
-  HU.forEach(v=>{ if(v<cur-0.05&&v<Vh-0.3&&!small&&!man){ ctx.globalAlpha=st.a; text(f.X(v),rl.y-9,fmt(v,1),C.aft,'center',13,'600'); } });
+  HU.forEach(v=>{ if(v<Vh-0.3&&!small){ ctx.globalAlpha=st.a; text(f.X(v),rl.y-9,fmt(v,1),C.aft,'center',13,'600'); } });
   if(st.hum>0){ ctx.globalAlpha=st.hum; label(f.X(Vh),rl.y-(small?18:32),small?'hump '+fmt(Vh,1):'the hump we follow: '+fmt(Vh,1)+' kn',C.aft,'center'); }
   ctx.globalAlpha=1;
   if(!small) rtPlot({x:r.x+r.w*0.62+30,y:r.y+26,w:r.w*0.38-34,h:r.h-26-2},cur,st.a,{hl:true});
