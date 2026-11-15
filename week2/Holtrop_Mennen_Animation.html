@@ -661,7 +661,7 @@ const SCSLIDE=`<div class="kccard"><h3>Scale the hull yourself</h3>
 <label>Draught ×<input id="sT" type="range" min="1" max="3" step="0.25" value="2"><output id="oT">2.00</output></label>
 <label>Rotate<input id="sR" type="range" min="0" max="360" step="5" value="40"><output id="oR">40°</output></label></div>
 <div class="sc3b"><button type="button" data-sc="2,2,2">×2 in all three</button><button type="button" data-sc="2,1,1">×2 length only</button><button type="button" data-sc="2,2,1">×2 length and beam</button><button type="button" data-sc="1,2,2">×2 beam and draught</button><button type="button" data-sc="1,1,1">reset</button></div>
-<div class="sc3b"><span style="align-self:center">Shape:</span><button type="button" data-shape="ship" id="shShip">Wigley hull</button><button type="button" data-shape="box" id="shBox">Box</button></div>
+<div class="sc3b"><span style="align-self:center">Shape:</span><button type="button" data-shape="ship" id="shShip">Wigley hull</button><button type="button" data-shape="box" id="shBox">Box</button><button type="button" data-shape="patch" id="shPatch">Tilted patch: how it works</button></div>
 <p class="sm" style="margin:6px 0 0">Drag the block on the left of the plot to turn it. An area scales with two of the factors multiplied, a volume with all three. Only when all three are equal is the shape the same, and then the area goes as the square of the scale. A Wigley hull (the classical test hull, Cb = 4/9) and a box of the same L, B and T have the same scale law but different Cb and Cp.</p></div>`;
 let SHP='ship'; const ROT={yaw:0.7,pit:0.8}, SD={moved:false};
 // a simplified ship: planform power 1.4, superelliptic section n = 8; Cb and Cp come out of the same numbers
@@ -690,6 +690,30 @@ function drawScale3(st){
   const [sx,sy,sz]=st.s, x0=r.x+r.w*0.52, w0=r.w*0.48, a0=5, b0=1.3, h0=0.7, cyw=Math.cos(ROT.yaw), syw=Math.sin(ROT.yaw), cpt=Math.cos(ROT.pit), spt=Math.sin(ROT.pit);
   const rad=Math.sqrt((a0*3)**2+(b0*3)**2)/2, regionH=r.h*0.40, u=Math.min(w0*1.12/(2*rad),regionH/(2*rad*0.50)), cx0=x0+w0*0.5, cy0=r.y+128+regionH*0.52;
   const prj=p=>{ const x1=p[0]*cyw-p[1]*syw, y1=p[0]*syw+p[1]*cyw; return [cx0+x1*u, cy0+(y1*spt-p[2]*cpt)*u, y1*cpt+p[2]*spt]; };
+  if(SHP==='patch'){ const K=2, e1=[2*K,0,0.9*K], e2=[0,1.1*K,0.6*K], cr=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+    const av=cr(e1,e2).map(Math.abs), A0=Math.hypot(...av)/K/K, Ax=av[0]/K/K, Ay=av[1]/K/K, Az=av[2]/K/K; // shadows on y-z (end), x-z (side), x-y (bottom), per unit K
+    const mk=(S)=>{ const c=[(e1[0]+e2[0])/2,(e1[1]+e2[1])/2,(e1[2]+e2[2])/2]; return [[0,0,0],e1,[e1[0]+e2[0],e1[1]+e2[1],e1[2]+e2[2]],e2].map(p=>[(p[0]-c[0])*S[0],(p[1]-c[1])*S[1],(p[2]-c[2])*S[2]]); };
+    const P1=mk([sx,sy,sz]), P0=mk([1,1,1]), ext=(k)=>P1.map(p=>p[k]), mn=k=>Math.min(...ext(k)), mxk=k=>Math.max(...ext(k)), xf=-5.6, yf=2.8, zf=-3;
+    const fzz=small?11:13, ty2=r.y+r.h-5*19-34, top=r.y+40, avail=ty2-8-top, raw=p=>{ const x1=p[0]*cyw-p[1]*syw, y1=p[0]*syw+p[1]*cyw; return [x1,(y1*spt-p[2]*cpt)]; };
+    let bx0=1e9,bx1=-1e9,by0=1e9,by1=-1e9; [-1,1].forEach(a=>[-1,1].forEach(b=>[-1,1].forEach(c=>{ const q=raw([a*5.6,b*2.8,c*3]); bx0=Math.min(bx0,q[0]); bx1=Math.max(bx1,q[0]); by0=Math.min(by0,q[1]); by1=Math.max(by1,q[1]); })));
+    const uP=Math.min(avail/(by1-by0),w0*0.95/(bx1-bx0)), pX=x0+w0/2-(bx0+bx1)/2*uP, pY=top+avail/2-(by0+by1)/2*uP, prjP=p=>{ const q=raw(p); return [pX+q[0]*uP,pY+q[1]*uP]; };
+    const poly=(pts,fill,al,stroke,dash)=>{ ctx.beginPath(); pts.forEach((p,k)=>{ const q=prjP(p); k?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1]); }); ctx.closePath(); if(fill){ ctx.globalAlpha=al; ctx.fillStyle=fill; ctx.fill(); ctx.globalAlpha=1; } if(stroke){ ctx.setLineDash(dash||[]); ctx.strokeStyle=stroke; ctx.lineWidth=1.4; ctx.stroke(); ctx.setLineDash([]); } };
+    const GR='#2e7d32';
+    // three walls (light), then the shadows of the patch on them, then the ghost and the patch
+    poly([[xf,-yf,zf],[-xf,-yf,zf],[-xf,yf,zf],[xf,yf,zf]],C.fore,.07,C.muted,[3,4]); poly([[xf,yf,zf],[-xf,yf,zf],[-xf,yf,-zf],[xf,yf,-zf]],C.aft,.07,C.muted,[3,4]); poly([[xf,-yf,zf],[xf,yf,zf],[xf,yf,-zf],[xf,-yf,-zf]],GR,.07,C.muted,[3,4]);
+    poly(P0.map(p=>[p[0],p[1],zf]),null,0,C.fore,[4,3]); poly(P0.map(p=>[p[0],yf,p[2]]),null,0,C.aft,[4,3]); poly(P0.map(p=>[xf,p[1],p[2]]),null,0,GR,[4,3]);
+    poly(P1.map(p=>[p[0],p[1],zf]),C.fore,.55,C.fore); poly(P1.map(p=>[p[0],yf,p[2]]),C.aft,.55,C.aft); poly(P1.map(p=>[xf,p[1],p[2]]),GR,.55,GR);
+    poly(P0,null,0,C.muted,[5,4]); poly(P1,C.ink,.85,C.ink);
+    text(x0,r.y+12,'A tilted patch of hull skin: L ×'+fmt(sx,2)+', B ×'+fmt(sy,2)+', T ×'+fmt(sz,2),C.ink,'left',15,'700');
+    text(x0,r.y+30,'its shadows on the three planes (dashed: before)',C.muted,'left',11,'500'); text(x0+w0,r.y+30,'drag to rotate',C.muted,'right',11);
+    const fz=small?11:13, ly=19, sb=Az*sx*sy, ss=Ay*sx*sz, se=Ax*sy*sz, An=Math.hypot(sb,ss,se), same=Math.abs(sx-sy)<1e-6&&Math.abs(sy-sz)<1e-6;
+    text(x0,ty2,'Each shadow scales with the two directions it spans:',C.muted,'left',small?10:11,'500');
+    text(x0,ty2+ly,'bottom  (x–y) :  '+fmt(Az,2)+'  ×'+fmt(sx,2)+' · ×'+fmt(sy,2)+'  =  '+fmt(sb,2),C.fore,'left',fz,'700');
+    text(x0,ty2+2*ly,'side    (x–z) :  '+fmt(Ay,2)+'  ×'+fmt(sx,2)+' · ×'+fmt(sz,2)+'  =  '+fmt(ss,2),C.aft,'left',fz,'700');
+    text(x0,ty2+3*ly,'end     (y–z) :  '+fmt(Ax,2)+'  ×'+fmt(sy,2)+' · ×'+fmt(sz,2)+'  =  '+fmt(se,2),GR,'left',fz,'700');
+    text(x0,ty2+4*ly+4,'patch area = √( '+fmt(sb,2)+'² + '+fmt(ss,2)+'² + '+fmt(se,2)+'² ) = '+fmt(An,2)+'   (was '+fmt(A0,2)+',  ×'+fmt(An/A0,2)+')',C.ink,'left',fz,'700');
+    text(x0,ty2+5*ly+8,same?'same factors: every shadow × scale², so the patch keeps its tilt and its area × scale²':'different factors: the shadows change by different amounts, the patch tilts, area is not ×(one number)',same?C.aft:C.muted,'left',small?10:11,'500');
+    return; }
   const wire=(A,B,H,col)=>{ const q=boxFaces(A,B,H); ctx.setLineDash([5,4]); ctx.strokeStyle=col; ctx.lineWidth=1.2; [q[0],q[1]].forEach(f=>{ ctx.beginPath(); f.forEach((p,k)=>{ const s=prj(p); k?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]); }); ctx.closePath(); ctx.stroke(); });
     q[0].forEach((p,k)=>{ const s=prj(p), t=prj(q[1][[0,3,2,1][k]]); ctx.beginPath(); ctx.moveTo(s[0],s[1]); ctx.lineTo(t[0],t[1]); ctx.stroke(); }); ctx.setLineDash([]); };
   if(SHP==='ship'){ const pg=(pts)=>{ ctx.beginPath(); pts.forEach((p,k)=>{ const s=prj(p); k?ctx.lineTo(s[0],s[1]):ctx.moveTo(s[0],s[1]); }); ctx.stroke(); };
@@ -1257,7 +1281,7 @@ $('itab').addEventListener('input',e=>{ const id=e.target.id; if(!id) return; co
 const scSet=(x,y,z)=>{ SCU=[x,y,z]; [['sL',x,'oL'],['sB',y,'oB'],['sT',z,'oT']].forEach(([id,v,oid])=>{ if($(id)) $(id).value=v; if($(oid)) $(oid).textContent=v.toFixed(2); }); state.playing=false; state.last=0; $('play').textContent='Play'; draw(); };
 $('itab').addEventListener('input',e=>{ if(['sL','sB','sT'].includes(e.target.id)) scSet(+$('sL').value,+$('sB').value,+$('sT').value); });
 $('itab').addEventListener('input',e=>{ if(e.target.id==='sR'){ ROT.yaw=+e.target.value*Math.PI/180; $('oR').textContent=e.target.value+'°'; draw(); } });
-const shSync=()=>{ ['box','ship'].forEach(k=>{ const b=$(k==='box'?'shBox':'shShip'); if(b) b.style.fontWeight=SHP===k?'700':'400', b&&(b.style.outline=SHP===k?'2px solid var(--fore,#0b7cb0)':'none'); }); };
+const shSync=()=>{ ['box','ship','patch'].forEach(k=>{ const b=$(k==='box'?'shBox':k==='patch'?'shPatch':'shShip'); if(b) b.style.fontWeight=SHP===k?'700':'400', b&&(b.style.outline=SHP===k?'2px solid var(--fore,#0b7cb0)':'none'); }); };
 $('itab').addEventListener('click',e=>{ const sb=e.target.closest('button[data-shape]'); if(sb){ SHP=sb.dataset.shape; shSync(); draw(); return; } });
 cv.addEventListener('pointerdown',e=>{ if(curMode()!=='scale3') return; const rc=cv.getBoundingClientRect(); if(e.clientX-rc.left<rc.width*0.5) return; cv.setPointerCapture(e.pointerId); SD.d=[e.clientX,e.clientY,ROT.yaw,ROT.pit]; SD.moved=false; });
 cv.addEventListener('pointermove',e=>{ if(!SD.d) return; if(Math.abs(e.clientX-SD.d[0])+Math.abs(e.clientY-SD.d[1])>3) SD.moved=true; ROT.yaw=SD.d[2]+(e.clientX-SD.d[0])*0.01; ROT.pit=clamp(SD.d[3]+(e.clientY-SD.d[1])*0.006,0.1,1.4); if($('sR')){ const dg=((ROT.yaw*180/Math.PI)%360+360)%360; $('sR').value=Math.round(dg/5)*5; $('oR').textContent=Math.round(dg)+'°'; } draw(); });
@@ -1318,7 +1342,7 @@ const chips=k=>k<1?'':'<span class="chip'+(k>=11?' on':'')+'" title="Question 1:
 const PTS=[
  ['A ship makes a bow wave and a stern wave. The thick line is their sum.','Orange bands: the two waves add up, a <b>hump</b>. Blue bands: they cancel, a <b>hollow</b>.','The humps of this 205 m ship: 13.2, 15.0, 17.7 and 22.9 kn, and one more at 39.7 kn, above the ruler.'],
  ['The example ship of the paper: 205 m, 32 m beam, 10 m draught, at 25 kn.','The total resistance R<sub>T</sub> is split into six parts that obey different laws; the plot shows their share against speed.','Friction and waves dominate; appendages, bulb and transom are small.'],
- ['Friction acts on the wetted surface S: here 7,381 m², as in the paper.','Scale a ship in the same shape by λ: lengths ×λ, areas ×λ², volume ×λ³.','Try it on the right: scale one, two or three directions, turn the solid, and switch between a Wigley hull and a box. Read S, the volume and the coefficients.'],
+ ['Friction acts on the wetted surface S: here 7,381 m², as in the paper.','Scale a ship in the same shape by λ: lengths ×λ, areas ×λ², volume ×λ³.','Try it on the right: scale one, two or three directions, turn the solid, and switch between a Wigley hull, a box and a tilted patch (it shows how each direction scales an area). Read S, the volume and the coefficients.'],
  ['The ITTC-1957 line is a flat-plate-type friction line: C<sub>F</sub> falls as R<sub>n</sub> grows, yet R<sub>F</sub> still rises.','R<sub>F</sub> ∝ V<sup>n</sup> with n ≈ 1.88 for this ship at 25 kn.','A real hull is not a plate: the form factor gives 1 + k<sub>1</sub> = 1.156.'],
  ['The method is used at full scale: R<sub>n</sub> runs from 1.3×10⁸ to 4.2×10⁹ across the ships it covers.','C<sub>F</sub> moves from 2.0 to 1.3 ×10⁻³: a small, slow ship has a coefficient about half again as large.','The exponent n stays between 1.86 and 1.89.'],
  ['The transverse waves travel with the ship, so the speed fixes their length.','λ<sub>w</sub>/L = 2π·Fn²: at Fn 0.15 many short waves; at 0.32 about L* = 0.65 L; at 0.40 one wave per ship length.'],
