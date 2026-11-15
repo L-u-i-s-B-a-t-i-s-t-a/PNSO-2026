@@ -427,7 +427,7 @@ const EXPLORE=`<div class="xp">
 <label>Size, × the paper ship <input id="xS" type="range" min="0" max="5" step="1" value="3"><output id="oS">1</output></label>
 <label>Marker Fn <input id="xF" type="range" min="0.15" max="0.40" step="0.005" value="0.287"><output id="oF">0.287</output></label>
 <label>Marker CP <input id="xC" type="range" min="0.55" max="0.75" step="0.005" value="0.585"><output id="oC">0.585</output></label>
-<p class="sm" style="margin:0;color:var(--muted)">Drag the map to turn it. Orange lines on the floor: humps, λ/Fn² = (2j + 1)π; blue: hollows. Hull family at the paper ship's length (times the size): the axis you choose is varied, the sliders set the rest, and the orange dot is the marker. The bulb and the transom scale with the size, CWP = (1 + 2CB)/3. In the L/B map B follows L/B and T follows B/T, so the volume changes with them.</p></div>`;
+<p class="sm" style="margin:0;color:var(--muted)">Drag the map to turn it. Orange lines: humps, N = λ/(π·Fn²) odd, where the waves add up; blue: hollows, N even, where they cancel. Solid on the surface, dashed the same line on the floor, where you read the Fn. The plot on the right shows the resistance of the marker hull by component. Hull family at the paper ship's length (times the size): the axis you choose is varied, the sliders set the rest, and the orange dot is the marker. The bulb and the transom scale with the size, CWP = (1 + 2CB)/3. In the L/B map B follows L/B and T follows B/T, so the volume changes with them.</p></div>`;
 
 const FLEET=[['Tugs, coasters',30,90,10,13],['Feeders, general cargo',90,180,12,18],['Bulk carriers, tankers',170,330,12,15],['Container ships',150,400,16,24],['Ro-ro ships, ferries',120,220,18,25]];
 const NU=1.1883e-6, rnOf=(L,v)=>v*KN*L/NU, cfOf=Rn=>0.075/(Math.log10(Rn)-2)**2;
@@ -530,7 +530,7 @@ const S=[
  {d:10,t:"Check against the paper",eqs:[],x:"A formula typed into a program is easy to get wrong. The paper's worked example is the test: with lcb taken from ½ LWL (step 13) the recomputed values agree within 0.2 %, except the correlation allowance, 0.6 % lower; the cause of that difference was not traced.",
   st:p=>({mode:'bar',grow:1,v:25,ghost:1}),sub:()=>({key:'c',eqs:[],html:CHECK})},
  {d:12,t:"Summary",eqs:[],x:"",st:p=>({mode:'size',f:0.40,pick:3,quiet:1,kn:1}),sub:()=>({key:'s',html:SUMMARY,text:"Waves follow the Froude number and the shape; friction follows size."})},
- {d:6,t:"Explore: the Holtrop–Mennen map",eqs:[],x:"Pick what stands on each axis: the interference factor, the wave and total coefficients, the wave and total resistance, the friction, the wave share or the power, over Fn or speed, and over CP, L/B or B/T. Everything is computed live with the same formulas. Turn the map, change the size. The humps move with the shape; the wave coefficient map does not change with size, the resistances and the total coefficient do.",
+ {d:6,t:"Explore: the Holtrop–Mennen map",eqs:[],x:"Pick what stands on each axis: the interference factor, the wave and total coefficients, the wave and total resistance, the friction, the wave share or the power, over Fn or speed, and over CP, L/B or B/T. Everything is computed live with the same formulas. The orange and blue lines are the humps and hollows, where the number of half waves $N=\lambda/(\pi F_n^2)$ along the ship is odd (the waves add up) or even (they cancel); the solid line runs on the surface and the dashed one is the same line projected on the floor, where its $F_n$ is read. The plot on the right shows the resistance of the marker hull by component, with the same humps and hollows as vertical lines, so the map and the curves can be read together. Turn the map, change the size. The humps move with the shape; the wave coefficient map does not change with size, the resistances and the total coefficient do.",
   st:p=>({mode:'explore',intro:ease(clamp(p/3,0,1))}),sub:()=>({key:'x',eqs:[],html:EXPLORE})}
 ];
 S.forEach(s=>{ if(!s.sub) s.sub=()=>({key:'a',eqs:s.eqs}); });
@@ -1473,7 +1473,7 @@ function x3grid(){ const key=[X3.H,X3.AY,X3.LB,X3.BT,X3.CP,X3.S].join(); if(key=
       const z=zf(x3hull(fn,p.cp,p.lb,p.bt)); row.push(z); zmax=Math.max(zmax,z); zmin=Math.min(zmin,z);} gr.push(row); }
   X3.grid={gr,nF,nC,zmax,zmin}; return X3.grid; }
 function drawExplore(st){
-  const r=mainRect(), g=x3grid(), cyaw=Math.cos(X3.yaw), syaw=Math.sin(X3.yaw), cp_=Math.cos(X3.pitch), sp=Math.sin(X3.pitch);
+  const rr=mainRect(), r=small?{x:rr.x,y:rr.y,w:rr.w,h:rr.h*0.58}:{x:rr.x,y:rr.y,w:rr.w*0.60,h:rr.h}, rp=small?{x:rr.x+40,y:rr.y+rr.h*0.66,w:rr.w-52,h:rr.h*0.22}:{x:rr.x+rr.w*0.60+62,y:rr.y+34,w:rr.w*0.40-86,h:rr.h-120}, g=x3grid(), cyaw=Math.cos(X3.yaw), syaw=Math.sin(X3.yaw), cp_=Math.cos(X3.pitch), sp=Math.sin(X3.pitch);
   const zd=ZDEF[X3.H], z0=zd[2]?zd[2][0]:0, z1=zd[2]?zd[2][1]:nice(g.zmax*1.05), zdec=zd[2]||z1>=10?zd[3]:1;
   const sc=Math.min(r.w,r.h*1.6)*0.42, cx=r.x+r.w*0.5, cy=r.y+r.h*0.62;
   const P=(u,v,w)=>{ // u: Fn 0..1, v: y variable 0..1, w: z 0..1
@@ -1484,7 +1484,7 @@ function drawExplore(st){
   const humps=(onSurface)=>[[1,C.aft],[3,C.aft],[5,C.aft],[2,C.fore],[4,C.fore],[6,C.fore]].forEach(([m,col])=>{ const pts=[]; for(let j=0;j<=40;j++){ const pp=x3par(j/40), lam=1.446*pp.cp-0.03*pp.lb, fn=Math.sqrt(lam/(m*Math.PI));
       if(fn>=0.15&&fn<=0.4){ let w=0; if(onSurface){ const u=(fn-0.15)/0.25*g.nF, i0=Math.min(g.nF-1,Math.floor(u)), tt=u-i0, vv=j/40*g.nC, j0=Math.min(g.nC-1,Math.floor(vv)), ss=vv-j0;
           w=zn(g.gr[i0][j0]*(1-tt)*(1-ss)+g.gr[i0+1][j0]*tt*(1-ss)+g.gr[i0][j0+1]*(1-tt)*ss+g.gr[i0+1][j0+1]*tt*ss); }
-        const p=P((fn-0.15)/0.25,j/40,w); pts.push([p[0],p[1]]);} } if(pts.length>1) line(pts,col,onSurface?2.2:2,onSurface?undefined:[5,3]); });
+        const p=P((fn-0.15)/0.25,j/40,w); pts.push([p[0],p[1]]);} } if(pts.length>1){ line(pts,col,onSurface?2.2:2,onSurface?undefined:[5,3]); if(onSurface&&!small){ const e=pts[pts.length-1]; text(e[0]+6,e[1],'N = '+m+(m%2?' hump':' hollow'),col,'left',12,'700'); } } });
   humps(false);
   // surface quads, painter's order
   const quads=[]; for(let i=0;i<g.nF;i++) for(let j=0;j<g.nC;j++){ const zs=[g.gr[i][j],g.gr[i+1][j],g.gr[i+1][j+1],g.gr[i][j+1]].map(zn);
@@ -1509,6 +1509,19 @@ function drawExplore(st){
   line([[m0[0],m0[1]],[m[0],m[1]]],C.aft,1.5,[3,3]); dot(m[0],m[1],C.aft,6); label(m[0]+10,m[1]-18,fmt(zq,zdec===0&&Math.abs(zq)<10?1:zdec),C.aft,'left');
   X3.last=q;
   if(!small) label(r.x+r.w-6,r.y+12,'L '+fmt(L,0)+' m · B '+fmt(B,1)+' m · T '+fmt(T,1)+' m',C.ink,'right');
+  if(!small) legend(r.x+4,r.y+r.h-100,[[C.aft,'hump N odd: waves add up',{w:2.2}],[C.fore,'hollow N even: waves cancel',{w:2.2}],[C.muted,'solid: on the surface',{w:2.2}],[C.muted,'dashed: the same line on the floor',{w:2,dash:[5,3]}]]);
+  // the components of the resistance of the marker hull
+  { const key=[X3.CP,X3.LB,X3.BT,X3.S].join(); if(X3.ck!==key){ X3.ck=key; X3.cd=[]; for(let fn=0.15;fn<=0.4001;fn+=0.005){ const q2=x3hull(fn,X3.CP,X3.LB,X3.BT); X3.cd.push({fn,RFk:q2.RFk,RW:q2.RW,RA:q2.RA,SM:q2.RAPP+q2.RB+q2.RTR,RT:q2.RT}); } }
+    const Lw2=SHIP.L*X3.S, xv=fn=>X3.AX==='V'?fn*Math.sqrt(G*Lw2)/KN:fn, x0v=xv(0.15), x1v=xv(0.4), ymax=nice(Math.max(...X3.cd.map(d=>d.RT))*1.05);
+    const xt=X3.AX==='V'?[0.15,0.2,0.25,0.3,0.35,0.4].map(f=>Math.round(xv(f))):[0.15,0.2,0.25,0.3,0.35,0.4];
+    const f=frame(rp,[x0v,x1v],[0,ymax],{xt:xt.filter((v,i,ar)=>ar.indexOf(v)===i),xf:v=>X3.AX==='V'?String(v):v.toFixed(2),yt:[0,ymax/4,ymax/2,ymax*3/4,ymax],yf:v=>fmt(v,0),xl:X3.AX==='V'?'V, kn':'Froude number Fn'});
+    text(rp.x-30,rp.y-22,'Resistance of the marker hull, by component [kN]',C.ink,'left',small?11:14,'700');
+    const lam2=1.446*X3.CP-0.03*X3.LB; for(let m=1;m<=6;m++){ const fh=Math.sqrt(lam2/(m*Math.PI)); if(fh>=0.15&&fh<=0.4) vmark(f.X,xv(fh),rp.y,rp.y+rp.h,m%2?C.aft:C.fore); }
+    [['SM',C.muted,2],['RA',C.pb,2.4],['RW',C.aft,2.6],['RFk',C.fore,2.6],['RT',C.ink,3.2]].forEach(([k,c,w])=>line(X3.cd.map(d=>[f.X(xv(d.fn)),f.Y(d[k])]),c,w));
+    const xm=f.X(xv(X3.F)); vmark(f.X,xv(X3.F),rp.y,rp.y+rp.h,C.ink); const dm=x3hull(X3.F,X3.CP,X3.LB,X3.BT); [['RT',dm.RT,C.ink],['RW',dm.RW,C.aft],['RFk',dm.RFk,C.fore],['RA',dm.RA,C.pb],['SM',dm.RAPP+dm.RB+dm.RTR,C.muted]].forEach(([k,v,c])=>dot(xm,f.Y(v),c,4.5));
+    if(!small){ legend(rp.x+8,rp.y+14,[[C.ink,'RT, total',{w:3}],[C.fore,'RF(1 + k1), friction',{w:2.6}],[C.aft,'RW, waves',{w:2.6}],[C.pb,'RA, correlation',{w:2.4}],[C.muted,'RAPP + RB + RTR, small parts',{w:2}]]);
+      const tt=dm.RT, ly=rp.y+rp.h+56; text(rp.x,ly,'At the marker: RT '+fmt(tt,0)+' kN = friction '+fmt(dm.RFk/tt*100,0)+' % + waves '+fmt(dm.RW/tt*100,0)+' % + RA '+fmt(dm.RA/tt*100,0)+' % + small '+fmt((dm.RAPP+dm.RB+dm.RTR)/tt*100,1)+' %',C.ink,'left',13,'600');
+      text(rp.x,ly+20,'Vertical lines: humps (orange) and hollows (blue) of this hull. Black: the marker.',C.muted,'left',12); } }
 }
 cv.addEventListener('pointerdown',e=>{ if(curMode()!=='explore') return; cv.setPointerCapture(e.pointerId); X3.drag=[e.clientX,e.clientY,X3.yaw,X3.pitch]; });
 cv.addEventListener('pointermove',e=>{ if(!X3.drag) return; X3.yaw=X3.drag[2]+(e.clientX-X3.drag[0])*0.01; X3.pitch=clamp(X3.drag[3]+(e.clientY-X3.drag[1])*0.006,0.1,1.3); draw(); });
@@ -1594,7 +1607,7 @@ const PTS=[
   ['The formulas are regressions on model tests, so they hold only inside the data they came from.','This ship ($C_P$ 0.58, $L/B$ 6.4, $B/T$ 3.2) is covered up to $F_n$ 0.45; a full tanker hull only up to $F_n$ 0.24.'],
  ['The paper’s worked example is the test of the program.','The recomputed values agree within 0.2 %, except the correlation allowance, 0.6 % lower; the cause was not traced.'],
  ['Waves follow the Froude number and the shape; friction follows size.'],
-  ['Pick what stands on each axis, over $F_n$ or speed, and over $C_P$, $L/B$ or $B/T$.','Turn the map, change the size: the humps move with the shape; the wave coefficient map does not change with size.']
+  ['Pick what stands on each axis, over $F_n$ or speed, and over $C_P$, $L/B$ or $B/T$. Turn the map by dragging it.','Orange lines: humps, where the waves add up ($N$ odd). Blue lines: hollows, where they cancel ($N$ even). Solid on the surface; dashed, the same line on the floor, where you read the $F_n$.','The plot on the right is the resistance of the marker hull, split into friction, waves, correlation and the small parts; move the marker and the sliders and it follows.']
 ];
 let shown=-1, subkey='';
 // ---- inline mathematics in ordinary type: $...$ is a small TeX subset turned into HTML ----
