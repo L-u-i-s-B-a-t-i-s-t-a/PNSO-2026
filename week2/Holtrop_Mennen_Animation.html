@@ -441,13 +441,15 @@ iE = math.degrees(math.atan2(y_wl[1] - y_wl[0], x_wl[0] - x_wl[1]))
 # lcb in % of LWL from half LWL, forward positive (x_B from the aft end of LWL)
 lcb = 100 * (x_B - 0.5 * LWL) / LWL</pre><p class="sm" style="margin:6px 0 0;color:var(--muted)">Check each result against the drawing before using it: an area in m², a height below the draught, an angle of a few degrees for a fine bow.</p></div>`;
 let HOOKV=null;
+const PSLIDE=`<div class="kccard"><h3>Move the speed yourself</h3><input id="pSpd" type="range" min="10" max="35" step="0.1" value="25" aria-label="Ship speed in knots" style="width:100%"><p class="sm" style="margin:6px 0 0"><b id="pSpdV">25.0 kn</b> · the marker moves along both plots; the legend gives each part, in kN and as a share of the total, at that speed.</p></div>`;
 const HSLIDE=`<div class="kccard"><h3>Move the speed yourself</h3><input id="hSpd" type="range" min="13" max="35" step="0.1" value="22.9" aria-label="Ship speed in knots" style="width:100%"><p class="sm" style="margin:6px 0 0"><b id="hSpdV">22.9 kn</b> · <span style="color:#d63a3a">&#9679; red</span>: the waves add up, more wave resistance. <span style="color:#2e9e5b">&#9679; green</span>: they cancel, less. A dot appears on the ruler when you reach such a speed, and the marker moves along the resistance curves.</p></div>`;
 const S=[
  {d:34,t:"Question: how does Holtrop–Mennen determine the speed?",eqs:['rt','pe'],x:"",
   st:p=>({mode:'hook',man:(p>=17&&HOOKV!=null)?HOOKV:null,a:ease(clamp(p/1.5,0,1)),sw:clamp((p-2)/12,0,1),fr:(p>=17&&HOOKV!=null)?35:10+25*clamp((p-1.5)/12.5,0,1),hum:ease(clamp((p-13.5)/1.5,0,1)),v:(p>=17&&HOOKV!=null)?HOOKV:13+(FNV(0.263)-13)*clamp((p-2)/12,0,1)}),
   sub:p=>p>=17?{key:'sl',eqs:['rt','pe'],html:HSLIDE}:{key:'a',eqs:['rt','pe']}},
  {d:18,t:"Six parts of the resistance",eqs:['rt'],x:"",
-  st:p=>{ const fr=sweep(p,10,35,0.5,9.5); return {mode:'parts',v:25,fr,m:ease(clamp((fr-25)/0.8,0,1))}; }},
+  st:p=>{ const fr=sweep(p,10,35,0.5,9.5), man=(p>=11&&HOOKV!=null); return {mode:'parts',v:man?HOOKV:25,fr,m:man?1:ease(clamp((fr-25)/0.8,0,1))}; },
+  sub:p=>p>=11?{key:'ps',eqs:['rt'],html:PSLIDE}:{key:'a',eqs:['rt']}},
  {d:26,t:"Wetted surface, and why areas grow as the square",eqs:['s','sscale'],x:"",
   st:p=>({mode:'scale3',skin:ease(clamp((p-1)/4,0,1)),s:(p>=10&&SCU)?SCU:(p<10?[sweep(p,1,2,6,9),sweep(p,1,2,6,9),sweep(p,1,2,6,9)]:[2,2,2])}),
   sub:p=>p>=10?{key:'sc',eqs:['s','sscale'],html:SCSLIDE}:{key:'a',eqs:['s','sscale']}},
@@ -1248,7 +1250,7 @@ cv.addEventListener('pointerdown',e=>{ if(curMode()!=='scale3') return; const rc
 cv.addEventListener('pointermove',e=>{ if(!SD.d) return; if(Math.abs(e.clientX-SD.d[0])+Math.abs(e.clientY-SD.d[1])>3) SD.moved=true; ROT.yaw=SD.d[2]+(e.clientX-SD.d[0])*0.01; ROT.pit=clamp(SD.d[3]+(e.clientY-SD.d[1])*0.006,0.1,1.4); if($('sR')){ const dg=((ROT.yaw*180/Math.PI)%360+360)%360; $('sR').value=Math.round(dg/5)*5; $('oR').textContent=Math.round(dg)+'°'; } draw(); });
 cv.addEventListener('pointerup',()=>{ SD.d=null; setTimeout(()=>{ SD.moved=false; },50); }); cv.addEventListener('pointercancel',()=>{ SD.d=null; });
 $('itab').addEventListener('click',e=>{ const b=e.target.closest('button[data-sc]'); if(b){ const v=b.dataset.sc.split(',').map(Number); scSet(v[0],v[1],v[2]); } });
-$('itab').addEventListener('input',e=>{ if(e.target.id!=='hSpd') return; HOOKV=parseFloat(e.target.value); const vv=$('hSpdV'); if(vv) vv.textContent=HOOKV.toFixed(1)+' kn'; state.playing=false; state.last=0; $('play').textContent='Play'; draw(); });
+$('itab').addEventListener('input',e=>{ if(e.target.id!=='hSpd'&&e.target.id!=='pSpd') return; HOOKV=parseFloat(e.target.value); const vv=$(e.target.id==='pSpd'?'pSpdV':'hSpdV'); if(vv) vv.textContent=HOOKV.toFixed(1)+' kn'; state.playing=false; state.last=0; $('play').textContent='Play'; draw(); });
 $('itab').addEventListener('change',e=>{ if(e.target.id==='xH'){ X3.H=e.target.value; draw(); } });
 
 // ---------- frame ----------
