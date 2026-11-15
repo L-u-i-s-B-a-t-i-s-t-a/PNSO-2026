@@ -180,6 +180,44 @@ canvas{width:min(100%,calc((100dvh - 210px)*2.05));aspect-ratio:2.05/1;height:au
   .controls{flex-wrap:wrap}.controls .dots{flex-wrap:wrap;width:100%}
   .brief{grid-template-columns:1fr}.brief>div+div{padding-left:0;border-left:none;border-top:1px solid var(--rule)}
 }
+
+/* ---- class layout (v4): canvas + live values on top, discussion below ---- */
+.app{--toph:calc((100dvh - 96px)*.63)}
+.mid{display:grid;grid-template-columns:min(calc(var(--toph)*2.05),calc(100% - 250px)) minmax(0,1fr);grid-template-rows:var(--toph) minmax(0,1fr);gap:8px 12px;min-height:0}
+.mid.kcmode{grid-template-columns:min(calc(var(--toph)*2.05),calc(100% - 250px)) minmax(0,1fr)}
+.mid.kcmode{--toph:calc((100dvh - 96px)*.40)}
+.board{grid-column:1;grid-row:1;min-width:0;min-height:0}
+canvas{width:100%;margin:0}
+.livep{grid-column:2;grid-row:1;min-height:0;overflow:auto;background:var(--panel);border:1px solid var(--rule);border-radius:6px;display:flex;flex-direction:column}
+.livep .lt{font:600 11px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--muted);padding:7px 12px 3px}
+.livep .read{border:none;background:transparent;grid-template-columns:repeat(2,minmax(0,1fr));flex:1;min-height:0}
+.livep .read div{padding:3px 12px;justify-content:center;border-right:1px solid var(--grid);border-bottom:1px solid var(--grid)}
+.livep .read div:nth-child(2n){border-right:none}
+.livep .read div:nth-last-child(-n+2){border-bottom:none}
+.livep .read div:nth-child(4n){border-right:none}
+.livep .read div:nth-child(2n+1){border-right:1px solid var(--grid)}
+.livep .read .k{font-size:clamp(10px,.8vw,12px)}
+.livep .read .v{font-size:clamp(15px,1.35vw,22px);line-height:1.15}
+.livep .read .p{font-size:clamp(10px,.75vw,12px);line-height:1.2}
+.dock{grid-column:1/-1;grid-row:2;min-height:0}
+.dock .pane{flex:1}
+#pane-disc{padding:0;overflow:auto}
+#pane-disc .side{border:none;border-radius:0;background:transparent;overflow:visible;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:28px;align-content:start;padding:10px 16px;font-size:clamp(14px,1.05vw,19px)}
+#pane-disc .side>.why{grid-column:1/-1}
+#pane-disc .side>.lcol{grid-column:1;min-width:0}
+#pane-disc .side>.eqcol{grid-column:2;min-width:0}
+.mid.kcmode #pane-disc .side{grid-template-columns:minmax(0,1fr)}
+.mid.kcmode #pane-disc .side>.eqcol{grid-column:1}
+@media (max-width:900px){
+  .app{--toph:auto}
+  .mid,.mid.kcmode{grid-template-columns:1fr;grid-template-rows:auto}
+  .board,.livep,.dock{grid-column:1;grid-row:auto}
+  canvas{width:100%}
+  #pane-disc .side{grid-template-columns:1fr}
+  #pane-disc .side>.eqcol,#pane-disc .side>.lcol{grid-column:1}
+  .livep .read{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 </style>
 <div class="app" id="app">
   <header class="top">
@@ -190,14 +228,11 @@ canvas{width:min(100%,calc((100dvh - 210px)*2.05));aspect-ratio:2.05/1;height:au
   </header>
 
   <div class="mid" id="mid">
-    <div class="left">
-      <section class="board" id="board" aria-label="Animation of the Holtrop–Mennen method">
-        <canvas id="cv" width="2050" height="1000" role="img" aria-label="The ship, its waves and its resistance components, built up step by step"></canvas>
-      </section>
-      <section class="dock" id="dock">
-        <div class="tabs" role="tablist"><button type="button" role="tab" data-tab="live" aria-selected="true">Live values</button><button type="button" role="tab" data-tab="about" aria-selected="false">What, objective, consequence</button><button type="button" role="tab" data-tab="src" aria-selected="false">Sources</button></div>
-        <div class="pane" id="pane-live">
-          <div class="read" aria-label="Live values">
+    <section class="board" id="board" aria-label="Animation of the Holtrop–Mennen method">
+      <canvas id="cv" width="2050" height="1000" role="img" aria-label="The ship, its waves and its resistance components, built up step by step"></canvas>
+    </section>
+    <section class="livep" id="livep"><div class="lt">Live values</div>
+<div class="read" aria-label="Live values">
             <div><span class="k">Speed V</span><span class="v" id="rV">—</span><span class="p" id="pV"></span></div>
             <div><span class="k">Froude number Fn</span><span class="v" id="rFn">—</span><span class="p" id="pFn"></span></div>
             <div><span class="k">Wave length λw</span><span class="v" id="rLw">—</span><span class="p" id="pLw"></span></div>
@@ -207,8 +242,20 @@ canvas{width:min(100%,calc((100dvh - 210px)*2.05));aspect-ratio:2.05/1;height:au
             <div><span class="k">Effective power PE</span><span class="v" id="rPE">—</span><span class="p" id="pPE"></span></div>
             <div class="g"><span class="k">Interference factor</span><span class="v" id="rI">—</span><span class="p" id="pI"></span></div>
           </div>
-        </div>
-        <div class="pane" id="pane-about" hidden>
+    </section>
+    <section class="dock" id="dock">
+      <div class="tabs" role="tablist"><button type="button" role="tab" data-tab="disc" aria-selected="true">Discussion</button><button type="button" role="tab" data-tab="about" aria-selected="false">What, objective, consequence</button><button type="button" role="tab" data-tab="src" aria-selected="false">Sources</button></div>
+      <div class="pane" id="pane-disc">
+        <aside class="side caption" id="side" aria-live="polite">
+      <p id="swhy" class="why"></p>
+      <div class="lcol"><ul class="pts" id="spts"></ul>
+      <p id="stext" class="stext"></p>
+      <details id="more"><summary>More</summary><div id="mbody"></div></details>
+      </div>
+      <div class="eqcol"><div class="eq" id="seq"></div><div class="itab" id="itab"></div></div>
+    </aside>
+      </div>
+      <div class="pane" id="pane-about" hidden>
           <div class="eyebrow">Ship and Ocean Systems Design 2026 · Resistance and power · Holtrop and Mennen (1982)</div>
           <p class="lede">The worked example of the paper itself: a single-screw ship of 205 m on the waterline, 32 m beam, 10 m draught and 37,500 m³, at 25 kn. Every number is recomputed here with the published formulas and checked against the paper.</p>
           <div class="brief">
@@ -217,19 +264,10 @@ canvas{width:min(100%,calc((100dvh - 210px)*2.05));aspect-ratio:2.05/1;height:au
             <div><span class="bk">Final consequence</span><p>Humps and hollows are set by the Froude number and the shape ratios, not by the size of the ship. Friction is not: it depends on size. The method holds only inside the hull forms it was fitted to.</p></div>
           </div>
         </div>
-        <div class="pane" id="pane-src" hidden>
+      <div class="pane" id="pane-src" hidden>
           <p class="srcline">T. Santos, L. Batista · Ship and Ocean Systems Design 2026 · Holtrop, J. and Mennen, G.G.J. (1982), An approximate power prediction method, International Shipbuilding Progress 29(335), 166–170; Papanikolaou (2026) §2.3.1 (Eqs. 2.15–2.17, Table 2.2). Range-of-validity table as compiled in secondary sources from Holtrop and Mennen.</p>
         </div>
-      </section>
-    </div>
-
-    <aside class="side caption" id="side" aria-live="polite">
-      <p id="swhy" class="why"></p>
-      <ul class="pts" id="spts"></ul>
-      <p id="stext" class="stext"></p>
-      <div class="eqcol"><div class="eq" id="seq"></div><div class="itab" id="itab"></div></div>
-      <details id="more"><summary>More</summary><div id="mbody"></div></details>
-    </aside>
+    </section>
   </div>
 
   <footer class="controls">
@@ -763,32 +801,32 @@ function drawHMW(st){
   if(!small) legend(rr[2].x+12,rr[2].y+16,[[C.aft,'CW, with ③',{w:2.8}],[C.ghost,'without interference ③',{w:1.6,dash:[6,4]}]]);
 }
 function drawHook(st){
-  const r=mainRect(), yw=r.y+r.h*(small?0.27:0.47), band={x:r.x,y:r.y,w:r.w,h:yw-r.y+60};
+  const r=mainRect(), yw=r.y+r.h*(small?0.2:0.29), yw2=r.y+r.h*(small?0.42:0.62), band={x:r.x,y:r.y,w:r.w,h:yw-r.y+40}, band2={x:r.x,y:yw2-30,w:r.w,h:80};
   const kn=fn=>fn*Math.sqrt(G*SHIP.L)/KN, Vh=FNV(0.263), cur=(st.man!=null?st.man:13+(Vh-13)*st.sw), man=st.man!=null, fnc=cur*KN/Math.sqrt(G*SHIP.L);
   // top: both ships on one waterline, same scale; room behind the big ship for its wave system
-  const Lp1=r.w*(small?0.40:0.34), bow1=r.x+r.w*(small?0.62:0.54), Lp2=Lp1/2, bow2=r.x+r.w-(small?4:10), sea=()=>{ ctx.fillStyle=C.seas; ctx.fillRect(r.x,yw,r.w,small?30:52); };
-  ctx.globalAlpha=st.a; sea(); line([[r.x,yw],[r.x+r.w,yw]],C.sea,1.6);
+  const Lp1=r.w*(small?0.40:0.34), bow1=r.x+r.w*(small?0.62:0.58), Lp2=Lp1/2, bow2=bow1, sea=(y)=>{ ctx.fillStyle=C.seas; ctx.fillRect(r.x,y,r.w,small?22:34); };
+  ctx.globalAlpha=st.a; sea(yw); line([[r.x,yw],[r.x+r.w,yw]],C.sea,1.6);
   if(st.sw>0) waterDots(band,yw,60+cur*9);
   ctx.globalAlpha=st.a; const g1=drawShipImg(bow1,yw,Lp1,{alpha:st.a,under:false});
   // wave systems: bow train, stern train and their sum (same formulas as steps 7 to 9); returns the height of the sum far behind the ship
   const mpp=SHIP.L/Lp1, A=small?4:12, blink=0.5+0.5*Math.sin(now()*13), RED='#d63a3a', GRN='#2e9e5b';
-  const wsys=(bowX,Lsh,Vkn,x0,x1,al)=>{ const V=Vkn*KN, k=G/(V*V), Ls=LAM*Lsh, pb=[],ps=[],pt=[];
+  const wsys=(bowX,Lsh,Vkn,x0,x1,al,yw)=>{ const V=Vkn*KN, k=G/(V*V), Ls=LAM*Lsh, pb=[],ps=[],pt=[];
     for(let x=x0;x<=x1;x+=2){ const sm=(bowX-x)*mpp; let zb=0,zs=0; if(sm>=0) zb=Math.cos(k*sm); else zb=Math.exp(sm/12); if(sm>=Ls) zs=-0.8*Math.cos(k*(sm-Ls))*(1-Math.exp(-(sm-Ls)*k/1.2)); pb.push([x,yw-A*zb]); ps.push([x,yw-A*zs]); pt.push([x,yw-A*(zb+zs)]); }
     ctx.globalAlpha=al*0.6; line(pb,C.aft,1.4); line(ps,C.fore,1.4); ctx.globalAlpha=al*0.28; ctx.fillStyle=C.pb; ctx.beginPath(); ctx.moveTo(pt[0][0],yw); pt.forEach(q=>ctx.lineTo(q[0],q[1])); ctx.lineTo(pt[pt.length-1][0],yw); ctx.closePath(); ctx.fill(); ctx.globalAlpha=al; line(pt,C.pb,3.4);
     return Math.sqrt(1.64-1.6*Math.cos(k*Ls)); };
-  const amp1=wsys(bow1,SHIP.L,cur,r.x,bow1+22,st.a), amp2=man?wsys(bow2,SHIP.L/2,cur,bow1+22,Math.min(bow2+22,r.x+r.w),st.b):0;
+  const amp1=wsys(bow1,SHIP.L,cur,r.x,bow1+22,st.a,yw), amp2=st.b>0?wsys(bow2,SHIP.L/2,cur,r.x,bow2+22,st.b,yw2):0;
   const good=(am)=>am<0.7, bad=(am)=>am>1.45;
-  if(!small){ ctx.globalAlpha=st.a; const lx=r.x+6; [[C.aft,'bow wave',1.6],[C.fore,'stern wave',1.6],[C.pb,'sum: the waves we see',3.4]].forEach(([c,t,w],i)=>{ const ly=r.y+40+i*20; line([[lx,ly],[lx+22,ly]],c,w); text(lx+28,ly,t,C.ink,'left',14,'500'); }); }
-  ctx.globalAlpha=st.a; text(bow1-Lp1,yw+g1.T+(small?14:26),small?'205 m':'the paper\'s ship, 205 m',C.ink,'left',small?11:15,'600');
+  if(!small){ ctx.globalAlpha=st.a; const lx=r.x+6; [[C.aft,'bow wave',1.6],[C.fore,'stern wave',1.6],[C.pb,'sum: the waves we see',3.4]].forEach(([c,t,w],i)=>{ const ly=r.y+32+i*16; line([[lx,ly],[lx+22,ly]],c,w); text(lx+28,ly,t,C.ink,'left',12,'500'); }); }
+  ctx.globalAlpha=st.a; text(bow1-Lp1,yw+g1.T+(small?14:17),small?'205 m':'the paper\'s ship, 205 m',C.ink,'left',small?11:15,'600');
   ctx.globalAlpha=st.a; text(small?bow1-Lp1*0.62:r.x+6,r.y+(small?8:12),'V = '+fmt(cur,1)+' kn'+(small?'':'   Fn = '+fmt(fnc,3)),C.ink,'left',small?12:16,'700');
   // are the two waves in step? amplitude of the sum far behind the ship = |1 - 0.8 e^(-i k L*)|
   { const add=bad(amp1), canc=good(amp1); if(!small&&(add||canc)){ if(man){ ctx.globalAlpha=st.a*(0.4+0.6*blink); dot(r.x+226,r.y+12,add?RED:GRN,7); } ctx.globalAlpha=st.a; label(r.x+250,r.y+12,add?'in step: they add up':'out of step: they cancel',add?C.aft:C.fore,'left'); } }
-  if(st.b>0){ ctx.globalAlpha=st.b; sea();
-    const g2=drawShipImg(bow2,yw,Lp2,{alpha:st.b,under:false}); if(man&&(bad(amp2)||good(amp2))){ ctx.globalAlpha=st.b*(0.4+0.6*blink); dot(bow2-(small?70:292),yw+g2.T+(small?14:26),bad(amp2)?RED:GRN,7); } ctx.globalAlpha=st.b; text(bow2,yw+g2.T+(small?14:26),small?'102.5 m':'its copy, half the size: 102.5 m',C.ink,'right',small?11:15,'600');
+  if(st.b>0){ ctx.globalAlpha=st.b; sea(yw2); line([[r.x,yw2],[r.x+r.w,yw2]],C.sea,1.6); if(st.sw>0) waterDots(band2,yw2,60+cur*9); ctx.globalAlpha=st.b;
+    const g2=drawShipImg(bow2,yw2,Lp2,{alpha:st.b,under:false}); if(man&&(bad(amp2)||good(amp2))){ ctx.globalAlpha=st.b*(0.4+0.6*blink); dot(bow2-(small?70:200),yw2+g2.T+(small?14:17),bad(amp2)?RED:GRN,7); } ctx.globalAlpha=st.b; text(bow2-Lp2,yw2+g2.T+(small?14:17),small?'102.5 m':'its copy, half the size: 102.5 m',C.ink,'left',small?11:15,'600');
   }
   ctx.globalAlpha=1;
   // the speed ruler: orange = humps, blue = hollows; the ship's speed moves along it
-  ctx.globalAlpha=st.a; const rl={x:r.x,y:r.y+r.h*(small?0.58:0.75),w:r.w,h:small?14:20};
+  ctx.globalAlpha=st.a; const rl={x:r.x,y:r.y+r.h*(small?0.64:0.84),w:r.w,h:small?14:20};
   const XR=v=>rl.x+(v-13)/22*rl.w, hw=0.007*Math.sqrt(G*SHIP.L)/KN, HU=[4,3,2,1].map(j=>FNV(hump(j))), HO=[4,3,2,1].map(j=>FNV(hollow(j)));
   [[HU,C.as],[HO,C.fs]].forEach(([arr,c])=>{ ctx.fillStyle=c; ctx.globalAlpha=st.a*0.8; arr.forEach(v=>{ const a0=Math.max(XR(v-hw),rl.x), b0=Math.min(XR(v+hw),rl.x+rl.w); if(b0>a0) ctx.fillRect(a0,rl.y,b0-a0,rl.h); }); }); ctx.globalAlpha=st.a;
   const f=frame(rl,[13,35],[0,1],{xt:[15,20,25,30,35],yt:[],xl:'Speed V, kn (the 205 m ship)'});
@@ -810,9 +848,9 @@ function drawHook(st){
   const W2=r.w-8;
   const defL=['HUMP: a speed where the bow wave and the stern wave add up. Then the wave resistance RW sits above its smooth trend.','Orange bands: humps. Blue bands: hollows, where the waves cancel.'];
   if(small){ box(['HUMP: a speed where the bow','and stern waves add up.'],st.df,W2); box(['1. Copy: same hump speed?','2. RW: how many times more?'],st.q,W2); }
-  else { const qx=bow1+34, qw=r.x+r.w-qx-2, fz=16, lh2=22; ctx.font='600 '+fz+'px '+SANS;
+  else { const qx=bow1+36, qw=r.x+r.w-qx-2, fz=14, lh2=18; ctx.font='600 '+fz+'px '+SANS;
     const wrap=(t)=>{ const out=[]; let c2=''; t.split(' ').forEach(w=>{ const tt=c2?c2+' '+w:w; if(ctx.measureText(tt).width>qw-20&&c2){ out.push(c2); c2=w; } else c2=tt; }); out.push(c2); return out; };
-    const draw=(blocks,al)=>{ if(al<=0) return; let qy=r.y+2; blocks.forEach(([h,t,col])=>{ const ls=wrap(t), hh=lh2*(ls.length+1)+10; ctx.globalAlpha=al*0.95; ctx.fillStyle=C.panel; ctx.fillRect(qx,qy,qw,hh); ctx.strokeStyle=col; ctx.lineWidth=1.4; ctx.setLineDash([]); ctx.strokeRect(qx+.5,qy+.5,qw-1,hh-1);
+    const draw=(blocks,al)=>{ if(al<=0) return; let qy=r.y-6; blocks.forEach(([h,t,col])=>{ const ls=wrap(t), hh=lh2*(ls.length+1)+10; ctx.globalAlpha=al*0.95; ctx.fillStyle=C.panel; ctx.fillRect(qx,qy,qw,hh); ctx.strokeStyle=col; ctx.lineWidth=1.4; ctx.setLineDash([]); ctx.strokeRect(qx+.5,qy+.5,qw-1,hh-1);
       ctx.globalAlpha=al; text(qx+10,qy+lh2*0.5+5,h,col,'left',fz,'700'); ls.forEach((l,i)=>text(qx+10,qy+lh2*(i+1.5)+5,l,C.ink,'left',fz,'500')); qy+=hh+8; }); };
     draw([['Definition',defL[0]+' '+defL[1],C.aft]],st.df*(1-st.q));
     draw([['Question 1','The big ship has a hump at 22.9 kn. Does its copy have the same hump at the same speed?',C.aft],['Question 2','Each ship sails at the speed of that hump. The RW of the 205 m ship is how many times the RW of the copy?',C.aft]],st.q); }
@@ -1208,7 +1246,7 @@ window.addEventListener('keydown',e=>{ if(/INPUT|SELECT|TEXTAREA/.test(e.target.
   if(e.key===' '){ e.preventDefault(); $('play').click(); } else if(e.key==='ArrowRight'||e.key==='PageDown') $('next').click(); else if(e.key==='ArrowLeft'||e.key==='PageUp') $('prev').click(); else if(e.key==='f'||e.key==='F') $('fs').click(); });
 $('dock').querySelector('.tabs').addEventListener('click',e=>{ const b=e.target.closest('button[data-tab]'); if(!b) return;
   $('dock').querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b?'true':'false'));
-  ['live','about','src'].forEach(n=>{ $('pane-'+n).hidden=(n!==b.dataset.tab); }); });
+  ['disc','about','src'].forEach(n=>{ $('pane-'+n).hidden=(n!==b.dataset.tab); }); });
 if(window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',draw);
 new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 document.fonts&&document.fonts.ready.then(()=>draw());
