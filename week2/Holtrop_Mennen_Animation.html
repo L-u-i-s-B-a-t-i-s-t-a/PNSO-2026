@@ -206,9 +206,9 @@ canvas{width:100%;aspect-ratio:var(--ar)/1;height:auto;margin:0}
 .dgrid .pts{margin:0 0 8px;padding-left:1.1em}.dgrid .pts li{margin:0 0 6px}.dgrid .pts:empty{display:none}
 .dgrid .stext{margin:0 0 8px;max-width:none}.dgrid .stext:empty{display:none}
 .eqcol{display:flex;flex-direction:column;gap:10px}
-.eqcol .eq{display:flex;flex-direction:column;gap:8px;align-items:stretch;min-height:0;font-size:17px}
-.eqcol .eq>div{background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:6px 10px;overflow-x:auto;display:flex;justify-content:center}
-.eqcol .eq svg{display:block;max-width:none;height:auto;flex:none}
+.eqcol .eq{display:flex;flex-direction:column;gap:8px;align-items:stretch;flex:none;font-size:17px}
+.eqcol .eq>div{flex:none;background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:6px 10px;overflow-x:auto;display:flex;justify-content:center}
+.eqcol>*{flex:none}.eqcol .eq svg{display:block;max-width:none;height:auto;flex:none}
 .eq:empty{display:none}
 .more p{margin:0 0 .75em;max-width:none;line-height:1.5}
 .more h4{margin:.9em 0 .3em;font-size:1em}
@@ -251,6 +251,7 @@ canvas{width:100%;aspect-ratio:var(--ar)/1;height:auto;margin:0}
             <div><span class="k">Half waves N on L*</span><span class="v" id="rN">—</span><span class="p" id="pN"></span></div>
             <div class="f"><span class="k">Total resistance RT</span><span class="v" id="rRT">—</span><span class="p" id="pRT"></span></div>
             <div class="a"><span class="k">Wave share RW/RT</span><span class="v" id="rW">—</span><span class="p" id="pW"></span></div>
+            <div class="a"><span class="k">Wave coeffs</span><span class="v" id="rC">—</span><span class="p" id="pC"></span></div>
             <div><span class="k">Effective power PE</span><span class="v" id="rPE">—</span><span class="p" id="pPE"></span></div>
             <div class="g"><span class="k">Interference factor</span><span class="v" id="rI">—</span><span class="p" id="pI"></span></div>
           </div>
@@ -332,7 +333,7 @@ function HM(o){
   const AE=o.AE||0.6, etaR=0.9922-0.05908*AE+0.07424*(CP-0.0225*lcb);
   const k=1e-3;
   return {V:o.V,Fn,Rn,CB,CP,CWP,S,CF,k1,lam,m1,m2,c15,RF:RF*k,RFk:RF*k1*k,RAPP:RAPP*k,RW:RW*k,RB:RB*k,RTR:RTR*k,RA:RA*k,CA,RT:RT*k,
-    PE:RT*V*k,w,t,etaR,etaH:(1-t)/(1-w),grow,inter,Wpre:Wpre*k,q:q*k,CW:RW/(q*S),CT:RT/(q*S),CFk:CF*k1,iE,iEf,c2,c3,c5,LR};
+    PE:RT*V*k,w,t,etaR,etaH:(1-t)/(1-w),grow,inter,Wpre:Wpre*k,q:q*k,CW:RW/(q*S),CT:RT/(q*S),CFk:CF*k1,iE,iEf,c1,c2,c3,c5,LR};
 }
 if(typeof module!=='undefined') module.exports=HM;
 </script>
@@ -356,6 +357,7 @@ const fmt=(v,n)=>(v<0?'−':'')+Math.abs(v).toLocaleString('en-GB',{minimumFract
 const EQ_=(typeof EQ!=='undefined')?EQ:{};
 Object.keys(EQ_).forEach(k=>{ EQ_[k]=EQ_[k].replace(/<svg([^>]*?)width="[\d.]+(?:em)?" height="[\d.]+(?:em)?"([^>]*?)viewBox="(-?[\d.]+) (-?[\d.]+) ([\d.]+) ([\d.]+)"/,(m,p1,p2,x0,y0,w,h)=>+w>3000?'<svg'+p1+'width="'+(w/1000).toFixed(2)+'em" height="'+(h/1000).toFixed(2)+'em"'+p2+'viewBox="'+x0+' '+y0+' '+w+' '+h+'"':m); });
 function fitEq(){ const el=$('seq'); if(!el||!el.children.length) return; const avail=$('eqcol').clientWidth-32-24; let mx=1; el.querySelectorAll('svg').forEach(s=>{ mx=Math.max(mx,parseFloat(s.getAttribute('width'))||0); }); el.style.fontSize=clamp(Math.floor(avail/mx),12,21)+'px'; }
+try{ new ResizeObserver(()=>fitEq()).observe($('eqcol')); }catch(e){}
 const vs=(a,b,n)=>Array.from({length:n+1},(_,i)=>a+(b-a)*i/n);
 const sweep=(p,a,b,t0,t1)=>lerp(a,b,ease(clamp((p-t0)/(t1-t0),0,1)));
 
@@ -1238,7 +1240,7 @@ function readouts(st){
   $('rLw').textContent=fmt(lw,0)+' m'; $('pLw').textContent='λw/L = '+fmt(lw/(st.mode==='explore'?SHIP.L*X3.S:SHIP.L),2);
   const Nr=Math.round(N); $('rN').textContent=fmt(N,2); $('pN').textContent=Math.abs(N-Nr)<0.25?(Nr%2?'near odd: hump':'near even: hollow'):'between';
   $('rRT').textContent=fmt(q.RT,0)+' kN'; $('pRT').textContent='friction '+fmt(q.RFk/q.RT*100,0)+' % of RT';
-  $('rW').textContent=fmt(q.RW/q.RT*100,0)+' %'; $('pW').textContent='RW '+fmt(q.RW,0)+' kN';
+  $('rW').textContent=fmt(q.RW/q.RT*100,0)+' %'; $('pW').textContent='RW '+fmt(q.RW,0)+' kN'; $('rC').style.fontSize='11px'; $('rC').style.whiteSpace='nowrap'; $('rC').textContent=fmt(q.c1,2)+'  '+fmt(q.c2,2)+'  '+fmt(q.c5,2); $('pC').textContent='c1 · c2 · c5 in RW';
   $('rPE').textContent=fmt(q.PE,0)+' kW'; $('pPE').textContent='PE = RT·V';
   $('rI').textContent=fmt(q.inter,3); $('pI').textContent=q.inter>1.01?'waves adding':q.inter<0.99?'waves cancelling':'weak interference';
 }
