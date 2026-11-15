@@ -207,7 +207,7 @@ canvas{width:100%;aspect-ratio:var(--ar)/1;height:auto;margin:0}
 .dgrid .stext{margin:0 0 8px;max-width:none}.dgrid .stext:empty{display:none}
 .eqcol{display:flex;flex-direction:column;gap:10px}
 .eqcol .eq{display:flex;flex-direction:column;gap:8px;align-items:stretch;flex:none;font-size:17px}
-.eqcol .eq>div{flex:none;background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:6px 10px;overflow-x:auto;display:flex;justify-content:center}
+.eqcol .eq>div.cur{border-color:var(--fore);box-shadow:0 0 0 1px var(--fore);background:#fff}.eqcol .eq>div{flex:none;background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:6px 10px;overflow-x:auto;display:flex;justify-content:center}
 .eqcol>*{flex:none}.eqcol .eq svg{display:block;max-width:none;height:auto;flex:none}
 .eq:empty{display:none}
 .more p{margin:0 0 .75em;max-width:none;line-height:1.5}
@@ -1666,9 +1666,13 @@ QCARDS[0]='<div class="qcard main"><b>Question</b>How does Holtrop–Mennen dete
 function caption(k){ if(k===shown) return; shown=k; subkey='~'; const s=S[k];
   $('stepno').textContent='Step '+(k+1)+' / '+S.length; { const same=PARTN.map((p,i)=>p===PARTN[k]?i:-1).filter(i=>i>=0); $('chap').textContent=PARTN[k]+(same.length>1?' · stage '+(same.indexOf(k)+1)+' of '+same.length:''); } $('chips').innerHTML=''; $('swhy').textContent=WHY[k]||''; $('stitle').textContent=s.t; setText(k,s,null); showTab('disc');
   [...$('dots').children].forEach((b,i)=>b.setAttribute('aria-current',i===k?'true':'false'));}
+// the equation column keeps every formula the step has shown so far; the current ones are marked and scrolled into view
+function showEqs(s,k,p,q){ const all=[]; const add=l=>(l||[]).forEach(e=>{ if(all.indexOf(e)<0) all.push(e); }); for(let t=0;t<p;t+=0.25){ try{ add(s.sub(t).eqs); }catch(_){} } add(q.eqs);
+  const cur=q.eqs||[]; $('seq').innerHTML=all.map(e=>'<div data-eq="'+e+'"'+(cur.indexOf(e)>=0?' class="cur"':'')+'>'+(EQ_[e]||'')+'</div>').join(''); }
+function scrollEq(){ requestAnimationFrame(()=>{ const c=$('eqcol'), el=$('seq').querySelector('.cur'); if(!c||!el) return; const top=el.getBoundingClientRect().top-c.getBoundingClientRect().top+c.scrollTop-10; try{ c.scrollTo({top:Math.max(0,top),behavior:reduce?'auto':'smooth'}); }catch(_){ c.scrollTop=Math.max(0,top); } }); }
 function subcap(k,p){ const s=S[k], q=s.sub(p);
   { const km=!!q.html&&q.key==='s'; if($('mid').classList.contains('kcmode')!==km){ $('mid').classList.toggle('kcmode',km); resize(); } $('board').classList.toggle('kcmode',km); }
-  if(q.key!==subkey){ subkey=q.key; setText(k,s,q); $('seq').innerHTML=(q.eqs||[]).map(e=>'<div>'+(EQ_[e]||'')+'</div>').join(''); fitEq(); $('itab').innerHTML=q.html||'';
+  if(q.key!==subkey){ subkey=q.key; setText(k,s,q); showEqs(s,k,p,q); fitEq(); scrollEq(); $('itab').innerHTML=q.html||'';
     if(q.key==='sc'){ shSync(); const dg=((ROT.yaw*180/Math.PI)%360+360)%360; $('sR').value=Math.round(dg/5)*5; $('oR').textContent=Math.round(dg)+'°'; if(SCU) [['sL',SCU[0]],['sB',SCU[1]],['sT',SCU[2]]].forEach(([id,v])=>{ $(id).value=v; $('o'+id.slice(1)).textContent=v.toFixed(2); }); }
     if(q.key==='x'){ $('xH').value=X3.H; $('xX').value=X3.AX; $('xY').value=X3.AY; $('xLB').value=X3.LB; $('oLB').textContent=X3.LB.toFixed(2); $('xBT').value=X3.BT; $('oBT').textContent=X3.BT.toFixed(2); $('xS').value=SIZEV.indexOf(X3.S); $('oS').textContent=String(X3.S); $('xF').value=X3.F; $('oF').textContent=X3.F.toFixed(3); $('xC').value=X3.CP; $('oC').textContent=X3.CP.toFixed(3); } } }
 S.forEach((s,i)=>{const b=document.createElement('button'); b.type='button'; b.textContent=i+1; b.setAttribute('aria-label','Go to step '+(i+1)+': '+s.t); b.onclick=()=>go(i); $('dots').appendChild(b);});
