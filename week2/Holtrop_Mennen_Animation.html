@@ -218,6 +218,8 @@ canvas{width:100%;margin:0}
   #pane-disc .side>.eqcol,#pane-disc .side>.lcol{grid-column:1}
   .livep .read{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+.controls .auto{display:inline-flex;align-items:center;gap:4px;font:600 12px/1 var(--mono);color:var(--muted);cursor:pointer;white-space:nowrap;padding:0 4px}
+.controls .auto input{margin:0;accent-color:var(--fore)}
 </style>
 <div class="app" id="app">
   <header class="top">
@@ -274,6 +276,7 @@ canvas{width:100%;margin:0}
     <button class="primary" id="play" type="button">Pause</button>
     <button id="prev" type="button" aria-label="Previous step">◀</button>
     <button id="next" type="button" aria-label="Next step">▶</button>
+    <label class="auto" title="On: steps play one after another by themselves. Off: each step plays once and waits for a click, a key (Space, arrows, PageDown) or a presenter clicker."><input type="checkbox" id="auto" checked><span>Auto</span></label>
     <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Position in the animation">
     <span class="time" id="time">0.0 s</span>
     <div class="dots" id="dots"></div>
@@ -1232,9 +1235,13 @@ function subcap(k,p){ const s=S[k], q=s.sub(p);
 S.forEach((s,i)=>{const b=document.createElement('button'); b.type='button'; b.textContent=i+1; b.setAttribute('aria-label','Go to step '+(i+1)+': '+s.t); b.onclick=()=>go(i); $('dots').appendChild(b);});
 function go(k){ HOOKV=null; state.t=reduce?START[k]+S[k].d-0.001:START[k]; if(!reduce){ state.playing=true; state.last=0; $('play').textContent='Pause'; } render(); }
 function render(){ const kk=sceneAt(state.t); caption(kk); subcap(kk,state.t-START[kk]); $('scrub').value=Math.round(state.t/TOTAL*1000); $('time').textContent=state.t.toFixed(1)+' / '+TOTAL+' s'; draw(); }
+let AUTO=true; try{ AUTO=localStorage.getItem('hmAuto')!=='0'; }catch(_){} 
+const atEnd=()=>{ const k=sceneAt(state.t); return k<S.length-1 && state.t>=START[k]+S[k].d-0.01; };
+function setAuto(v){ AUTO=v; $('auto').checked=v; try{ localStorage.setItem('hmAuto',v?'1':'0'); }catch(_){} if(v&&atEnd()&&!state.playing){ state.t+=0.02; state.playing=true; state.last=0; $('play').textContent='Pause'; } }
 function tick(ts){ if(state.playing){ if(state.last) state.t+=(ts-state.last)/1000; state.last=ts;
+    if(!AUTO){ const k=sceneAt(state.t), end=START[k]+S[k].d; if(k<S.length-1&&state.t>=end-0.001){ state.t=end-0.001; state.playing=false; state.last=0; $('play').textContent='Play'; } }
     if(state.t>=TOTAL){state.t=TOTAL-0.001; state.playing=false; $('play').textContent='Replay';} render(); } else { state.last=0; const m=curMode(); if(m==='ship'||m==='wave') draw(); } requestAnimationFrame(tick);}
-$('play').onclick=()=>{ HOOKV=null; if(state.t>=TOTAL-0.01) state.t=0; state.playing=!state.playing; state.last=0; $('play').textContent=state.playing?'Pause':'Play'; render();};
+$('play').onclick=()=>{ if(!AUTO&&!state.playing&&atEnd()){ $('next').click(); return; } HOOKV=null; if(state.t>=TOTAL-0.01) state.t=0; state.playing=!state.playing; state.last=0; $('play').textContent=state.playing?'Pause':'Play'; render();};
 $('prev').onclick=()=>{const k=sceneAt(state.t); go(Math.max(0,(state.t-START[k]>0.6&&!reduce)?k:k-1));};
 $('next').onclick=()=>{const k=sceneAt(state.t); go(Math.min(S.length-1,k+1));};
 $('scrub').oninput=e=>{HOOKV=null; state.t=e.target.value/1000*TOTAL; if(state.t>=TOTAL) state.t=TOTAL-0.001; render();};
@@ -1243,7 +1250,7 @@ window.addEventListener('resize',resize);
 if(window.ResizeObserver) new ResizeObserver(()=>{ const r=cv.getBoundingClientRect(); if(Math.abs(r.width-W)>2) resize(); }).observe(cv);
 $('fs').onclick=()=>{ try{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }catch(_){} };
 window.addEventListener('keydown',e=>{ if(/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return; if(e.key===' '&&e.target.tagName==='BUTTON') return;
-  if(e.key===' '){ e.preventDefault(); $('play').click(); } else if(e.key==='ArrowRight'||e.key==='PageDown') $('next').click(); else if(e.key==='ArrowLeft'||e.key==='PageUp') $('prev').click(); else if(e.key==='f'||e.key==='F') $('fs').click(); });
+  if(e.key===' '){ e.preventDefault(); if(AUTO) $('play').click(); else $('next').click(); } else if(e.key==='ArrowRight'||e.key==='PageDown') $('next').click(); else if(e.key==='ArrowLeft'||e.key==='PageUp') $('prev').click(); else if(e.key==='f'||e.key==='F') $('fs').click(); });
 $('dock').querySelector('.tabs').addEventListener('click',e=>{ const b=e.target.closest('button[data-tab]'); if(!b) return;
   $('dock').querySelectorAll('.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b?'true':'false'));
   ['disc','about','src'].forEach(n=>{ $('pane-'+n).hidden=(n!==b.dataset.tab); }); });
@@ -1251,5 +1258,8 @@ if(window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEvent
 new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 document.fonts&&document.fonts.ready.then(()=>draw());
 resize(); render(); requestAnimationFrame(tick);
+
+$('auto').addEventListener('change',e=>{ setAuto(e.target.checked); e.target.blur(); }); $('auto').checked=AUTO;
+cv.addEventListener('click',e=>{ if(AUTO||curMode()==='explore'||X3.drag) return; $('next').click(); });
 })();
 </script>
