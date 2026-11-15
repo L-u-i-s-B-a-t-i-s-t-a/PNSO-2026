@@ -748,9 +748,9 @@ function drawFric2(st){
     const nloc=Rn>1e7?2-2/(Math.LN10*(Math.log10(Rn)-2)):2;
     label(f3.X(Math.min(v,17)),f3.Y(rzAt('RF',Math.min(v,17)))+26,'RF ∝ V^'+fmt(nloc,2)+' here',C.fore); if(v>5) label(f3.X(Math.min(v,17)),f3.Y(rzAt('RFk',Math.min(v,17)))-26,'+'+fmt((P25.k1-1)*100,0)+' % form',C.aft);
     // inset: the form factor against CP
-    const ri={x:r3.x+r3.w*0.76,y:r3.y+r3.h*0.66,w:r3.w*0.21,h:r3.h*0.17};
+    const ri={x:r3.x+r3.w*0.14,y:r3.y+r3.h*0.30,w:r3.w*0.34,h:r3.h*0.25};
     ctx.fillStyle=C.panel; ctx.globalAlpha=.92; ctx.fillRect(ri.x-34,ri.y-16,ri.w+44,ri.h+56); ctx.globalAlpha=1;
-    const fi=frame(ri,[0.55,0.78],[1.0,1.5],{xt:[0.55,0.65,0.75],xf:x=>x.toFixed(2),yt:[1.0,1.25,1.5],yf:y=>y.toFixed(2),xl:'Prismatic coefficient CP',yl:'1 + k1'});
+    const fi=frame(ri,[0.55,0.78],[0.96,1.5],{xt:[0.55,0.65,0.75],xf:x=>x.toFixed(2),yt:[1.0,1.25,1.5],yf:y=>y.toFixed(2),xl:'Prismatic coefficient CP',yl:'1 + k1'});
     line(vs(0.55,0.78,30).map(cp=>[fi.X(cp),fi.Y(k1OfCp(cp))]),C.aft,2.2); dot(fi.X(P25.CP),fi.Y(P25.k1),C.ink,5);
     const cp=st.cp, k=k1OfCp(cp); vmark(fi.X,cp,ri.y,ri.y+ri.h,C.muted); dot(fi.X(cp),fi.Y(k),C.aft,5); label(fi.X(Math.min(cp,0.7)),fi.Y(k)-20,'CP '+fmt(cp,2)+': '+fmt(k,3),C.aft); }
 }
