@@ -707,10 +707,10 @@ function drawScale3(st){
     text(x0,r.y+12,'A tilted patch of hull skin: L ×'+fmt(sx,2)+', B ×'+fmt(sy,2)+', T ×'+fmt(sz,2),C.ink,'left',15,'700');
     text(x0,r.y+30,'its shadows on the three planes (dashed: before)',C.muted,'left',11,'500'); text(x0+w0,r.y+30,'drag to rotate',C.muted,'right',11);
     const fz=small?11:13, ly=19, sb=Az*sx*sy, ss=Ay*sx*sz, se=Ax*sy*sz, An=Math.hypot(sb,ss,se), same=Math.abs(sx-sy)<1e-6&&Math.abs(sy-sz)<1e-6;
-    text(x0,ty2,'Each shadow scales with the two directions it spans:',C.muted,'left',small?10:11,'500');
-    text(x0,ty2+ly,'bottom  (x–y) :  '+fmt(Az,2)+'  ×'+fmt(sx,2)+' · ×'+fmt(sy,2)+'  =  '+fmt(sb,2),C.fore,'left',fz,'700');
-    text(x0,ty2+2*ly,'side    (x–z) :  '+fmt(Ay,2)+'  ×'+fmt(sx,2)+' · ×'+fmt(sz,2)+'  =  '+fmt(ss,2),C.aft,'left',fz,'700');
-    text(x0,ty2+3*ly,'end     (y–z) :  '+fmt(Ax,2)+'  ×'+fmt(sy,2)+' · ×'+fmt(sz,2)+'  =  '+fmt(se,2),GR,'left',fz,'700');
+    text(x0,ty2,'Each shadow: its size before, times the two factors of the directions it spans',C.muted,'left',small?10:11,'500');
+    text(x0,ty2+ly,'bottom  (x–y) :  was '+fmt(Az,2)+'  ×'+fmt(sx,2)+' · ×'+fmt(sy,2)+'  =  '+fmt(sb,2),C.fore,'left',fz,'700');
+    text(x0,ty2+2*ly,'side    (x–z) :  was '+fmt(Ay,2)+'  ×'+fmt(sx,2)+' · ×'+fmt(sz,2)+'  =  '+fmt(ss,2),C.aft,'left',fz,'700');
+    text(x0,ty2+3*ly,'end     (y–z) :  was '+fmt(Ax,2)+'  ×'+fmt(sy,2)+' · ×'+fmt(sz,2)+'  =  '+fmt(se,2),GR,'left',fz,'700');
     text(x0,ty2+4*ly+4,'patch area = √( '+fmt(sb,2)+'² + '+fmt(ss,2)+'² + '+fmt(se,2)+'² ) = '+fmt(An,2)+'   (was '+fmt(A0,2)+',  ×'+fmt(An/A0,2)+')',C.ink,'left',fz,'700');
     text(x0,ty2+5*ly+8,same?'same factors: every shadow × scale², so the patch keeps its tilt and its area × scale²':'different factors: the shadows change by different amounts, the patch tilts, area is not ×(one number)',same?C.aft:C.muted,'left',small?10:11,'500');
     return; }
