@@ -450,7 +450,7 @@ const S=[
  {d:18,t:"Six parts of the resistance",eqs:['rt'],x:"",
   st:p=>{ const fr=sweep(p,10,35,0.5,9.5), man=(p>=11&&HOOKV!=null); return {mode:'parts',v:man?HOOKV:25,fr,m:man?1:ease(clamp((fr-25)/0.8,0,1))}; },
   sub:p=>p>=11?{key:'ps',eqs:['rt'],html:PSLIDE}:{key:'a',eqs:['rt']}},
- {d:26,t:"Wetted surface, and why areas grow as the square",eqs:['s','sscale'],x:"",
+ {d:26,t:"Wetted surface: areas grow as the square of the scale (same shape)",eqs:['s','sscale'],x:"",
   st:p=>({mode:'scale3',skin:ease(clamp((p-1)/4,0,1)),s:(p>=10&&SCU)?SCU:(p<10?[sweep(p,1,2,6,9),sweep(p,1,2,6,9),sweep(p,1,2,6,9)]:[2,2,2])}),
   sub:p=>p>=10?{key:'sc',eqs:['s','sscale'],html:SCSLIDE}:{key:'a',eqs:['s','sscale']}},
  {d:36,t:"Friction: the coefficient falls, the resistance rises, and the hull adds its form",eqs:['rn','cfn','rf','nfric'],x:"",
@@ -1337,7 +1337,7 @@ function sceneAt(t){for(let i=S.length-1;i>=0;i--) if(t>=START[i]-1e-9) return i
 const PARTN=['Prologue · The question','Part 1 of 6 · The ship and its resistance','Part 2 of 6 · Friction follows size','Part 2 of 6 · Friction follows size','Part 2 of 6 · Friction follows size','Part 3 of 6 · Waves follow speed','Part 3 of 6 · Waves follow speed','Part 3 of 6 · Waves follow speed','Part 3 of 6 · Waves follow speed','Part 3 of 6 · Waves follow speed','Part 4 of 6 · Size does not matter to the waves, shape does','Part 4 of 6 · Size does not matter to the waves, shape does','Part 4 of 6 · Size does not matter to the waves, shape does','Part 5 of 6 · Putting it together','Part 5 of 6 · Putting it together','Part 6 of 6 · Can we trust the numbers?','Part 6 of 6 · Can we trust the numbers?','Part 6 of 6 · Can we trust the numbers?','Summary · The question answered','Summary · The question answered'];
 const WHY=['',
  'Why: two of these parts, friction and waves, decide the two questions. We follow them.',
- 'Why: friction and waves are both scaled with the wetted surface S, and areas grow as the square of the scale. This is behind both questions.',
+ 'Why: friction and waves are both scaled with the wetted surface S, and areas grow as the square of the scale when the shape stays the same. This is behind both questions.',
  'Why: friction does not grow with size the way the waves do. This contrast is behind both questions.',
  'Why: a bigger ship has a bigger Reynolds number, and so a smaller friction coefficient. Friction does not scale with size the way the waves do.',
  'Why: now the other half. The waves decide Question 1 (where are the humps?) and Question 2 (how large is RW?).',
