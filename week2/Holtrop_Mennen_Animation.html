@@ -713,8 +713,9 @@ function drawScale3(st){
     ['Coefficients','now','was','paper ship'],['L/B',fmt(L1/B1,2),fmt(SHIP.L/SHIP.B,2),fmt(SHIP.L/SHIP.B,2)],['B/T',fmt(B1/T1,2),fmt(SHIP.B/SHIP.T,2),fmt(SHIP.B/SHIP.T,2)],['Cb',fmt(cb,3),fmt(cb,3),fmt(SHIP.vol/(SHIP.L*SHIP.B*SHIP.T),3)],['Cp',fmt(cpp,3),fmt(cpp,3),fmt(P25.CP,3)]];
   rows.forEach((row,i)=>{ const yy=ty+i*dy, hd=(i===0||i===6), hl=(i===4||i===5); ctx.textBaseline='middle'; row.forEach((t,c)=>{ ctx.textAlign=c?'right':'left'; ctx.font=(hd?'600 11px ':((c===3&&hl)||(i>6&&c===1&&row[1]!==row[2])?'700 12px ':'500 12px '))+MONO; ctx.fillStyle=hd?C.muted:(c===3&&hl?C.aft:(i>6&&c===1?C.fore:C.ink)); ctx.fillText(t,cx[c],yy); }); });
   { const fz=small?11:13, yv=r.y+32, ys=yv+19, rt='×'+fmt(Sn/S0,2), rv='×'+fmt(Vn/V0,2), same=Math.abs(sx-sy)<1e-6&&Math.abs(sy-sz)<1e-6;
-    text(x0,yv,'Volume  ∇ :  ×'+fmt(sx,2)+' · ×'+fmt(sy,2)+' · ×'+fmt(sz,2)+'  =  '+rv+'  (L · B · T)',same?C.aft:C.ink,'left',fz,'700');
-    text(x0,ys,'Surface S :  ×'+fmt(sx*sy,2)+' · ×'+fmt(sx*sz,2)+' · ×'+fmt(sy*sz,2)+'  →  '+rt+'  (L·B · L·T · B·T)',same?C.aft:C.ink,'left',fz,'700'); }
+    text(x0,yv,'Volume  ∇ :  ×'+fmt(sx,2)+' · ×'+fmt(sy,2)+' · ×'+fmt(sz,2)+'  =  '+rv+'  (L · B · T), exact',same?C.aft:C.ink,'left',fz,'700');
+    text(x0,ys,'Surface S :  ×'+fmt(sx*sy,2)+' · ×'+fmt(sx*sz,2)+' · ×'+fmt(sy*sz,2)+'  '+(same?'=':'≈')+'  '+rt+'  (bottom · side · end)',same?C.aft:C.ink,'left',fz,'700');
+    text(x0,ys+17,same?'exact: same shape, every area × scale²':'approximate: not the same shape, so S is not just the product',same?C.aft:C.muted,'left',small?10:11,'500'); }
 }
 const RZ=(()=>{ const o=[{V:0,RF:0,RFk:0}]; for(let V=0.5;V<=35.001;V+=0.5){ const q=HM({...SHIP,V}); o.push({V,RF:q.RF,RFk:q.RFk}); } return o; })();
 const rzAt=(key,v)=>{ const i=Math.min(RZ.length-2,Math.floor(v/0.5)), t=(v-RZ[i].V)/0.5; return RZ[i][key]*(1-t)+RZ[i+1][key]*t; };
