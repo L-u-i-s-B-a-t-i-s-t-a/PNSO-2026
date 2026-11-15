@@ -1297,7 +1297,7 @@ function drawSize(st){
   const cols=[C.aft,C.pb,C.fore,C.ink]; if(r0){ const maxL=r0.w*0.92;
   SIZES.forEach(([s,nm],i)=>{ const Lp=Math.max(4,maxL*s/2), y=r0.y+(i+0.7)*r0.h/4.4; const on=i<=st.pick;
     ctx.globalAlpha=on?1:.25; const g=drawShipImg(r0.x+6+Lp,y,Lp,{alpha:on?1:.3}); ctx.globalAlpha=1; line([[r0.x,y],[r0.x+maxL+12,y]],C.sea,1);
-    if(on&&!st.quiet) text(r0.x+6,y+g.T+(small?10:14),nm+' · hump at '+fmt(hump(1)*Math.sqrt(G*SHIP.L*s)/KN,1)+' kn',cols[i],'left',small?10:12,'600'); });
+    if(on&&!st.quiet) text(r0.x+6,y+g.T+(small?10:14),nm+' · hump at '+fmt(hump(1)*Math.sqrt(G*SHIP.L*s)/KN,1)+' kn · Fn '+fmt(hump(1),3),cols[i],'left',small?10:12,'600'); });
   }
   const F=vs(0.15,0.40,120), cur=st.f;
   const kn=st.kn||0, KMAX=50, xN=(fn,s)=>lerp((fn-0.15)/0.25,fn*Math.sqrt(G*SHIP.L*s)/KN/KMAX,kn);
