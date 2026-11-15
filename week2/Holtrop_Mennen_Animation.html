@@ -462,15 +462,15 @@ const O62=D61+T61, O63=O62+36; // step 6 stages: wave length | whole waves | bow
 const W62=p=>{ const k=keySweep(p,K2,4,5.4); return {mode:'wave2',v:FNV(k.f),key:k,keys:K2,form:clamp(p/4,0,1)}; };
 const W63=p=>p<13?{mode:'fac',v:sweep(p,12,35,0.5,10)}:{mode:'hmw',f:sweep(p,0.15,0.40,14,29)};
 const CSLIDE=`<div class="kccard"><h3>Move the speed yourself</h3><input id="cSpd" type="range" min="13" max="41" step="0.1" value="25" aria-label="Ship speed in knots" style="width:100%"><p class="sm" style="margin:6px 0 0"><b id="cSpdV">25.0 kn</b> · orange bands: humps, the waves add up. Blue bands: hollows, they cancel. The dashed line is the project speed, 25 kn.</p></div>`;
-const PPLAY=['Move the speed with the slider: the bow and stern waves, the energy bar $a^{2}$ and every curve follow.','Orange bands: the waves add up (humps, at '+fmt(FNV(hump(2)),1)+', '+fmt(FNV(hump(1)),1)+' and '+fmt(FNV(hump(0)),1)+' kn). Blue bands: they cancel (hollows, at '+fmt(FNV(hollow(2)),1)+' and '+fmt(FNV(hollow(1)),1)+' kn).','The project speed, 25 kn, sits just above the hump at '+fmt(FNV(hump(1)),1)+' kn. Try 22.9, 25 and 28.1 kn.'];
-const P6=['A moving ship makes a bow wave and a stern wave. The speed fixes their length, $\\lambda_w=2\\pi V^{2}/g$, and the method treats them as two wave systems $L^{*}=\\lambda L$ apart, about $0.65\\,L$ here.','Trough on trough: they add up and the wave behind is high, a <b>hump</b> (orange). Crest on trough: they cancel, a <b>hollow</b> (blue). The bar is the energy of the wave, $a^{2}$.','Critical speeds, the humps: '+fmt(FNV(hump(2)),1)+', '+fmt(FNV(hump(1)),1)+' and '+fmt(FNV(hump(0)),1)+' kn ($F_n$ 0.204, 0.263, 0.455). Good speeds, the hollows: '+fmt(FNV(hollow(2)),1)+' and '+fmt(FNV(hollow(1)),1)+' kn (0.228, 0.322). The ruler marks them, and the dashed line is the project speed, 25 kn.','Right: the method builds $R_W$ as a product of three factors: ① size and shape, a scale; ② smooth growth with speed; ③ the interference, about ±20 %.','The humps and hollows of ③ appear in $R_W$ and in the total $R_T$; friction $R_F(1+k_1)$ is smooth.'];
+const PPLAY=['Move the speed with the slider: the bow and stern waves and every curve follow.','Orange bands: the waves add up (humps, at '+fmt(FNV(hump(2)),1)+', '+fmt(FNV(hump(1)),1)+' and '+fmt(FNV(hump(0)),1)+' kn). Blue bands: they cancel (hollows, at '+fmt(FNV(hollow(2)),1)+' and '+fmt(FNV(hollow(1)),1)+' kn).','The project speed, 25 kn, sits just above the hump at '+fmt(FNV(hump(1)),1)+' kn. Try 22.9, 25 and 28.1 kn.'];
+const P6=['A moving ship makes a bow wave and a stern wave. The speed fixes their length, $\\lambda_w=2\\pi V^{2}/g$, and the method treats them as two wave systems $L^{*}=\\lambda L$ apart, about $0.65\\,L$ here.','Trough on trough: they add up and the wave behind is high, a <b>hump</b> (orange). Crest on trough: they cancel, a <b>hollow</b> (blue). Humps: $\\lambda/F_n^{2}=(2j+1)\\pi$; hollows: $2j\\pi$. The index $j$ is marked on the interference panel.','Critical speeds, the humps: '+fmt(FNV(hump(2)),1)+', '+fmt(FNV(hump(1)),1)+' and '+fmt(FNV(hump(0)),1)+' kn ($F_n$ 0.204, 0.263, 0.455). Good speeds, the hollows: '+fmt(FNV(hollow(2)),1)+' and '+fmt(FNV(hollow(1)),1)+' kn (0.228, 0.322). The dashed line is the project speed, 25 kn.','Right: the method builds $R_W$ as a product of three factors: ① size and shape, a scale; ② smooth growth with speed; ③ the interference, about ±20 %.','The humps and hollows of ③ appear in $R_W$ and in the total: the left plot shows $R_T/V^{2}$, which removes the trend so that they can be read. Friction $R_F(1+k_1)$ is smooth.'];
 const PA=['The speed of the ship fixes the length of its transverse waves.','$$\\frac{\\lambda_w}{L}=2\\pi F_n^{2}$$ At $F_n$ 0.15 many short waves; at 0.40 one wave per ship length.'];
 const PB=['At particular speeds a whole number of waves fits along the hull: five at $F_n$ 0.178 (15.6 kn) down to one at 0.399 (34.8 kn), $F_n=1/\\sqrt{2\\pi n}$.','Above, friction grows smoothly and the wave resistance $R_W$ climbs steeply.','These whole-wave speeds do not fall on the humps: the two wave systems of the method are $L^{*}=0.65\\,L$ apart, not $L$.'];
 const PC=['Two wave systems: a bow train and a stern train, $L^{*}=\\lambda L$ further aft (about $0.65\\,L$ here).','Trough on trough: they add up and the wave behind is high. Crest on trough: they cancel.','Humps at $F_n$ 0.204, 0.263 and 0.455; hollows at 0.228 and 0.322.'];
 const PD=['Three factors: ① size and shape, the scale; ② smooth growth with speed; ③ bow–stern interference, about ±20 %.','Their product is $R_W$; dashed, $R_W$ without ③.','Dotted lines: the whole-wave speeds of the stage before.'];
 const AMPW=p=>p<4?ease(p/4):p<24?1:p<29?1+ease((p-24)/5):2; // step 9: wave amplitude, in units of a
 const PWA=['The waves behind the ship are made by the ship: they carry away the work it does. The higher the wave, the more energy it holds.','A wave of amplitude $a$ holds, per square metre of sea, $$E=\\tfrac12\\rho g\\,a^{2}$$ half as kinetic and half as potential energy.','Twice the height, four times the energy per m²: it goes with $a^{2}$, not with $a$.'];
-const PWALL=['The waves are made by the ship: they carry away its work. A wave of amplitude $a$ holds, per m² of sea, $$E=\\tfrac12\\rho g\\,a^{2}$$','The ship advances at $V$, the wave energy at the group speed $V/2$: the pattern, of width $b$, grows by $V/2$ per second and its energy by $E\\,b\\,V/2$ per second.','The ship pays this power: $R_W V=E\\,b\\,V/2$, so $$R_W=\\tfrac14\\rho g\\,a^{2}\\,b$$','Same ship, same width: a wave twice as high gives four times the wave resistance.','This is what a hump is: the bow and stern waves add up, $a^{2}=a_b^{2}+a_s^{2}-2a_ba_s\\cos(kL^{*})$ (step 6), and a larger $a$ is a larger $R_W$.','Next: a larger ship at the same $F_n$ makes the same pattern, but higher and wider.'];
+const PWALL=['The waves are made by the ship: they carry away its work. A wave of amplitude $a$ holds, per m² of sea, $$E=\\tfrac12\\rho g\\,a^{2}$$','The energy travels at the group speed $V/2$, so the pattern, of width $b$, takes $E\\,b\\,V/2$ per second: $R_W V=E\\,b\\,V/2$, that is $$R_W=\\tfrac14\\rho g\\,a^{2}\\,b$$','The wave behind is the sum of the bow and the stern train: $a^{2}=a_b^{2}+a_s^{2}-2a_ba_s\\cos(kL^{*})$. At a hump they add and $a$ is large; at a hollow they cancel and $a$ is small.','The three plots against speed: the humps of $a$, of $a^{2}$ and of $R_W$ fall at the same speeds. Twice the height, four times the resistance.','Next: a larger ship at the same $F_n$ makes the same pattern, but higher and wider.'];
 const PWB=['The ship advances at $V$, but the energy of the waves travels at the group speed, half the wave speed: $V/2$.','So the pattern, of width $b$, grows longer at $V-V/2=V/2$ metres per second, and its energy grows by $E\\,b\\,V/2$ per second.','That is the power the ship gives to the waves: $R_W V=E\\,b\\,V/2$, so $$R_W=\\tfrac14\\rho g\\,a^{2}\\,b$$'];
 const PWC=['Same ship, same width: a wave twice as high gives four times the wave resistance. $R_W$ is a parabola in $a$.','This is what a hump is. The bow and stern waves add up, $$a^{2}=a_b^{2}+a_s^{2}-2a_ba_s\\cos(kL^{*})$$ and a larger $a$ is a larger $R_W$ (step 6): hump, high wave; hollow, low wave.','Next: a larger ship at the same $F_n$ makes the same pattern, but higher and wider.'];
 const SZ2=24; // step 10: the curves end here, the waves of the two sizes follow
@@ -491,17 +491,17 @@ const S=[
   sub:p=>p>=16?{key:'b',eqs:['cfn','rv','k1']}:{key:'a',eqs:['rn','cfn','rf','nfric']}},
  {d:17,t:"The Reynolds numbers of real ships",eqs:['rn','fleet'],x:"The method is used at full scale, with the ship's own length and speed. Across the ships it covers, from 30 m tugs to 400 m container ships, Rn = VL/ν runs from about 1.3×10⁸ to 4.2×10⁹: about one and a half decades. On the ITTC line that moves CF from 2.0 to 1.3 × 10⁻³, so a small, slow ship has a coefficient about half again as large as a large, fast one. The exponent n of RF ∝ V^n stays between 1.86 and 1.89 everywhere. Ship-type regions are typical values, approximate.",
   st:p=>({mode:'fleet',lines:ease(clamp(p/3,0,1)),regions:clamp((p-3)/5,0,1),pts:ease(clamp((p-8)/2,0,1)),cf:clamp((p-10)/5,0,1),v:25})},
- {d:60,t:"Waves 1: the wave system, the critical speeds and the wave resistance",eqs:['lw','sum','humps','rw3'],x:"A moving ship makes a bow wave and a stern wave. The method treats them as two wave systems L* = λL apart (about 0.65 L here): trough on trough they add up, a hump of wave resistance; crest on trough they cancel, a hollow. The critical speeds, the humps, are at 17.7, 22.9 and 39.7 kn (Fn 0.204, 0.263 and 0.455); the good ones, the hollows, at 19.8 and 28.1 kn. Holtrop and Mennen write the wave resistance as three factors: ① size and shape, ② smooth growth with speed, ③ bow–stern interference. Their product, RW, shows the humps and hollows, and they carry over to the total RT.",
+ {d:60,t:"Waves 1: the wave system, the critical speeds and the wave resistance",eqs:['lw','humps','rw3'],x:"A moving ship makes a bow wave and a stern wave. The method treats them as two wave systems L* = λL apart (about 0.65 L here): trough on trough they add up, a hump of wave resistance; crest on trough they cancel, a hollow. The critical speeds, the humps, are at 17.7, 22.9 and 39.7 kn (Fn 0.204, 0.263 and 0.455); the good ones, the hollows, at 19.8 and 28.1 kn. Holtrop and Mennen write the wave resistance as three factors: ① size and shape, ② smooth growth with speed, ③ bow–stern interference. Their product, RW, shows the humps and hollows, and they carry over to the total RT.",
   st:p=>{ const f=lerp(0.16,0.47,clamp((p-3)/54,0,1)); let i=0,best=9; K2.forEach((k,j)=>{ const d=Math.abs(f-k[0]); if(d<best){ best=d; i=j; } }); return {mode:'comp6',v:FNV(f),f,key:{i,hold:best<0.009?1:0},keys:K2,form:clamp(p/4,0,1)}; },
-  sub:p=>({key:'a',eqs:['lw','sum','humps','rw3'],pts:P6})},
+  sub:p=>({key:'a',eqs:['lw','humps','rw3'],pts:P6})},
  {d:10,t:"Waves 1b: play with the speed",eqs:['lw'],x:"Move the speed with the slider and watch the bow and stern waves, the energy a², and every curve on the right: RT, RF(1+k1), and the three factors of RW. Orange bands are the speeds where the waves add up, blue bands where they cancel. The dashed line is the speed of the project, 25 kn.",
   st:p=>{ const v=HOOKV!=null?HOOKV:25; return {mode:'comp6',v,f:fnv(v),key:{i:0,hold:0},keys:K2,form:1,full:1}; },
   sub:p=>({key:'cs',eqs:['lw'],html:CSLIDE,pts:PPLAY})},
  {d:14,t:"Waves 2: count the half waves",eqs:['count'],x:"Count the half wave lengths between the bow crest and the stern trough: N = λ/(π·Fn²). An odd N puts a trough on a trough: a hump of wave resistance. An even N puts a crest on a trough: a hollow. As the speed rises, N falls through 7, 6, 5, 4, 3: humps and hollows alternate, and the last hump, N = 1, is the main one.",
   st:p=>({mode:'count',f:sweep(p,0.16,0.42,1,11)})},
- {d:36,t:"Waves 3: the wave height decides the resistance",eqs:['wha','whb','whc'],x:"The waves are made by the ship, so they carry away its work. A wave of amplitude a holds the energy E = ½ρg·a² per square metre. The ship advances at V while the wave energy travels at V/2, so the wave pattern of width b grows by V/2 per second and RW·V = E·b·V/2, that is RW = ¼ρg·a²·b. Twice the wave height, four times the wave resistance. This is what the humps and hollows are: the sum of the bow and the stern wave is a high or a low wave.",
-  st:p=>({mode:'whres',amp:AMPW(p),stage:1,kt:ease(clamp((p-5)/3,0,1)),kp:ease(clamp((p-8)/3,0,1)),kb:ease(clamp((p-14)/3,0,1))}),
-  sub:p=>({key:'a',eqs:['wha','whb','whc'],pts:PWALL})},
+ {d:36,t:"Waves 3: the wave height decides the resistance",eqs:['wha','whb','sum'],x:"The waves are made by the ship, so they carry away its work. A wave of amplitude a holds the energy E = ½ρg·a² per square metre. The ship advances at V while the wave energy travels at V/2, so the wave pattern of width b grows by V/2 per second and RW·V = E·b·V/2, that is RW = ¼ρg·a²·b. Twice the wave height, four times the wave resistance. This is what the humps and hollows are: the sum of the bow and the stern wave is a high or a low wave.",
+  st:p=>{ const f=lerp(0.16,0.47,clamp((p-3)/30,0,1)); return {mode:'whres',v:FNV(f),f}; },
+  sub:p=>({key:'a',eqs:['wha','whb','sum'],pts:PWALL})},
  {d:40,t:"Same Froude number, same waves: size does not matter",eqs:['size'],x:"Scale the hull by any factor, keeping every proportion, and sail it at the same Fn: by Froude's law the wave pattern scales with it, and in the method CW is exactly the same, so the humps fall at the same Froude numbers: four sizes, one curve. Now redraw the same curves against speed in knots: they separate. The "+fmt(hump(1),3)+" hump is at "+fmt(hump(1)*Math.sqrt(G*SHIP.L/4)/KN,1)+" kn at a quarter of the size, "+fmt(hump(1)*Math.sqrt(G*SHIP.L/2)/KN,1)+" kn at half size, "+fmt(vfn(hump(1)),1)+" kn for the ship and "+fmt(hump(1)*Math.sqrt(G*SHIP.L*2)/KN,1)+" kn at twice the size: the speed of a hump scales with √L. Friction does not follow Fn at all: the larger the ship, the larger Rn and the smaller CF. Seen from the side the waves of the larger ship are higher: the pattern is a scaled copy, twice as long, twice as high and twice as wide, and step 9 has shown that wave height costs resistance.",
   st:p=>p<SZ2?({mode:'size',f:sweep(p,0.15,0.40,2,13),pick:Math.min(3,Math.floor(p/3.5)),kn:ease(clamp((p-15)/4,0,1))}):({mode:'height',amp:ease(clamp((p-SZ2-0.5)/3.5,0,1)),form:1,rows:Math.min(4,(p-SZ2)*0.8),note:ease(clamp((p-SZ2-5)/2.5,0,1)),ph:p}),
   sub:p=>p<SZ2?{key:'a',eqs:['size']}:{key:'b',eqs:['size','hgt'],pts:PSZ2}},
@@ -927,7 +927,7 @@ function drawWave(st){
 }
 function drawWave2(st,rect){
   const r0=rect||mainRect(), r={x:r0.x,y:r0.y,w:r0.w,h:r0.h-(small?34:44)}, v=st.v, k=G/(v*KN)**2, span=SHIP.L*2.6, mpp=span/r.w, Lp=SHIP.L/mpp, bowX=r.x+r.w*0.96, Ls=LAM*SHIP.L;
-  const gap=small?8:12, hh=(r.h-gap*2)/3, amp=hh*0.15, lw=2*Math.PI/k, D=(st.form==null?1:st.form)*span*1.05;
+  const gap=small?8:12, hh=(r.h-gap*2)/3, amp=hh*(st.amp6||0.15), lw=2*Math.PI/k, D=(st.form==null?1:st.form)*span*1.05;
   const names=[['bow system: crest at the bow',C.fore],['stern system: trough at L* = '+fmt(LAM,2)+'·L aft of the bow',C.aft],['the sum behind the ship',C.ink]];
   const ab=1, as=0.8, xs=bowX-Ls/mpp;
   for(let j=0;j<3;j++){
@@ -943,9 +943,10 @@ function drawWave2(st,rect){
     vmark(x=>x,bowX,y0+16,y0+hh,C.fore); vmark(x=>x,xs,y0+16,y0+hh,C.aft);
   }
   const A2=ab*ab+as*as-2*ab*as*Math.cos(k*Ls), A2max=(ab+as)**2, mx=r.x+2, my=r.y+2*(hh+gap)+8, mh=hh-16, add=A2>ab*ab+as*as;
-  ctx.fillStyle=C.grid; ctx.fillRect(mx,my,small?14:20,mh); ctx.fillStyle=add?C.aft:C.fore; const hf=mh*A2/A2max*clamp(st.form==null?1:st.form,0,1); ctx.fillRect(mx,my+mh-hf,small?14:20,hf);
+  if(st.nobar){ if(st.form>=1) label(mx+8,my+mh*0.78,add?'adding: hump':'cancelling: hollow',add?C.aft:C.fore,'left'); }
+  else { ctx.fillStyle=C.grid; ctx.fillRect(mx,my,small?14:20,mh); ctx.fillStyle=add?C.aft:C.fore; const hf=mh*A2/A2max*clamp(st.form==null?1:st.form,0,1); ctx.fillRect(mx,my+mh-hf,small?14:20,hf);
   if(st.form>=1) label(mx+(small?20:28),Math.max(my+mh-hf,my+(small?24:30)),add?'adding: hump':'cancelling: hollow',add?C.aft:C.fore,'left');
-  text(mx+(small?7:10),my-8,'a²',C.ink,'center',small?11:13,'600');
+  text(mx+(small?7:10),my-8,'a²',C.ink,'center',small?11:13,'600'); }
   if(st.key&&st.key.hold&&st.form>=1&&!small) label(r.x+r.w*0.42,r.y+2*(hh+gap)+hh*0.18,st.keys[st.key.i][1],C.ink);
   fnRuler(r0,r0.y+r0.h-(small?22:28),fnv(v),st.keys);
 }
@@ -953,35 +954,42 @@ let RR6=null;
 const sup=n=>String(n).replace(/-/g,'⁻').replace(/\d/g,d=>'⁰¹²³⁴⁵⁶⁷⁸⁹'[d]);
 function drawComp6(st){
   const r=mainRect(), col=!small, lw=col?r.w*0.50:r.w, cur=st.f, Vc=st.v;
-  drawWave2(st,{x:r.x,y:r.y,w:lw-(col?10:0),h:col?r.h:r.h*0.5});
-  if(!RR6) RR6=vs(0.15,0.47,128).map(fn=>HM({...SHIP,V:fn*Math.sqrt(G*SHIP.L)/KN}));
-  const V0=FNV(0.15), V1=FNV(0.47), nP=5;
-  const rx=r.x+lw+(col?66:40), rw=r.x+r.w-rx-4, gy=col?23:12, top=col?r.y+18:r.y+r.h*0.52, H=col?r.h-18:r.h*0.48, ph=(H-(nP-1)*gy-(col?34:18))/nP;
+  const wr={x:r.x,y:r.y,w:lw-(col?10:0),h:col?r.h*0.55:r.h*0.5};
+  drawWave2({...st,nobar:1,amp6:0.085},wr);
+  if(!RR6) RR6=vs(0.15,0.47,320).map(fn=>HM({...SHIP,V:fn*Math.sqrt(G*SHIP.L)/KN}));
+  const V0=FNV(0.14), V1=FNV(0.47);
+  const sel=st.full?RR6:RR6.filter(q=>q.Fn<=cur+1e-9), qc=st.full?HM({...SHIP,V:Vc}):sel[sel.length-1];
+  const fillB=(fp,lo,hi,c,a)=>{ ctx.fillStyle=c; ctx.globalAlpha=a; ctx.beginPath(); sel.forEach((q,i)=>i?ctx.lineTo(fp.X(q.V),fp.Y(hi(q))):ctx.moveTo(fp.X(q.V),fp.Y(hi(q)))); for(let i=sel.length-1;i>=0;i--) ctx.lineTo(fp.X(sel[i].V),fp.Y(lo(sel[i]))); ctx.closePath(); ctx.fill(); ctx.globalAlpha=1; };
+  const marks=(fp,rc,Pf,col2)=>{ line([[fp.X(25),rc.y],[fp.X(25),rc.y+rc.h]],C.ink,1.2,[5,4]); if(qc){ line([[fp.X(Vc),rc.y],[fp.X(Vc),rc.y+rc.h]],C.muted,1.2); dot(fp.X(Vc),fp.Y(Pf(qc)),col2,4.5); } };
+  // left: RT per V², the trend removed, so that the humps and hollows can be read on the total
+  if(col){ const rc={x:r.x+10,y:r.y+r.h*0.55+34,w:lw-30,h:r.h*0.45-34-38}, k2=q=>(q.V*KN)**2;
+    const Tm=Math.ceil(Math.max(...RR6.map(q=>q.RT/k2(q)))*1.08);
+    const fp=frame(rc,[V0,V1],[0,Tm],{xt:[15,20,25,30,35,40],xl:'Speed V, kn',yt:[0,Math.round(Tm/2),Tm],yf:y=>String(y),bandsFn:x=>FNV(x)});
+    ctx.font='600 12px '+SANS; ctx.fillStyle=C.ink; ctx.textAlign='left'; ctx.textBaseline='bottom'; ctx.fillText('RT / V² (kN per (m/s)²); dashed: RT without ③',rc.x,rc.y-18);
+    if(sel.length>1){ fillB(fp,q=>0,q=>q.RFk/k2(q),C.fore,.3); fillB(fp,q=>q.RFk/k2(q),q=>(q.RT-q.RW)/k2(q),C.ghost,.35); fillB(fp,q=>(q.RT-q.RW)/k2(q),q=>q.RT/k2(q),C.aft,.25);
+      const sm=q=>(q.RT-q.RW+q.RW/q.inter)/k2(q); for(let i=1;i<sel.length;i++){ const a0=sel[i-1], b0=sel[i], up=(a0.inter+b0.inter)/2>=1; ctx.fillStyle=up?C.aft:C.fore; ctx.globalAlpha=.8; ctx.beginPath(); ctx.moveTo(fp.X(a0.V),fp.Y(a0.RT/k2(a0))); ctx.lineTo(fp.X(b0.V),fp.Y(b0.RT/k2(b0))); ctx.lineTo(fp.X(b0.V),fp.Y(sm(b0))); ctx.lineTo(fp.X(a0.V),fp.Y(sm(a0))); ctx.closePath(); ctx.fill(); ctx.globalAlpha=1; }
+      line(sel.map(q=>[fp.X(q.V),fp.Y(sm(q))]),C.muted,1.4,[5,4]); line(sel.map(q=>[fp.X(q.V),fp.Y(q.RT/k2(q))]),C.ink,2.6); }
+    let kx=rc.x; [[C.fore,'RF(1+k1)'],[C.ghost,'small parts'],[C.aft,'RW: above dashed = hump'],[C.fs,'below = hollow']].forEach(([c,t])=>{ ctx.fillStyle=c; ctx.globalAlpha=.85; ctx.fillRect(kx,rc.y-14,12,9); ctx.globalAlpha=1; ctx.font='600 11px '+SANS; ctx.fillStyle=C.ink; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText(t,kx+16,rc.y-9); kx+=ctx.measureText(t).width+34; });
+    marks(fp,rc,q=>q.RT/k2(q),C.ink); }
+  // right: friction, then the three factors of RW
+  const rx=r.x+lw+(col?66:40), rw=r.x+r.w-rx-4, nP=4, gy=col?27:12, top=col?r.y+20:r.y+r.h*0.52, H=col?r.h-20:r.h*0.48, ph=(H-(nP-1)*gy-(col?34:18))/nP;
   const mx=a=>Math.max(...RR6.map(a)), mn_=a=>Math.min(...RR6.map(a));
   const gmin=Math.floor(Math.log10(mn_(q=>q.grow))), gmax=Math.ceil(Math.log10(mx(q=>q.grow))), gm=Math.round((gmin+gmax)/2);
-  const RTm=Math.ceil(mx(q=>q.RT)/1000)*1000, RFm=Math.ceil(mx(q=>q.RFk)/500)*500, Wm=Math.ceil(mx(q=>q.Wpre)/50000)*50000+50000;
-  const kfmt=y=>y?(y/1000)+'k':'0';
+  const RFm=Math.ceil(mx(q=>q.RFk)/500)*500, Wm=Math.ceil(mx(q=>q.Wpre)/50000)*50000+50000, kfmt=y=>y?(y/1000)+'k':'0';
   const P=[
-    {t:'RT, total = RF(1+k1) + small parts + RW  (kN)',f:q=>q.RT,yr:[0,RTm],yt:[0,RTm/2,RTm],yf:kfmt,col:C.ink,stack:1},
     {t:'RF(1+k1), friction with the form factor  (kN)',f:q=>q.RFk,yr:[0,RFm],yt:[0,RFm/2,RFm],yf:kfmt,col:C.fore},
     {t:'RW = ① × ② × ③ ;  ① size and shape, c1c2c5·∇ρg (kN): a scale',f:q=>q.Wpre,yr:[0,Wm],yt:[0,Wm],yf:kfmt,col:C.ink},
     {t:'② growth with speed, e^(m1·Fn^−0.9) (log scale)',f:q=>q.grow,logy:1,yr:[Math.pow(10,gmin),Math.pow(10,gmax)],yt:[Math.pow(10,gmin),Math.pow(10,gm),Math.pow(10,gmax)],yf:y=>'10'+sup(Math.round(Math.log10(y))),col:C.aft},
-    {t:'③ interference, e^(m2·cos λ/Fn²): orange adds up, blue cancels',f:q=>q.inter,yr:[0.75,1.3],yt:[0.8,1,1.2],yf:y=>y.toFixed(1),col:C.pb,one:1}];
-  const sel=st.full?RR6:RR6.filter(q=>q.Fn<=cur+1e-9), qc=st.full?HM({...SHIP,V:Vc}):sel[sel.length-1];
+    {t:'③ interference, e^(m2·cos λ/Fn²):  humps λ/Fn² = (2j+1)π, hollows 2jπ',f:q=>q.inter,yr:[0.75,1.3],yt:[0.8,1,1.2],yf:y=>y.toFixed(1),col:C.pb,one:1}];
   P.forEach((Pn,m)=>{ const rc={x:rx,y:top+m*(ph+gy),w:rw,h:ph}, last=m===nP-1;
     const fp=frame(rc,[V0,V1],Pn.yr,{logy:!!Pn.logy,xt:last?[15,20,25,30,35,40]:[],xl:last&&col?'Speed V, kn':null,yt:Pn.yt,yf:Pn.yf,bandsFn:x=>FNV(x)});
     ctx.font='600 '+(small?9:12)+'px '+SANS; ctx.fillStyle=C.ink; ctx.textAlign='left'; ctx.textBaseline='bottom'; ctx.fillText(Pn.t,rc.x,rc.y-6);
     if(Pn.one) line([[fp.X(V0),fp.Y(1)],[fp.X(V1),fp.Y(1)]],C.ghost,1,[4,3]);
-    const fillB=(lo,hi,c,a)=>{ ctx.fillStyle=c; ctx.globalAlpha=a; ctx.beginPath(); sel.forEach((q,i)=>i?ctx.lineTo(fp.X(q.V),fp.Y(hi(q))):ctx.moveTo(fp.X(q.V),fp.Y(hi(q)))); for(let i=sel.length-1;i>=0;i--) ctx.lineTo(fp.X(sel[i].V),fp.Y(lo(sel[i]))); ctx.closePath(); ctx.fill(); ctx.globalAlpha=1; };
     if(sel.length>1){
-      if(Pn.stack){ fillB(q=>0,q=>q.RFk,C.fore,.5); fillB(q=>q.RFk,q=>q.RT-q.RW,C.ghost,.6); fillB(q=>q.RT-q.RW,q=>q.RT,C.aft,.55); }
       if(Pn.one){ for(let i=1;i<sel.length;i++){ const q0=sel[i-1],q1=sel[i], up=(q0.inter+q1.inter)/2>=1; ctx.fillStyle=up?C.aft:C.fore; ctx.globalAlpha=.45; ctx.beginPath(); ctx.moveTo(fp.X(q0.V),fp.Y(q0.inter)); ctx.lineTo(fp.X(q1.V),fp.Y(q1.inter)); ctx.lineTo(fp.X(q1.V),fp.Y(1)); ctx.lineTo(fp.X(q0.V),fp.Y(1)); ctx.closePath(); ctx.fill(); ctx.globalAlpha=1; } }
-      line(sel.map(q=>[fp.X(q.V),fp.Y(Pn.f(q))]),Pn.col,Pn.stack?2.6:2.4); }
-    if(Pn.stack&&!small){ let kx=rc.x+10; [[C.fore,'RF(1+k1)'],[C.ghost,'small parts'],[C.aft,'RW']].forEach(([c,t])=>{ ctx.fillStyle=c; ctx.globalAlpha=.8; ctx.fillRect(kx,rc.y+7,12,9); ctx.globalAlpha=1; ctx.font='600 11px '+SANS; ctx.fillStyle=C.ink; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText(t,kx+16,rc.y+12); kx+=ctx.measureText(t).width+34; }); }
-    line([[fp.X(25),rc.y],[fp.X(25),rc.y+rc.h]],C.ink,1.2,[5,4]);
-    if(qc){ line([[fp.X(Vc),rc.y],[fp.X(Vc),rc.y+rc.h]],C.muted,1.2); dot(fp.X(Vc),fp.Y(Pn.f(qc)),Pn.col,4.5); }
-    if(Pn.one&&!small){ const hs=[hump(2),hump(1),hump(0)], hl=[hollow(2),hollow(1)];
-      hs.forEach(h=>{ if(st.full||FNV(h)<=Vc) text(fp.X(FNV(h)),rc.y+9,fmt(FNV(h),1),C.aft,'center',11,'700'); }); hl.forEach(h=>{ if(st.full||FNV(h)<=Vc) text(fp.X(FNV(h)),rc.y+rc.h-8,fmt(FNV(h),1),C.fore,'center',11,'700'); });
+      line(sel.map(q=>[fp.X(q.V),fp.Y(Pn.f(q))]),Pn.col,2.4); }
+    marks(fp,rc,Pn.f,Pn.col);
+    if(Pn.one&&!small){ [[hump(2),2],[hump(1),1],[hump(0),0]].forEach(([h,j])=>{ if(st.full||FNV(h)<=Vc) text(fp.X(FNV(h)),rc.y+9,'j='+j+' · '+fmt(FNV(h),1),C.aft,'center',11,'700'); }); [[hollow(2),2],[hollow(1),1]].forEach(([h,j])=>{ if(st.full||FNV(h)<=Vc) text(fp.X(FNV(h)),rc.y+rc.h-8,'j='+j+' · '+fmt(FNV(h),1),C.fore,'center',11,'700'); });
       text(fp.X(25)+5,rc.y+rc.h*0.5,'project 25 kn',C.ink,'left',11,'700'); }
   });
 }
@@ -1133,34 +1141,45 @@ function drawEight(st){
 }
 
 function drawWhres(st){
-  const r=mainRect(), col=!small, h=HQ[1], amp=st.amp, fs=small?11:14;
-  const lw=col?r.w*0.57:r.w, Lp=lw*0.34, mpp=SHIP.L/Lp, bowX=r.x+lw*0.97, A=small?5:14;
-  const yw=col?r.y+r.h*0.27:r.y+r.h*0.30, sea=col?56:12, k=G/(h.V*KN)**2, Ls=LAM*h.L, top=yw-A*2.4-(col?16:8);
-  const prof=a=>{ const pts=[]; for(let x=r.x;x<=bowX+24;x+=1.5){ const sm=(bowX-x)*mpp; let z=sm>=0?Math.cos(k*sm):Math.exp(sm/(4*h.s)); if(sm>=Ls) z-=0.8*Math.cos(k*(sm-Ls))*(1-Math.exp(-(sm-Ls)*k/1.2)); pts.push([x,yw-a*A*z]); } return pts; };
-  const pts=prof(amp);
-  ctx.fillStyle=C.seas; ctx.fillRect(r.x,yw,lw,sea);
-  drawShipImg(bowX,yw,Lp,{under:false});
-  ctx.save(); ctx.beginPath(); ctx.rect(r.x,top,lw,yw+sea-top); ctx.clip(); seaFront(pts,{x:r.x,y:top,w:lw,h:yw+sea-top},C.sea,.14); ctx.restore();
-  if(amp>0&&Math.abs(amp-1)>0.06) line(prof(1),C.ghost,1.4,[5,4]);
-  line(pts,C.sea,2.4);
-  if(amp>0.25){ let best=null; pts.forEach(p=>{ if(p[0]<bowX-Lp-10&&p[0]>r.x+20&&(!best||p[1]<best[1])) best=p; });
-    if(best){ arrow(best[0],yw,best[0],best[1]+2,C.aft,2); line([[best[0]-10,yw],[best[0]+10,yw]],C.aft,1.2); label(best[0]+8,best[1]-12,amp>1.95?'2a':amp>1.05?fmt(amp,1)+'a':'a',C.aft,'left'); } }
-  if(col) text(r.x,yw+sea+16,'the ship, '+fmt(h.L,0)+' m at '+fmt(h.V,1)+' kn, Fn '+fmt(hump(1),3)+': side view; dashed, the wave of height a',C.muted,'left',12);
-  if(col){ ctx.globalAlpha=st.kt; const y0=r.y+r.h*0.58, hb=r.h*0.22, lamPx=2*Math.PI/k/mpp, ye=y0+hb/2, hw=hb*0.15;
-    text(r.x,y0-12,'Seen from above: the pattern has the width b',C.ink,'left',fs,'600');
-    ctx.fillStyle=C.seas; ctx.fillRect(r.x,y0,lw,hb); ctx.fillStyle=C.aft; ctx.globalAlpha=clamp(0.04+0.34*amp*amp/4,0,0.4); ctx.fillRect(r.x,y0,lw,hb); ctx.globalAlpha=1;
-    for(let n=0;n<40;n++){ const x=bowX-Lp-n*lamPx; if(x<r.x) break; line([[x,y0+3],[x,y0+hb-3]],C.sea,2); }
+  const r=mainRect(), col=!small, lw=col?r.w*0.50:r.w, cur=st.f, Vc=st.v, fs=small?10:12;
+  if(!RR6) RR6=vs(0.15,0.47,320).map(fn=>HM({...SHIP,V:fn*Math.sqrt(G*SHIP.L)/KN}));
+  const V0=FNV(0.14), V1=FNV(0.47), Ls=LAM*SHIP.L, ab=1, as=0.8;
+  const a2f=V=>{ const k=G/(V*KN)**2; return ab*ab+as*as-2*ab*as*Math.cos(k*Ls); };
+  const a2=a2f(Vc), aa=Math.sqrt(a2), sel=RR6.filter(q=>q.Fn<=cur+1e-9);
+  RR6.forEach(q=>{ if(q.a2==null){ q.a2=a2f(q.V); q.a=Math.sqrt(q.a2); } });
+  // left: side view, plan view, parabola
+  const wr={x:r.x,y:r.y,w:lw-(col?10:0),h:col?r.h:r.h*0.5}, k=G/(Vc*KN)**2, span=SHIP.L*2.6, mpp=span/wr.w, Lp=SHIP.L/mpp, bowX=wr.x+wr.w*0.96;
+  const h1=wr.h*0.30, yw=wr.y+h1*0.66, un=h1*0.085;
+  ctx.fillStyle=C.seas; ctx.fillRect(wr.x,yw,wr.w,h1*0.34); drawShipImg(bowX,yw,Lp,{alpha:.5,under:false});
+  const pts=[]; for(let x=bowX;x>=wr.x;x-=2){ const sm=(bowX-x)*mpp, zb=Math.cos(k*sm), zs=sm>=Ls?-as*Math.cos(k*(sm-Ls))*(1-Math.exp(-(sm-Ls)*k/1.2)):0; pts.push([x,yw-un*(zb+zs)]); }
+  ctx.fillStyle=C.sea; ctx.globalAlpha=.12; ctx.beginPath(); ctx.moveTo(pts[0][0],yw+h1*0.34); pts.forEach(p=>ctx.lineTo(p[0],p[1])); ctx.lineTo(pts[pts.length-1][0],yw+h1*0.34); ctx.closePath(); ctx.fill(); ctx.globalAlpha=1; line(pts,C.ink,2.6);
+  text(wr.x+4,wr.y+12,'the sum behind the ship, at V = '+fmt(Vc,1)+' kn',C.ink,'left',fs,'600');
+  { let best=null; pts.forEach(p=>{ if(p[0]<bowX-Lp-10&&p[0]>wr.x+20&&(!best||p[1]<best[1])) best=p; }); if(best&&col){ arrow(best[0],yw,best[0],best[1]+2,C.aft,2); label(best[0]+8,best[1]-12,'a = '+fmt(aa,2)+' × the bow wave',C.aft,'left'); } }
+  if(col){ const y0=wr.y+wr.h*0.36, hb=wr.h*0.17, ye=y0+hb/2, hw=hb*0.15, lamPx=2*Math.PI/k/mpp;
+    text(wr.x+4,y0-8,'Seen from above: the pattern has the width b; shading = the energy ½ρg·a²',C.ink,'left',fs,'600');
+    ctx.fillStyle=C.seas; ctx.fillRect(wr.x,y0,wr.w,hb); ctx.fillStyle=C.aft; ctx.globalAlpha=clamp(0.04+0.34*a2/3.3,0,0.42); ctx.fillRect(wr.x,y0,wr.w,hb); ctx.globalAlpha=1;
+    for(let n=0;n<60;n++){ const x=bowX-Lp-n*lamPx; if(x<wr.x) break; line([[x,y0+3],[x,y0+hb-3]],C.sea,2); }
     ctx.beginPath(); ctx.moveTo(bowX-Lp,ye-hw); ctx.lineTo(bowX-Lp*0.3,ye-hw); ctx.quadraticCurveTo(bowX-Lp*0.05,ye-hw*0.8,bowX,ye); ctx.quadraticCurveTo(bowX-Lp*0.05,ye+hw*0.8,bowX-Lp*0.3,ye+hw); ctx.lineTo(bowX-Lp,ye+hw); ctx.closePath(); ctx.fillStyle=C.panel; ctx.fill(); ctx.strokeStyle=C.ink; ctx.lineWidth=1.6; ctx.stroke();
-    arrow(r.x+14,ye,r.x+14,y0+2,C.ink,1.6); arrow(r.x+14,ye,r.x+14,y0+hb-2,C.ink,1.6); label(r.x+24,ye-6,'b',C.ink,'left');
-    const yb=y0+hb+22; ctx.globalAlpha=1;
-    text(r.x,yb,'energy per m² of the pattern: ½ρg·a² × '+fmt(amp*amp,1),C.ink,'left',fs,'600');
-    if(st.kb>0){ const xa=r.x+8; arrow(xa,yb+24,xa+130*st.kb,yb+24,C.ink,2.4); text(xa+140,yb+24,'the ship: V',C.ink,'left',fs,'600'); arrow(xa,yb+46,xa+65*st.kb,yb+46,C.aft,2.4); text(xa+140,yb+46,'the energy of the waves: V/2',C.aft,'left',fs,'600'); } }
-  ctx.globalAlpha=st.kp;
-  const rc=col?{x:r.x+lw+56,y:r.y+8,w:r.w-lw-64,h:r.h-52}:{x:r.x+36,y:r.y+r.h*0.50,w:r.w-46,h:r.h*0.30};
-  const f=frame(rc,[0,2.2],[0,5],{xt:[0,1,2],xf:x=>x===0?'0':x===1?'a':'2a',yt:col?[0,1,4]:[0,4],yf:y=>String(y),xl:col?'wave height':null,yl:col?'RW = ¼ρg·a²·b  (a → 1)':null});
-  const cu=[]; for(let x=0;x<=2.2;x+=0.05) cu.push([f.X(x),f.Y(x*x)]); line(cu,C.aft,3);
-  const X=f.X(amp), Y=f.Y(amp*amp); line([[X,f.Y(0)],[X,Y]],C.muted,1,[4,3]); line([[f.X(0),Y],[X,Y]],C.muted,1,[4,3]);
-  dot(f.X(1),f.Y(1),C.ink,4); dot(X,Y,C.aft,6); if(amp>0.3) label(amp>1.5?X-12:X+12,Y-6,'× '+fmt(amp*amp,1),C.aft,amp>1.5?'right':'left'); ctx.globalAlpha=1;
+    arrow(wr.x+14,ye,wr.x+14,y0+2,C.ink,1.6); arrow(wr.x+14,ye,wr.x+14,y0+hb-2,C.ink,1.6); label(wr.x+24,ye-6,'b',C.ink,'left');
+    text(wr.x+4,y0+hb+16,'RW = ¼ρg·a²·b: the energy of the pattern, per metre travelled, grows with a² × b',C.muted,'left',fs);
+    // parabola
+    const rc={x:wr.x+56,y:wr.y+wr.h*0.66,w:wr.w-80,h:wr.h*0.24}, f=frame(rc,[0,1.9],[0,3.6],{xt:[0,0.5,1,1.5],xf:x=>String(x),yt:[0,1,2,3],yf:y=>String(y),xl:'a, relative to the bow wave',bandsFn:null});
+    ctx.font='600 12px '+SANS; ctx.fillStyle=C.ink; ctx.textAlign='left'; ctx.textBaseline='bottom'; ctx.fillText('RW ∝ a²: twice the height, four times the resistance',rc.x,rc.y-8);
+    const cu=[]; for(let x=0;x<=1.9;x+=0.05) cu.push([f.X(x),f.Y(x*x)]); line(cu,C.aft,2.8);
+    line([[f.X(aa),f.Y(0)],[f.X(aa),f.Y(a2)]],C.muted,1,[4,3]); line([[f.X(0),f.Y(a2)],[f.X(aa),f.Y(a2)]],C.muted,1,[4,3]); dot(f.X(aa),f.Y(a2),C.aft,6); label(f.X(aa)+12,f.Y(a2)+4,'a² = '+fmt(a2,2),C.aft,'left'); }
+  // right: three plots against speed
+  const rx=r.x+lw+(col?66:40), rw=r.x+r.w-rx-4, nP=3, gy=col?34:12, top=col?r.y+22:r.y+r.h*0.52, H=col?r.h-22:r.h*0.48, ph=(H-(nP-1)*gy-(col?36:18))/nP;
+  const RWm=Math.ceil(Math.max(...RR6.map(q=>q.RW))/1000)*1000;
+  const P=[{t:'a: the amplitude of the wave behind the ship, relative to the bow wave',f:q=>q.a,yr:[0,2],yt:[0,1,2],yf:y=>String(y),col:C.pb},
+    {t:'a²: the energy of the pattern per m² is ½ρg·a², so it goes with a²',f:q=>q.a2,yr:[0,3.6],yt:[0,1,2,3],yf:y=>String(y),col:C.ink},
+    {t:'RW (kN), Holtrop–Mennen; dashed: without the interference ③',f:q=>q.RW,yr:[0,RWm],yt:[0,RWm/2,RWm],yf:y=>y?(y/1000)+'k':'0',col:C.aft,res:1}];
+  P.forEach((Pn,m)=>{ const rc={x:rx,y:top+m*(ph+gy),w:rw,h:ph}, last=m===nP-1;
+    const fp=frame(rc,[V0,V1],Pn.yr,{xt:last?[15,20,25,30,35,40]:[],xl:last&&col?'Speed V, kn':null,yt:Pn.yt,yf:Pn.yf,bandsFn:x=>FNV(x)});
+    ctx.font='600 '+(small?9:12)+'px '+SANS; ctx.fillStyle=C.ink; ctx.textAlign='left'; ctx.textBaseline='bottom'; ctx.fillText(Pn.t,rc.x,rc.y-6);
+    if(sel.length>1){ if(Pn.res) line(sel.map(q=>[fp.X(q.V),fp.Y(q.RW/q.inter)]),C.ghost,1.5,[4,3]); line(sel.map(q=>[fp.X(q.V),fp.Y(Pn.f(q))]),Pn.col,2.6); }
+    line([[fp.X(25),rc.y],[fp.X(25),rc.y+rc.h]],C.ink,1.2,[5,4]); line([[fp.X(Vc),rc.y],[fp.X(Vc),rc.y+rc.h]],C.muted,1.2);
+    const qv=m===0?aa:m===1?a2:HM({...SHIP,V:Vc}).RW; dot(fp.X(Vc),fp.Y(qv),Pn.col,4.5);
+    if(m===0&&!small) text(fp.X(25)+5,rc.y+rc.h*0.5,'project 25 kn',C.ink,'left',11,'700'); });
 }
 function drawInputs(st){
   const r=mainRect(), gap=small?8:22, col=!small;
