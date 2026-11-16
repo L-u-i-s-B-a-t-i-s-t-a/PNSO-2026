@@ -69,16 +69,16 @@ footer { color: var(--muted); font-size: 14px; margin-top: 8px; }
   <header>
     <span class="eyebrow">Ship and Ocean Systems Design 2026 · Tool 2.4 · Exercise 2.4</span>
     <h1>Holtrop–Mennen Power</h1>
-    <p class="lede">Calm-water resistance and propulsion factors by Holtrop and Mennen (1982), then installed power with your margins. It opens on the reference ship of Lectures 2.3a and 2.4 (the 10,000 t general cargo ship), used in Exercise 2.4. For your group's project, replace the inputs with your project ship's hull.</p>
+    <p class="lede">Calm-water resistance and propulsion factors by Holtrop and Mennen (1982), then installed power with your margins. It opens on the reference ship of the course (0.6, the 37,600 t product and chemical tanker), with the hull of Exercise 1.5, used in Exercise 2.4. For your group's project, replace the inputs with your project ship's hull.</p>
   </header>
   <div class="grid">
     <form id="f" novalidate>
       <fieldset><legend>Hull</legend>
-        <label><span>LPP [m]</span><input id="L" type="number" step="0.1" value="124.8"></label>
+        <label><span>LPP [m]</span><input id="L" type="number" step="0.1" value="177.5"></label>
         <label><span>LWL / LPP</span><input id="lwl" type="number" step="0.01" value="1.02"></label>
-        <label><span>Beam B [m]</span><input id="B" type="number" step="0.01" value="20.0"></label>
-        <label><span>Draught T [m]</span><input id="T" type="number" step="0.01" value="6.89"></label>
-        <label><span>CB on LPP</span><input id="CB" type="number" step="0.001" value="0.7489"></label>
+        <label><span>Beam B [m]</span><input id="B" type="number" step="0.01" value="29.98"></label>
+        <label><span>Draught T [m]</span><input id="T" type="number" step="0.01" value="11.15"></label>
+        <label><span>CB on LPP</span><input id="CB" type="number" step="0.001" value="0.7568"></label>
         <label><span>CM</span><input id="CM" type="number" step="0.001" value="0.985"></label>
         <label><span>CWP (blank: (1+2CB)/3)</span><input id="CWP" type="number" step="0.001" value=""></label>
         <label><span>lcb [% L, + fwd]</span><input id="lcb" type="number" step="0.1" value="1.0"></label>
@@ -87,7 +87,7 @@ footer { color: var(--muted); font-size: 14px; margin-top: 8px; }
       </fieldset>
       <fieldset><legend>Bulb, transom, appendages</legend>
         <label><span>Bulb area ABT [m²]</span><input id="ABT" type="number" step="0.1" value="8"></label>
-        <label><span>Bulb centre hB [m]</span><input id="hB" type="number" step="0.1" value="2.2"></label>
+        <label><span>Bulb centre hB [m]</span><input id="hB" type="number" step="0.1" value="3.6"></label>
         <label><span>Immersed transom AT [m²]</span><input id="AT" type="number" step="0.1" value="0"></label>
         <label><span>Appendage area SAPP [m²]</span><input id="SAPP" type="number" step="0.5" value="30"></label>
         <label class="wide"><span>Appendage factor 1+k₂</span><input id="k2" type="number" step="0.1" value="1.5"></label>
@@ -95,7 +95,7 @@ footer { color: var(--muted); font-size: 14px; margin-top: 8px; }
       </fieldset>
       <fieldset><legend>Propulsion and margins</legend>
         <label><span>Screws</span><select id="twin"><option value="0" selected>Single</option><option value="1">Twin</option></select></label>
-        <label><span>Propeller DP [m]</span><input id="Dp" type="number" step="0.01" value="4.82"></label>
+        <label><span>Propeller DP [m]</span><input id="Dp" type="number" step="0.01" value="7.8"></label>
         <label><span>Open-water η₀ (assumed, baseline 0.60)</span><input id="eta0" type="number" step="0.01" value="0.60"></label>
         <label><span>Shaft ηS</span><input id="etaS" type="number" step="0.01" value="0.99"></label>
         <label><span>AE/A₀ (single)</span><input id="AE" type="number" step="0.01" value="0.55"></label>
@@ -104,9 +104,9 @@ footer { color: var(--muted); font-size: 14px; margin-top: 8px; }
         <label><span>Engine load [% MCR]</span><input id="el" type="number" step="1" value="90"></label>
       </fieldset>
       <fieldset><legend>Speeds and parent ship</legend>
-        <label class="wide"><span>Speeds [kn], comma separated</span><input id="V" type="text" value="12, 13, 14, 15, 16"></label>
-        <label><span>Design speed [kn]</span><input id="Vd" type="number" step="0.1" value="14"></label>
-        <label><span>Admiralty C (optional)</span><input id="C" type="number" step="10" value="400"></label>
+        <label class="wide"><span>Speeds [kn], comma separated</span><input id="V" type="text" value="13, 14, 14.5, 15, 16"></label>
+        <label><span>Design speed [kn]</span><input id="Vd" type="number" step="0.1" value="14.5"></label>
+        <label><span>Admiralty C (optional)</span><input id="C" type="number" step="10" value="450"></label>
         <p class="hint">Admiralty column: Δ^(2/3)·V³/C with Δ in t, V in kn, P in kW. Take C from a parent ship of similar form and speed (in the project, from your D2 database).</p>
       </fieldset>
       <div class="row"><button type="button" id="reset">Load the example ship</button><span class="status" id="saved"></span></div>
