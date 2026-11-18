@@ -23,6 +23,13 @@ var SP_RESOURCES = [
       { k: "1 · Read", t: "Reading · Hull Form Variation from a Parent", file: "resources/hull_form/Reading_Hull_Form_Variation_from_a_Parent.pdf", note: "the method, with two worked examples", released: true },
       { k: "2 · Guide", t: "User Guide · Demo 8 Hull Generator", file: "resources/hull_form/User_Guide_Demo8_Hull_Generator.pdf", note: "how to use the notebook: quick start, functions, use in your design model, STEP file", released: true },
       { k: "3 · Run", t: "Demo 8 · Hull Form Variation from a Parent (notebook)", file: "https://colab.research.google.com/github/L-u-i-s-B-a-t-i-s-t-a/PNSO-2026/blob/main/notebooks/Demo8_Hull_Form_Variation_Lackenby.ipynb", note: "opens in Google Colab", released: true }
+    ] },
+  { id: "propulsion", t: "Propulsion: the Logarithm, the Power Law and the Resistance Curve",
+    x: "For all groups, in particular for SP02 Propulsion Matching, before Lecture 3.3 Main Machinery and Propeller: how the slope n of a log-log plot turns the resistance curve into a power law, using the Holtrop–Mennen example ship. Extended reading, not for evaluation.",
+    items: [
+      { k: "1 · Watch", t: "Video · Logarithms and the slope n (7 min, the log series)", file: "week3/Logs_and_Slope_narrated.mp4", note: "logarithm rules, log-log axes, what k and n do", released: false },
+      { k: "2 · Watch", t: "Animation · Propulsion, Steps 1 to 3", file: "week3/Propulsion_Steps_1-3_Animation.html", note: "from the square curve to the resistance power law; play, pause or go step by step", released: false },
+      { k: "3 · Watch", t: "Video · Propulsion, Steps 1 to 3, narrated (6 min)", file: "week3/Propulsion_Steps_1-3_narrated.mp4", note: "the animation with voice", released: false }
     ] }
 ];
 
