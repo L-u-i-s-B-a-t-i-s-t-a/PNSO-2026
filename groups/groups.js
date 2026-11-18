@@ -30,6 +30,12 @@ var SP_RESOURCES = [
       { k: "1 · Watch", t: "Video · Logarithms and the slope n (7 min, the log series)", file: "week3/Logs_and_Slope_narrated.mp4", note: "logarithm rules, log-log axes, what k and n do", released: false },
       { k: "2 · Watch", t: "Animation · Propulsion, Steps 1 to 3", file: "week3/Propulsion_Steps_1-3_Animation.html", note: "from the square curve to the resistance power law; play, pause or go step by step", released: false },
       { k: "3 · Watch", t: "Video · Propulsion, Steps 1 to 3, narrated (6 min)", file: "week3/Propulsion_Steps_1-3_narrated.mp4", note: "the animation with voice", released: false }
+    ] },
+  { id: "python", t: "Python for AI: a beginner course (optional)",
+    x: "For anyone who wants to strengthen their Python before the notebooks and the calculations of the project. It starts from zero; take what you need, in any order.",
+    items: [
+      { k: "Course", t: "Python for AI Beginner Course (Datalumina)", file: "https://python.datalumina.com/", note: "the course site, to follow at your own pace", released: true },
+      { k: "Video", t: "Python for AI, Full Beginner Course (Dave Ebbelaar, YouTube)", file: "https://www.youtube.com/watch?v=ygXn5nV5qFc", note: "over 5 hours with chapters: set-up (Python, VS Code, Jupyter, environments), the basics, functions, APIs, pandas, matplotlib, Git and GitHub", released: true }
     ] }
 ];
 
