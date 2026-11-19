@@ -130,10 +130,3 @@ print("PAPER, centre of gravity")
 print(f"  vertical   z (44) = {Z_44:.2f} m")
 print(f"  longitudinal  x (43) = {X_43:.1f} m   x (30) = {X_30:.1f} m   (from the aft perpendicular)")
 print()
-
-# ---- 9. how to read it -----------------------------------------------------
-# Quote a band, not a single number. With no measured light ship for Baseline A this
-# is agreement between estimates, not proof. Check every input against the range of
-# the regressions (the paper's Table 3) before you trust a result: TEU 420 to 3,100,
-# DWT 6,300 to 45,000 t, L 113.7 to 210.2 m, B 15.5 to 32.25 m, D 9.0 to 18.7 m,
-# V 13.0 to 22.3 kn. Change the inputs at the top and run again.
