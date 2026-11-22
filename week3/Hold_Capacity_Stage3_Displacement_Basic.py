@@ -78,7 +78,7 @@ for i in range(MAX_PASSES):
 
     # 4. The weight the ship really has, and the shortfall of the hull
     weight = LWT + DWT
-    shortfall = weight - hull                     # negative: the hull is bigger than the weight, so it floats too deep
+    shortfall = weight - hull                     # negative: at this T the hull carries more than the ship weighs, so T is too deep and must fall
 
     # 5. New C_B and T for that weight, TOGETHER (Katsoulis, eq. 19). Another small loop:
     T_try = B / 2.9
