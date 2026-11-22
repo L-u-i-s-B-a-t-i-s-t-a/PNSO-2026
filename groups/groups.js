@@ -66,6 +66,18 @@ var GROUPS = {
         "x": "the one-page A4 datasheet of your ship, part of D10",
         "file": "groups/G1/0.4_Datasheet_Template_G1.pdf",
         "released": false
+      },
+      {
+        "t": "Hold capacity program for the Azores Feeder, Stages 1, 2 and 3 in one file",
+        "x": "the Baseline B version of the hold-capacity program: main dimensions, container count in the real hull, closing by draught, with two separate sizings for you to work out (electric: the battery; fuel: gensets and MGO for the transit to the mainland). Needs make_hull.py and the KCS offsets (Tools and resources, Hull Form from a Parent). Read the CHECK and TRY lines at the top",
+        "file": "groups/G1/Hold_Capacity_B_Stages_1_2_3.py",
+        "released": true
+      },
+      {
+        "t": "Azores Feeder, high-level arrangement: profile and top view",
+        "x": "an example of a first arrangement for 130 TEU (cranes, battery bays, motor room, gensets, accommodation forward). It is a starting point with assumed values, not a solution: the program above shows that its stability does not close as drawn",
+        "file": "groups/G1/Baseline_B_Arrangement_Profile_and_Top_View.png",
+        "released": true
       }
     ],
     "notes": []
