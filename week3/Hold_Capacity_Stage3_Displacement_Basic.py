@@ -10,8 +10,10 @@ The loop starts from C_B = 0.68 and T = B / 2.9. They are only a start: the firs
 At the end the script compares the closed C_B and T with the ones the hull of Stage 2 was made with. If they MOVED, make
 the hull again at the new values (Stage 2), count again, and bring the new number of bays back here.
 
-Same ship as Stage 1 and Stage 2: the 596 TEU feeder of the Manual. Check: T 7.23 m, C_B 0.615, power 6,150 kW,
-light ship 4,065 t, displacement 12,958 t. For your own ship change n_B, B, D (from Stage 1), V and DWT (from your brief).
+Same ship as Stage 1 and Stage 2: the 596 TEU feeder of the Manual, with the 16 bays that the real hull of Stage 2 needs.
+Check: T 6.68 m, C_B 0.631, power 6,336 kW, light ship 4,661 t, displacement 13,554 t, and NOT MOVED.
+(With n_B = 14, the first ship of the Manual, it closes at T 7.23 m, C_B 0.615, 6,150 kW, 12,958 t, but it holds only 258
+of the 268 containers.) For your own ship change n_B, B, D (from Stage 1), V and DWT (from your brief).
 Plain steps, Python 3, no extra packages.
 """
 from math import sqrt
@@ -19,12 +21,13 @@ from math import sqrt
 # ==== INPUTS =================================================================
 
 # ---- A. FROM STAGE 1 AND STAGE 2 (the capacity is settled) --------------------
-n_B = 14                          # bays (Stage 1: 14; the real hull of Stage 2 may change it)
+n_B = 16                          # bays (Stage 1 gave 14; the real hull of Stage 2 needs 16 for 268 containers)
 L_AP, L_ER, L_FP = 4.0, 17.6, 15.1   # aft peak, engine room, fore peak (m), as in Stage 1
-L = L_AP + L_ER + L_FP + 6.55 * n_B  # m: 128.4 for 14 bays. Another number of bays is another length.
+L = L_AP + L_ER + L_FP + 6.55 * n_B  # m: 141.5 for 16 bays. Another number of bays is another length.
 B, D = 22.046, 11.326             # m: from the rows and tiers (Stage 1)
 T0 = 7.872                        # m: first draught of the statistics (Stage 1, step 2). Used for the first hull only.
-C_B_hull, T_hull = 0.68, T0       # the C_B and T the real hull of Stage 2 was made with (round 1: the assumed ones)
+C_B_hull, T_hull = 0.6314, 6.68   # the C_B and T the real hull of Stage 2 was made with (round 2: the closed ones;
+                                  # round 1 used the assumed ones: 0.68, T0, and the script then prints MOVED)
 
 # ---- B. FROM THE BRIEF ---------------------------------------------------------
 V = 16.5                          # service speed, knots
@@ -136,6 +139,6 @@ else:
 #   P = r["PE"] / (eta_D * 0.98) * 1.15 / 0.90
 #   # shaft 0.98, sea margin 15 %, engine at 90 % of MCR: ASSUMED
 #
-# With these assumptions the feeder closes at 5,769 kW (not 6,150 kW), a
-# light ship of 4,042 t (not 4,065 t), T = 7.22 m and 12,935 t (not 12,958 t).
+# With these assumptions the feeder (16 bays) closes at 5,755 kW (not 6,336 kW), a
+# light ship of 4,625 t (not 4,661 t), T = 6.67 m and 13,518 t (not 13,554 t).
 # ----------------------------------------------------------------------
