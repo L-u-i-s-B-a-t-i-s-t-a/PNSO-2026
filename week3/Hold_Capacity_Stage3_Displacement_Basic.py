@@ -25,6 +25,18 @@ WHAT IS ASSUMED TO START (replaced by the loop)
 WHAT IS FOUND
   T, C_B, power, light ship, displacement
 
+FOUR ALERTS BEFORE YOU USE IT FOR YOUR OWN SHIP
+  1. Copy from Stage 1 (and Stage 2): n_B, B, D and the first draught T0. L is rebuilt below from n_B (6.55 m per bay plus
+     the three allowances), so another number of bays is another length. n_R and n_T are listed for reference only:
+     they are not used below, because B and D already carry them. Typing other n_R and n_T changes nothing.
+  2. What belongs to the feeder, not to your ship: the speed V and the deadweight DWT (they come from your brief) and the
+     constants of block C (Admiralty constant, steel, outfit, deckhouse, machinery). You can run the script without
+     understanding each one. Change only what your own brief or your reference ship gives you.
+  3. The roll back is done by hand. If the script prints MOVED, put the new C_B and T (and the new length and number of
+     bays) in the Stage 2 script, count again, and bring the number of bays back here. This script does not make the hull.
+  4. The power is by Admiralty, as in the Manual, so the check numbers below hold. For Holtrop-Mennen instead, see the
+     commented lines of step 2 in the loop. The numbers then differ from the check.
+
 Same ship as Stage 1 and Stage 2: the 596 TEU feeder of the Manual (III.1), s_H = 0.45, 7 rows, 4 tiers, 14 bays.
 Check: T 7.23 m, C_B 0.615, power 6,150 kW, light ship 4,065 t, displacement 12,958 t.
 Plain steps: numbers, formulas, loops and print. Python 3, no extra packages.
@@ -92,6 +104,17 @@ for i in range(MAX_PASSES):
 
     # 2. The power for that displacement (Admiralty, eq. 21)
     P = hull ** (2 / 3) * V ** 3 / C_N
+    # ---- OPTION: Holtrop-Mennen instead of Admiralty (the check numbers above then no longer hold) -----------
+    # Needs the function holtrop_mennen of the Demo 8 notebook (run its cells first). It gives the EFFECTIVE power PE,
+    # but the weights need the INSTALLED power, so the efficiencies and margins below are needed as well.
+    # Everything that is not L, B, T and C_B is ASSUMED here: put your own values. V stays in knots.
+    # To use it: put a # in front of the Admiralty line above and delete the "# " of the lines below.
+    # Also in the CLOSED print at the end, replace the Admiralty power by P.
+    # CM = 1 - 0.062 * (V * 0.514444 / sqrt(9.81 * L)) ** 0.792                     # midship coefficient (Manual eq. 20)
+    # r = holtrop_mennen(V, L, B, T, C_B * L * B * T, lcb=-1.0, CM=CM, ABT=0.06 * B * T * CM, hB=0.5 * T, AT=0.0,
+    #                    SAPP=0.015 * L * (2 * T + B) * 0.55, Dp=0.65 * T, AE_A0=0.6)  # LCB as in Stage 2; bulb, appendages, propeller
+    # eta_D = r["etaH"] * r["etaR"] * 0.60            # hull x relative-rotative x open-water efficiency (0.60 ASSUMED)
+    # P = r["PE"] / (eta_D * 0.98) * 1.15 / 0.90      # shaft losses 0.98, sea margin 15 %, engine at 90 % of MCR (ASSUMED)
 
     # 3. The light ship at the present T and C_B and that power
     C_BD = C_B + C_1 * (D - T) / T * (1 - C_B)                       # block coefficient up to the deck
