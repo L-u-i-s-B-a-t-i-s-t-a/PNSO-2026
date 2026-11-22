@@ -2,66 +2,24 @@
 
 T. Santos, L. Batista · Ship and Ocean Systems Design 2026
 
-WHERE WE ARE
-  Stage 1 gave the main dimensions from the containers (rows, tiers, bays: L, B, D).
-  Stage 2 counted the containers in a real hull and checked the number of bays.
-  Now the ship must FLOAT at the weight it really has. Two numbers are still open: the draught T and the
-  block coefficient C_B. They are found together by repetition (Design Manual, Steps 5 and 6):
+Stage 1 gave n_B, L, B and D. Now the ship must float at the weight it really has, and two numbers are still open: the
+draught T and the block coefficient C_B. The hull carries 1.030 x C_B x L x B x T tonnes. The ship weighs light ship +
+deadweight, and the light ship depends on T and C_B. So we guess, compute, correct and repeat until T moves less than 1 cm.
 
-      hull displacement  = 1.030 x C_B x L x B x T          (what the hull can carry)
-      weight             = light ship + deadweight          (what the ship weighs)
-      the ship floats when the two are equal.
+The loop starts from C_B = 0.68 and T = B / 2.9. They are only a start: the first pass replaces them.
+At the end the script compares the closed C_B and T with the ones the hull of Stage 2 was made with. If they MOVED, make
+the hull again at the new values (Stage 2), count again, and bring the new number of bays back here.
 
-  The light ship depends on T, C_B and the power, and the power depends on the displacement, so the answer is
-  not a single line. We guess, compute, correct, and repeat until T moves less than 1 cm.
-
-WHAT IS KNOWN AT THE START (from Stage 1 and 2, and the brief)
-  n_R, n_T, n_B, L, B, D     the grid and the bays (Stage 1; checked in Stage 2)
-  deadweight                 fixed by the brief (8,893 t for the Manual feeder)
-  speed, range, crew         from the brief
-WHAT IS ASSUMED TO START (replaced by the loop)
-  C_B = 0.68                 first block coefficient (Manual, Step 2)
-  T   = B / 2.9              first draught, only to start the loop
-WHAT IS FOUND
-  T, C_B, power, light ship, displacement
-
-FOUR ALERTS BEFORE YOU USE IT FOR YOUR OWN SHIP
-  1. Copy from Stage 1 (and Stage 2): n_B, B, D and the first draught T0. L is rebuilt below from n_B (6.55 m per bay plus
-     the three allowances), so another number of bays is another length. n_R and n_T are listed for reference only:
-     they are not used below, because B and D already carry them. Typing other n_R and n_T changes nothing.
-  2. What belongs to the feeder, not to your ship: the speed V and the deadweight DWT (they come from your brief) and the
-     constants of block C (Admiralty constant, steel, outfit, deckhouse, machinery). You can run the script without
-     understanding each one. Change only what your own brief or your reference ship gives you.
-  3. The roll back is done by hand. If the script prints MOVED, put the new C_B and T (and the new length and number of
-     bays) in the Stage 2 script, count again, and bring the number of bays back here. This script does not make the hull.
-  4. The power is by Admiralty, as in the Manual, so the check numbers below hold. For Holtrop-Mennen instead, see the
-     commented lines of step 2 in the loop. The numbers then differ from the check.
-
-Same ship as Stage 1 and Stage 2: the 596 TEU feeder of the Manual (III.1), s_H = 0.45, 7 rows, 4 tiers, 14 bays.
-Check: T 7.23 m, C_B 0.615, power 6,150 kW, light ship 4,065 t, displacement 12,958 t.
-Plain steps: numbers, formulas, loops and print. Python 3, no extra packages.
-
-ROLLING BACK (the "rounds"): the closed C_B and T are not final until they agree with the hull that was counted.
-  The real hull of Stage 2 was made with C_B = 0.68 and T = T0. At the end the script compares them with the closed
-  values. If they MOVED (C_B by more than 0.003 or T by more than 0.05 m), the ship you counted is not the ship you
-  closed: go back to Stage 2, make the hull again at the new C_B and T, count the containers again and correct the
-  bays. A different number of bays means a different L, so the weights are closed again. Then compare again.
-  For this feeder the full program (real hull, Stage 2 script) does exactly that:
-    round 1  hull at C_B 0.680, T 7.87 m:  14 bays hold 258 TEU (268 needed), 16 bays hold 298 -> 16 bays
-             closed with 16 bays: T 6.680 m, C_B 0.6314     (moved: go back)
-    round 2  hull at C_B 0.631, T 6.68 m:  14 bays hold 242, 16 bays hold 278 -> 16 bays
-             closed with 16 bays: T 6.680 m, C_B 0.6314     (not moved: done; L 141.5 m, displacement 13,554 t)
-  TRY IT: set n_B = 16 below and run again: the script gives the closed ship of round 1. Then set C_B_hull and T_hull
-  to the closed values (0.6314 and 6.68) to see NOT MOVED, the answer of round 2.
-
-Not done here (see the full program): the real hull itself (Stage 2 script); the LNG tank; stability and the checks.
+Same ship as Stage 1 and Stage 2: the 596 TEU feeder of the Manual. Check: T 7.23 m, C_B 0.615, power 6,150 kW,
+light ship 4,065 t, displacement 12,958 t. For your own ship change n_B, B, D (from Stage 1), V and DWT (from your brief).
+Plain steps, Python 3, no extra packages.
 """
 from math import sqrt
 
 # ==== INPUTS =================================================================
 
 # ---- A. FROM STAGE 1 AND STAGE 2 (the capacity is settled) --------------------
-n_R, n_T, n_B = 7, 4, 14          # rows, tiers, bays (Stage 1: 14; the real hull of Stage 2 may change it: see ROLLING BACK)
+n_B = 14                          # bays (Stage 1: 14; the real hull of Stage 2 may change it)
 L_AP, L_ER, L_FP = 4.0, 17.6, 15.1   # aft peak, engine room, fore peak (m), as in Stage 1
 L = L_AP + L_ER + L_FP + 6.55 * n_B  # m: 128.4 for 14 bays. Another number of bays is another length.
 B, D = 22.046, 11.326             # m: from the rows and tiers (Stage 1)
@@ -104,17 +62,6 @@ for i in range(MAX_PASSES):
 
     # 2. The power for that displacement (Admiralty, eq. 21)
     P = hull ** (2 / 3) * V ** 3 / C_N
-    # ---- OPTION: Holtrop-Mennen instead of Admiralty (the check numbers above then no longer hold) -----------
-    # Needs the function holtrop_mennen of the Demo 8 notebook (run its cells first). It gives the EFFECTIVE power PE,
-    # but the weights need the INSTALLED power, so the efficiencies and margins below are needed as well.
-    # Everything that is not L, B, T and C_B is ASSUMED here: put your own values. V stays in knots.
-    # To use it: put a # in front of the Admiralty line above and delete the "# " of the lines below.
-    # Also in the CLOSED print at the end, replace the Admiralty power by P.
-    # CM = 1 - 0.062 * (V * 0.514444 / sqrt(9.81 * L)) ** 0.792                     # midship coefficient (Manual eq. 20)
-    # r = holtrop_mennen(V, L, B, T, C_B * L * B * T, lcb=-1.0, CM=CM, ABT=0.06 * B * T * CM, hB=0.5 * T, AT=0.0,
-    #                    SAPP=0.015 * L * (2 * T + B) * 0.55, Dp=0.65 * T, AE_A0=0.6)  # LCB as in Stage 2; bulb, appendages, propeller
-    # eta_D = r["etaH"] * r["etaR"] * 0.60            # hull x relative-rotative x open-water efficiency (0.60 ASSUMED)
-    # P = r["PE"] / (eta_D * 0.98) * 1.15 / 0.90      # shaft losses 0.98, sea margin 15 %, engine at 90 % of MCR (ASSUMED)
 
     # 3. The light ship at the present T and C_B and that power
     C_BD = C_B + C_1 * (D - T) / T * (1 - C_B)                       # block coefficient up to the deck
