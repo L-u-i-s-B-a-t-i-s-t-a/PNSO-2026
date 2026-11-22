@@ -378,42 +378,34 @@ const ap=(b0,span=0.3)=>B<b0?0:B>b0?1:ease(Q/span);          // opacity of somet
 const pr=(b0,a=0,c=1)=>B<b0?0:B>b0?1:ease((Q-a)/(c-a));         // progress inside beat b0
 const stage=(b0,a,c)=>B<b0?0:B>b0?1:ease((Q-a)/(c-a));
 
-const CODE=[
- 'for i in range(MAX_PASSES):',
- '    hull = 1.030 * C_B * L * B * T',
- '    P = hull ** (2/3) * V ** 3 / C_N',
- '    LWT = ...  # light ship at T, C_B, P',
- '    weight = LWT + DWT',
- '    shortfall = weight - hull',
- '    T_try = B / 2.9',
- '    for j in range(50):',
- '        C_B_new = 0.8217 * L**0.42 ... T_try**0.1721 ...',
- '        T_new = weight / (1.030 * C_B_new * L * B)',
- '        if abs(T_new - T_try) < 0.01: break',
- '        T_try = T_new',
- '    moved = abs(T_new - T)',
- '    C_B, T = C_B_new, T_new',
- '    if moved < 0.01: break',
- 'else:',
- '    print("NOT CONVERGED ...")',
- '',
- 'if abs(C_B-C_B_hull) > 0.003 or abs(T-T_hull) > 0.05:',
- '    print("MOVED ...")',
- 'else:',
- '    print("NOT MOVED ...")'];
-const HL={ '1':{0:[1],1:[1],2:[2,3,4],3:[5],4:[6,7,8],5:[9],6:[10,11],7:[13]},
- '2':{0:[0,13],1:[5],2:[12],3:[14],4:[13],6:[18,20,21]},
- '3':{1:[5],3:[5],4:[14]},
- '4':{0:[0],1:[0],2:[12,14],3:[15,16]},
- '5':{0:[18],5:[18,19],6:[18,19],7:[20,21],8:[20,21]},
- '6':{5:[18,19],6:[19],8:[20,21]}};
+const REAL=[[61, "MAX_PASSES = 50                                  # a loop must have a limit: never an endless loop"], [62, "for i in range(MAX_PASSES):"], [63, "    # 1. What the hull displaces at the present C_B and T"], [64, "    hull = 1.030 * C_B * L * B * T"], [65, ""], [66, "    # 2. The power for that displacement (Admiralty, eq. 21)"], [67, "    P = hull ** (2 / 3) * V ** 3 / C_N"], [68, ""], [69, "    # 3. The light ship at the present T and C_B and that power"], [70, "    C_BD = C_B + C_1 * (D - T) / T * (1 - C_B)                       # block coefficient up to the deck"], [71, "    vol_U = L * B * D * C_BD + n_HO * l_hold * (B - 2 * w_DH) * h_CO # volume under the deck, with the coamings"], [72, "    w_steel = (vol_U * C_ST * (1 + 2e-6 * (L - 120) ** 2) * (1 + 0.057 * (L / D - 12)) * sqrt(30 / (D + 14))"], [73, "               * (1 + 0.1 * (B / D - 2.1) ** 2) * (1 + 0.2 * (T / D - 0.85)) * (0.92 + (1 - C_BD) ** 2))   # eq. (23)"], [74, "    k1 = 1 + 0.02 * (h_layer - 2.6)"], [75, "    k3 = min(1.0, max(0.95, 0.95 + 0.05 * (L - 100) / 20))"], [76, "    w_deckhouse = sum(C_DH[:dh_layers]) / 1000 * dh_l * B * h_layer * k1 * k3                               # eq. (25)"], [77, "    w_outfit = K_OT * L * B                                                                                 # outfit"], [78, "    w_machinery = 12 * (P / rpm) ** mach_exp + 0.69 * P ** 0.70                                             # eq. (28)"], [79, "    groups = w_steel + w_deckhouse + w_outfit + w_machinery"], [80, "    LWT = groups * (1 + R_frac)                                                                             # light ship with reserve"], [81, ""], [82, "    # 4. The weight the ship really has, and the shortfall of the hull"], [83, "    weight = LWT + DWT"], [84, "    shortfall = weight - hull                     # negative: at this T the hull carries more than the ship weighs, so T is too deep and must fall"], [85, ""], [86, "    # 5. New C_B and T for that weight, TOGETHER (Katsoulis, eq. 19). Another small loop:"], [87, "    T_try = B / 2.9"], [88, "    for j in range(50):"], [89, "        C_B_new = 0.8217 * L ** 0.42 * B ** -0.3072 * T_try ** 0.1721 * V ** -0.6135    # C_B from the draught"], [90, "        T_new = weight / (1.030 * C_B_new * L * B)                                      # draught from C_B and the weight"], [91, "        if abs(T_new - T_try) < 0.01:"], [92, "            break"], [93, "        T_try = T_new"], [94, ""], [95, "    print(f\"pass {i + 1}: T {T:.2f} m, light ship + deadweight {weight:.0f} t, hull {hull:.0f} t, \""], [96, "          f\"shortfall {shortfall:+.0f} t -> T {T_new:.2f} m, C_B {C_B_new:.3f}\")"], [97, ""], [98, "    # 6. Compare the new draught with the one this pass started from"], [99, "    moved = abs(T_new - T)"], [100, "    C_B, T = C_B_new, T_new                       # C_B and T from the SAME pass go to the next one"], [101, "    if moved < 0.01:"], [102, "        break"], [103, "else:"], [104, "    print(f\"NOT CONVERGED: {MAX_PASSES} passes and T still moves ({moved * 100:.1f} cm per pass). Do not use these numbers.\")"], [105, ""], [106, "# ==== THE CLOSED DESIGN ====================================================="], [107, "Delta = 1.030 * C_B * L * B * T"], [108, "print()"], [109, "print(f\"CLOSED: T {T:.3f} m, C_B {C_B:.4f}, displacement {Delta:.0f} t, power {Delta ** (2 / 3) * V ** 3 / C_N:.0f} kW, \""], [110, "      f\"light ship {LWT:.0f} t (steel {w_steel:.0f}, deckhouse {w_deckhouse:.0f}, outfit {w_outfit:.0f}, \""], [111, "      f\"machinery {w_machinery:.0f}, reserve {LWT - groups:.0f})\")"], [112, ""], [113, "# ==== BACK TO THE HULL: DO THE ASSUMED VALUES STILL HOLD? ====================="], [114, "# The real hull of Stage 2 was made with C_B_hull and T_hull (inputs above). If the closed values moved, the hull is made again."], [115, "print()"], [116, "print(f\"Hull of Stage 2 was made at C_B {C_B_hull:.3f}, T {T_hull:.2f} m; the ship closed at C_B {C_B:.3f}, T {T:.2f} m.\")"], [117, "if abs(C_B - C_B_hull) > 0.003 or abs(T - T_hull) > 0.05:"], [118, "    print(\"MOVED (C_B by more than 0.003 or T by more than 0.05 m): make the hull again at the new C_B and T,\")"], [119, "    print(\"count the containers again, correct the bays if the count changed, and close the weights again (a new round).\")"], [120, "else:"], [121, "    print(\"NOT MOVED: the hull of Stage 2 is the hull of the closed ship.\")"]];   // the real lines 61 to 121 of Hold_Capacity_Stage3_Displacement_Basic.py: [line number, text]
+const HL={"1": {"0": [63, 64], "1": [63, 64], "2": [66, 67, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 82, 83], "3": [84], "4": [86, 87, 88, 89], "5": [90], "6": [91, 92, 93], "7": [100]}, "2": {"0": [62, 100], "1": [84], "2": [98, 99], "3": [101, 102], "4": [100], "6": [117, 120, 121]}, "3": {"1": [84], "3": [84], "4": [101, 102]}, "4": {"0": [62], "1": [62], "2": [98, 99, 101, 102], "3": [103, 104]}, "5": {"0": [117], "5": [117, 118, 119], "6": [117, 118, 119], "7": [120, 121], "8": [120, 121]}, "6": {"5": [117, 118, 119], "6": [118, 119], "8": [120, 121]}};   // [scene][beat] -> file line numbers
+const CWRAP=62, CROW=14, CWIN=31, CMONO="ui-monospace,Menlo,Consolas,'DejaVu Sans Mono',monospace";
+const CROWS=(()=>{const rows=[];
+  REAL.forEach(([n,t])=>{
+    let ci=-1,q=null;for(let k=0;k<t.length;k++){const c=t[k];if(q){if(c===q)q=null}else if(c==='"'||c==="'")q=c;else if(c==='#'){ci=k;break}}
+    const ind=t.length-t.trimStart().length;let a=0,first=true;
+    if(!t.trim()){rows.push({n,ln:n,t:'',c:-1,first:true});return}
+    while(a<t.length){const pre=first?'':' '.repeat(ind+4);const lim=CWRAP-pre.length;let e=Math.min(t.length,a+lim);
+      if(e<t.length){const sp=t.lastIndexOf(' ',e);if(sp>a+ind&&sp>a+8)e=sp}
+      const piece=t.slice(a,e).replace(/\s+$/,'');
+      const cs=(ci>=0&&ci<e)?Math.max(0,ci-a)+pre.length:-1;
+      rows.push({n:first?n:null,ln:n,t:pre+piece,c:cs,first});
+      a=e;while(a<t.length&&t[a]===' ')a++;first=false}
+  });return rows})();
+function cOff(s,b){for(let k=b;k>=0;k--){const hl=(HL[s]&&HL[s][k])||[];if(hl.length){const m=CROWS.findIndex(r=>hl.includes(r.ln));return clamp(m-2,0,Math.max(0,CROWS.length-CWIN))}}return 0}
 function code(s){
   const hl=(HL[s]&&HL[s][B])||[];
+  const o1=cOff(s,B),o0=B>0?cOff(s,B-1):o1,off=o0+(o1-o0)*ease(Q*4);
   let o=R(830,80,420,480,{fill:'#10192a',stroke:'#10192a',rx:8});
   o+=T(846,104,'Hold_Capacity_Stage3_Displacement_Basic.py',{size:12,fill:'#8fa3bd',mono:true});
-  CODE.forEach((l,i)=>{const y=130+i*19.8, on=hl.indexOf(i)>=0;
-    if(on) o+=`<rect x="836" y="${y-14}" width="408" height="19" rx="3" fill="#2d4a6e" opacity="${0.55+0.45*Math.sin(Q*3.1416)}"/>`;
-    o+=T(846,y,l,{size:11.5,fill:on?'#ffffff':'#9fb2cb',mono:true});});
+  o+='<clipPath id="cpc"><rect x="830" y="114" width="420" height="440"/></clipPath><g clip-path="url(#cpc)">';
+  CROWS.forEach((r,i)=>{const y=132+(i-off)*CROW;if(y<112||y>562)return;const on=hl.indexOf(r.ln)>=0;
+    if(on)o+=`<rect x="834" y="${y-11}" width="412" height="${CROW}" rx="2" fill="#2d4a6e" opacity="${0.6+0.4*Math.sin(Q*3.1416)}"/>`;
+    if(r.n!=null)o+=`<text x="860" y="${y}" font-size="9" text-anchor="end" fill="#5f7390" font-family="${CMONO}">${r.n}</text>`;
+    const cut=r.c>=0?r.c:r.t.length,a=r.t.slice(0,cut),b=r.t.slice(cut);
+    o+=`<text x="868" y="${y}" font-size="10.2" xml:space="preserve" font-family="${CMONO}" fill="${on?'#ffffff':'#a9bbd2'}">${esc(a)}${b?`<tspan fill="${on?'#b9e3c5':'#6f9a82'}">${esc(b)}</tspan>`:''}</text>`;});
+  o+='</g>';
   return o;}
 
 /* ---------- scene 0 ---------- */
