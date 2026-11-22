@@ -116,3 +116,26 @@ if abs(C_B - C_B_hull) > 0.003 or abs(T - T_hull) > 0.05:
     print("count the containers again, correct the bays if the count changed, and close the weights again (a new round).")
 else:
     print("NOT MOVED: the hull of Stage 2 is the hull of the closed ship.")
+
+
+# ----------------------------------------------------------------------
+# OPTION: Holtrop-Mennen instead of Admiralty (not used above)
+# Replace the Admiralty line  P = hull ** (2 / 3) * V ** 3 / C_N  in step 2
+# of the loop by the lines below, and use P in the CLOSED print at the end.
+# They need the function holtrop_mennen of the Demo 8 notebook (run its
+# cells first). V stays in knots. The weights need the INSTALLED power, so
+# the efficiencies, the shaft loss, the sea margin and the engine rating
+# are ASSUMED: put your own values and say which ones you used.
+#
+#   CM = 1 - 0.062 * (V * 0.514444 / sqrt(9.81 * L)) ** 0.792
+#   r = holtrop_mennen(V, L, B, T, C_B * L * B * T, lcb=-1.0, CM=CM,
+#                      ABT=0.06 * B * T * CM, hB=0.5 * T, AT=0.0,
+#                      SAPP=0.015 * L * (2 * T + B) * 0.55,
+#                      Dp=0.65 * T, AE_A0=0.6)
+#   eta_D = r["etaH"] * r["etaR"] * 0.60      # 0.60 ASSUMED
+#   P = r["PE"] / (eta_D * 0.98) * 1.15 / 0.90
+#   # shaft 0.98, sea margin 15 %, engine at 90 % of MCR: ASSUMED
+#
+# With these assumptions the feeder closes at 5,769 kW (not 6,150 kW), a
+# light ship of 4,042 t (not 4,065 t), T = 7.22 m and 12,935 t (not 12,958 t).
+# ----------------------------------------------------------------------
