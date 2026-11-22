@@ -2,9 +2,8 @@
 
 T. Santos, L. Batista · Ship and Ocean Systems Design 2026
 
-Run it after the cells of the Demo 8 notebook that define make_hull and hull_y
-(or paste it in a new cell at the end of that notebook), with the main dimensions
-of Stage 1. For every bay and every tier it asks the hull for its half-breadth and
+Keep it in the same folder as make_hull.py and KCS_offsets.csv (no notebook needed), and put
+the main dimensions of Stage 1 in the inputs below. For every bay and every tier it asks the hull for its half-breadth and
 counts how many rows of containers fit across. Python 3, numpy.
 
 Limits of the Stage 1 estimate: k_U spreads the losses evenly along the ship, but they sit at the bow and
@@ -19,6 +18,7 @@ hatch coamings, the tank top, girders, cell guides and the contents of the engin
 inside the 6.55 m per 20 ft bay and inside the allowances L_AP, L_ER and L_FP.
 """
 from math import floor, ceil
+from make_hull import make_hull, hull_y   # the hull of Demo 8, as a plain file (same folder)
 
 # ---- INPUTS: the Stage 1 result and the hull form --------------------------------
 L, B, D, T = 128.4, 22.05, 11.33, 7.87   # from Stage 1 (T = T0 of the statistics)
@@ -33,7 +33,7 @@ n_l = 2                                  # FROM A REFERENCE SHIP: deck bays over
 g_BC, g_BF = 0.15, 0.08                  # FROM TABLES: beam gaps (Table 2.9.2, lower values)
 b_c, h_c, gap, bay = 2.438, 2.896, 0.013, 6.55   # STANDARD DATA: high-cube container, tier gap, bay length
 
-hull = make_hull(CB, LCB, L, B, T, D)    # <- the hull-generating function of Demo 8
+hull = make_hull(CB, LCB, L, B, T, D)    # <- make_hull.py: Lackenby shift of the KCS, then the stretch
 
 def rows_in_hold(xs, z_bottom, z_top):
     """Rows that fit across a hold: the narrowest section along its length rules (the cell guides are continuous)."""
