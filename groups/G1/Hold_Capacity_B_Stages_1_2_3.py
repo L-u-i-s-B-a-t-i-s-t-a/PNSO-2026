@@ -12,7 +12,7 @@ themselves.
   STAGE 3  close the ship by draught: displacement = light ship + deadweight, then check the hull and the GM
   ROUNDS   if the closed C_B and T are not the ones the hull was made with (MOVED), the hull is made again
 
-HOW THE TWO SIZINGS ENTER THE SHIP (this is what the students must work out, one group member each)
+HOW THE TWO SIZINGS ENTER THE SHIP (this is what you have to work out, for example one group member each)
   SIZING 1 gives  DEADWEIGHT: the battery containers (N_BAT x m_BAT)          LIGHT SHIP: motors, converters, shafts
   SIZING 2 gives  DEADWEIGHT: the MGO for the transit                          LIGHT SHIP: gensets (and the tank volume)
   Both depend on the power, the power depends on the displacement, the displacement depends on both: they sit INSIDE
@@ -39,8 +39,8 @@ float upright with 88 containers on deck. That is the result, not a bug.
 LIGHT CONDITION (step 8): no cargo, 1,760 t, T 2.45 m, GM +1.6 m (KM rises when the draught falls, so the GM is NOT the
 problem), roll period 9 s. The propeller (2.5 m) wants T >= 3.0 m: about 500 t of water ballast low in the ship.
 TRY (change one input, run again, compare):
-  * w_DH = 2.4  -> B 15.1 m, 10 bays, about 3,290 t, GM about +1.3 m (the beam buys the stability; B/T leaves the Demo 8 range)
-  * n_TD = 1    -> the deck cannot carry 130, the ship grows to 14 bays and about 119 m, GM +1.7 m
+  * w_DH = 2.4  -> B 15.1 m, 10 bays, L 92.6 m, about 3,310 t, 15 battery containers, GM about +1.3 m (the beam buys the stability; B/T leaves the Demo 8 range)
+  * n_TD = 1    -> the deck cannot carry 130, the ship grows to 14 bays and about 119 m, 3,860 t, GM +1.6 m
   * LEG_MAX_NM = 554 and hotel_call = 7.25 (Tiago's rule: one loop plus the transit between swaps) -> 47 containers, 4,656 t
   * s_H, rows, tiers, h_DB, m_BAT, E_BAT, t_per_TEU, k_EM, C_N: which of them moves the GM most?
 Every number marked ASSUMED is an assumption of the lecturer, not a source. Say which values you changed.
@@ -75,7 +75,7 @@ LCB = 0.0              # LCB of the hull, per cent of L from midship (+ forward)
 L_AP_m, L_MR_min, L_CD_m, L_ACC_m, L_FP_m = 2.0, 10.0, 2.0, 8.0, 2.0
 #   aft peak | motor room, minimum (the battery bays may need more) | cofferdam | deckhouse | fore peak with the thruster
 
-# ---- C. REFERENCE VALUES (ASSUMED for an 85 m ship; replace them with your reference ships) --------------
+# ---- C. REFERENCE VALUES (ASSUMED for a ship of about 86 m; replace them with your reference ships) --------------
 w_DH, h_DB, h_CO, c_HC = 1.85, 1.5, 0.0, 0.49   # wing tank (also the anti-heeling tank), double bottom, coaming, cover margin
 t_cover = 0.6          # hatch cover
 C_B_assumed = 0.65     # first block coefficient (Katsoulis gives 0.65 for this ship at 12 kn)
@@ -164,7 +164,7 @@ B0 = exp(0.674 - 2.7e-4 * N_H + 0.44 * log(N_H))
 D0 = exp(0.249 - 5.36e-6 * N_H + 0.375 * log(N_H))
 
 n_B = ceil(N_H / (n_R * n_T * k_U) - 1e-9)           # 3-4 rows and tiers are chosen; bays: the smallest number that holds N_H
-n_BB = ceil(N_BAT / (BATT_ROWS * BATT_TIERS))        # 8 battery bays (they set the aft block)
+n_BB = ceil(N_BAT / (BATT_ROWS * BATT_TIERS))        # battery bays (2 for 14 containers: they set the aft block)
 
 def L_AP():  return L_AP_m
 def L_MR():  return max(L_MR_min, n_BB * bay)        # the battery bays stand on the deck above the motor room

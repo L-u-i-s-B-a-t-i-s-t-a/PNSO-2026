@@ -75,8 +75,8 @@ var GROUPS = {
       },
       {
         "t": "Azores Feeder, high-level arrangement: profile and top view",
-        "x": "an example of a first arrangement for 130 TEU (cranes, battery bays, motor room, gensets, accommodation forward). It is a starting point with assumed values, not a solution: the program above shows that its stability does not close as drawn",
-        "file": "groups/G1/Baseline_B_Arrangement_Profile_and_Top_View.png",
+        "x": "an example of a first arrangement for 130 TEU, drawn on the 86 m ship of the program above. The hull holds 42 TEU below deck and 88 stand on deck. Two cranes (about 45 t each, assumed) reach every container, the battery containers stand aft and the gensets are forward. It is a starting point built on assumed values, not a solution: the stability does not close as drawn, and the program shows why",
+        "file": "groups/G1/Baseline_B_Arrangement_Profile_and_Top_View.png?v=20261122-1930",
         "released": true
       }
     ],
