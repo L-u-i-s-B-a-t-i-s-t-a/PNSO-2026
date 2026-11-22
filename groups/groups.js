@@ -78,6 +78,12 @@ var GROUPS = {
         "x": "an example of a first arrangement for 130 TEU, drawn on the 86 m ship of the program above. The hull holds 42 TEU below deck and 88 stand on deck. Two cranes (about 45 t each, assumed) reach every container, the battery containers stand aft and the gensets are forward. It is a starting point built on assumed values, not a solution: the stability does not close as drawn, and the program shows why",
         "file": "groups/G1/Baseline_B_Arrangement_Profile_and_Top_View.png?v=20261122-1930",
         "released": true
+      },
+      {
+        "t": "Animation of the hold-capacity program, from the inputs to the displacement equation",
+        "x": "a step-by-step walk through the program above, with the real lines of code beside the numbers of the default run: the two sizings, Stage 1, the count in the hull, the draught loop until the weight equals the displacement, the GM check and the rounds. It has a narrated voice (press Play); open it in a browser. The values are those of the program with its assumed inputs",
+        "file": "groups/G1/Baseline_B_Program_Animation.html?v=20261122-2120",
+        "released": true
       }
     ],
     "notes": []
