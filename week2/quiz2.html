@@ -72,7 +72,7 @@ var Q = [
  {
   "t": "Length against resistance · L2.3a",
   "calc": true,
-  "q": "A slow ship (Fn ≈ 0.19) has friction at 70 % of the total resistance. It is made 10 % longer at the same displacement and speed: friction grows ×1.03 and the residuary resistance falls ×0.87. What is the new total resistance, relative to the old?",
+  "q": "A slow ship (Fn ≈ 0.19) has friction at 70 % of the total resistance; the other 30 % is residuary (wave and form) resistance. It is made 10 % longer at the same displacement and speed: the friction resistance grows ×1.03 and the residuary resistance falls ×0.87. What is the new total resistance, relative to the old?",
   "o": [
    "× 1.03, friction wins",
    "× 0.90, resistance follows the length",
@@ -147,7 +147,7 @@ var Q = [
  {
   "t": "Speed and power where friction dominates · Holtrop–Mennen",
   "calc": true,
-  "q": "A 100 m ship sails in the low Froude regime (Fn < 0.2), where the resistance is almost all friction. The friction coefficient C_F = 0.075 / (log10 Re − 2)² is 0.001703 at 10 kn and 0.001663 at 12 kn. How do the friction resistance R_F and the effective power P_E vary with the speed V?",
+  "q": "A 100 m ship sails in the low Froude regime (Fn < 0.2), where the resistance is almost all friction. The friction coefficient C_F = 0.075 / (log10 Re − 2)² is 0.001703 at 10 kn and 0.001663 at 12 kn. How do the friction resistance R_F and the effective power P_E vary with the speed V? Use the two values of C_F to see how it changes with the speed.",
   "o": [
    "R_F ∝ V² and P_E ∝ V³ exactly, because C_F is constant",
    "R_F ∝ V^3 and P_E ∝ V^4",
@@ -159,27 +159,28 @@ var Q = [
  },
  {
   "t": "The three parts of the wave resistance · Holtrop–Mennen",
-  "q": "The wave resistance is R_W = c1 c2 c5 ∇ ρ g · exp{ m1 Fn^−0.9 + m2 cos(λ Fn^−2) }. Which statement describes its three parts?",
+  "q": "The wave resistance is R_W = c1 c2 c5 ∇ ρ g · exp{ m1 Fn^−0.9 + m2 cos(λ Fn^−2) }. The coefficient m1 is negative (−2.13 for the paper ship) and λ is a constant of the hull (0.65). As the speed grows, which description of the three parts is right?",
   "o": [
    "The factor c1 c2 c5 ∇ρg gives the humps and hollows; the term m1 Fn^−0.9 gives the level; the term m2 cos(λ Fn^−2) gives the smooth rise with speed",
    "The factor c1 c2 c5 ∇ρg is the wave resistance of the bulb; m1 Fn^−0.9 is that of the transom; m2 cos(λ Fn^−2) is that of the bow",
-   "The factor c1 c2 c5 ∇ρg gives the level (volume, entrance, bulb and transom); the term m1 Fn^−0.9 gives the smooth rise with speed; the term m2 cos(λ Fn^−2) gives the humps and hollows",
+   "The factor c1 c2 c5 ∇ρg does not depend on the speed and sets the level (volume, entrance, bulb, transom); the term m1 Fn^−0.9 rises smoothly with speed; the term m2 cos(λ Fn^−2) swings between plus and minus and gives the humps and hollows",
    "The three parts are friction, form and correlation; the Froude number only scales them"
   ],
   "a": 2,
-  "e": "Read the formula from the outside in. (1) c1 c2 c5 ∇ρg is the level: ∇ρg is the weight of the displaced water, c1 carries the hull shape and the entrance angle iE, c2 the bulb and c5 the transom (paper ship: c1 = 1.40, c2 = 0.76, c5 = 0.96). (2) m1 Fn^−0.9 is the smooth trend: m1 is negative (−2.13 here), so exp(m1 Fn^−0.9) grows with speed. (3) m2 cos(λ Fn^−2) is the oscillation of the waves of bow and stern, which reinforce or cancel each other: λ = 1.446 C_P − 0.03 L/B = 0.65 and m2 is negative, so a hump is where cos = −1, at λ/Fn² = 3π, that is Fn = 0.263 (16.2 kn at 102.5 m, 22.9 kn at 205 m), and a hollow at λ/Fn² = 2π, Fn = 0.322. The 1984 revision of Holtrop keeps this form for Fn < 0.4 and adds other formulas for Fn > 0.55 and an interpolation in between."
+  "e": "Read the formula from the outside in. (1) c1 c2 c5 ∇ρg is the level: ∇ρg is the weight of the displaced water, c1 carries the hull shape and the entrance angle iE, c2 the bulb and c5 the transom (paper ship: c1 = 1.40, c2 = 0.76, c5 = 0.96). (2) m1 Fn^−0.9 is the smooth trend: Fn^−0.9 falls as Fn grows and m1 is negative (−2.13), so m1 Fn^−0.9 rises toward zero and exp(m1 Fn^−0.9) grows with speed. (3) m2 cos(λ Fn^−2) is the only part that oscillates, since a cosine swings between −1 and +1; it is the waves of bow and stern, which reinforce or cancel each other: λ = 1.446 C_P − 0.03 L/B = 0.65 and m2 is negative, so a hump is where cos = −1, at λ/Fn² = 3π, that is Fn = 0.263 (16.2 kn at 102.5 m, 22.9 kn at 205 m), and a hollow at λ/Fn² = 2π, Fn = 0.322. The 1984 revision of Holtrop keeps this form for Fn < 0.4 and adds other formulas for Fn > 0.55 and an interpolation in between."
  },
  {
   "t": "Entrance angle · Holtrop–Mennen",
-  "q": "The entrance angle iE is an input of the method. Which resistance does it change?",
+  "q": "The entrance angle iE (half the angle of the design waterline at the bow) appears in the method only in the coefficient c1 of the wave resistance R_W = c1 c2 c5 ∇ρg · exp{…}, with c1 ∝ (90 − iE)^−1.376 (iE in degrees). All the other factors stay the same. What happens to R_W if iE goes from 8° to 16°?",
   "o": [
-   "Only the friction resistance, through the wetted surface",
-   "Only the wave resistance R_W, through the coefficient c1: a larger angle gives more wave resistance",
-   "The transom resistance R_TR",
-   "The bulb resistance R_B and the friction in equal parts"
+   "R_W rises by about 15 %",
+   "R_W falls by about 13 %",
+   "R_W doubles, because the angle doubles",
+   "R_W does not change: the entrance angle acts only on the friction"
   ],
-  "a": 1,
-  "e": "iE is half the angle of the design waterline at the bow, measured from the centre plane, leaving out the local rounding of the stem. It enters R_W through c1 ∝ (90 − iE)^−1.376 (and the other factors), and nothing else. For the paper ship +1° gives about +1.8 % in R_W; 8° gives −6.8 %, 16° gives +7.4 % and 24° gives +25.7 %. With lines it is measured; without lines the method has a formula (12.1° for this ship)."
+  "a": 0,
+  "e": "R_W is proportional to c1, so R_W(16°) / R_W(8°) = ((90 − 8) / (90 − 16))^1.376 = (82 / 74)^1.376 = 1.108^1.376 = 1.152: R_W rises by about 15 %. A larger angle means a blunter bow and more wave resistance. 13 % is the fall you get by turning the ratio upside down (1 / 1.152 = 0.868); the resistance does not double, because the angle enters inside (90 − iE) and with a power of 1.376. iE is measured on the lines plan, leaving out the local rounding of the stem; without lines the method has an estimate (12.1° for the paper ship). Same ship, 1° more gives about +1.8 % in R_W.",
+  "calc": true
  },
  {
   "t": "The bulb · Holtrop–Mennen",
@@ -196,11 +197,11 @@ var Q = [
  },
  {
   "t": "The transom · Holtrop–Mennen",
-  "q": "The transom resistance of the paper ship is 34 kN at 15 kn (7 % of R_T) and zero from 23 kn. Why?",
+  "q": "The transom resistance is R_TR = ½ ρ V² A_T c6, with c6 = 0.2 (1 − 0.2 Fn_T) for Fn_T < 5 and c6 = 0 for Fn_T ≥ 5. Fn_T = V / √(2 g A_T / (B + B C_WP)) uses the transom area A_T, a fixed input of the hull. For the paper ship R_TR is 34 kN at 15 kn (7 % of R_T) and zero from 23 kn. Why?",
   "o": [
    "Because the transom area A_T grows with the speed",
    "Because the bulb takes over the transom resistance above 23 kn",
-   "With c6 = 0.2 (1 − 0.2 Fn_T), the term vanishes for Fn_T ≥ 5: the transom is then dry and the flow leaves it cleanly",
+   "Because Fn_T reaches 5 at 23 kn: c6 becomes 0, the transom is dry and the flow leaves it cleanly",
    "Because the method is not valid above 23 kn"
   ],
   "a": 2,
@@ -211,12 +212,12 @@ var Q = [
   "q": "What is the total resistance R_T of a ship, and what do you get by multiplying R_T by the ship speed V?",
   "o": [
    "R_T is the friction resistance only; R_T · V is the brake power at the engine",
-   "R_T is the force that opposes the motion of the hull through the water at speed V (friction, waves, form, appendages and air); R_T · V is the effective power P_E, the power needed to tow the ship",
+   "R_T is the force that opposes the motion of the hull through the water at speed V (friction, waves, form, appendages); R_T · V is the effective power P_E, the power needed to tow the ship",
    "R_T is the thrust of the propeller; R_T · V is the delivered power P_D",
    "R_T is the wave resistance only; R_T · V is the installed power SMCR"
   ],
   "a": 1,
-  "e": "R_T is the whole force the water (and the air) exerts against the ship moving at V. Force times speed is power: P_E = R_T · V, the effective (towing) power, before any loss in the propulsion chain. Reference ship at 14 kn (7.20 m/s): R_T = 268.3 kN gives P_E = 268.3 · 7.20 = 1,932 kW. Then P_D = P_E / η_D, P_B = P_D / η_S and SMCR = P_B · 1.15 / 0.90 (3,502 kW). The thrust T is a different force, and friction and waves are only parts of R_T."
+  "e": "R_T is the whole force the water exerts against the hull moving at V (the air drag of the superstructure is added afterwards). Force times speed is power: P_E = R_T · V, the effective (towing) power, before any loss in the propulsion chain. Reference ship at 14 kn (7.20 m/s): R_T = 268.3 kN gives P_E = 268.3 · 7.20 = 1,932 kW. Then P_D = P_E / η_D, P_B = P_D / η_S and SMCR = P_B · 1.15 / 0.90 (3,502 kW). The thrust T is a different force, and friction and waves are only parts of R_T."
  },
  {
   "t": "From R_T to the effective power · Holtrop–Mennen",
@@ -234,7 +235,7 @@ var Q = [
  {
   "t": "What the power does not include · Holtrop–Mennen",
   "calc": true,
-  "q": "For the paper ship the chain gives P_S ≈ 32,600 kW at 25 kn, in calm water and with a clean hull. With a sea margin of 15 % and the engine used at 90 % of its MCR, what installed power (SMCR) does this ask for?",
+  "q": "For the paper ship the chain gives a shaft power P_S ≈ 32,600 kW at 25 kn, in calm water and with a clean hull. A sea margin of 15 % is added, and the engine is to be used at only 90 % of its MCR. What installed power (SMCR = P_S · 1.15 / 0.90) does this ask for?",
   "o": [
    "≈ 37,500 kW",
    "≈ 33,700 kW",
@@ -242,7 +243,7 @@ var Q = [
    "≈ 41,700 kW"
   ],
   "a": 3,
-  "e": "SMCR = P_S · 1.15 / 0.90 = 32,600 · 1.278 = 41,656 ≈ 41,700 kW. The sea margin raises the power (× 1.15) and the engine is used at 90 % of MCR, so the margin is divided by 0.90. 37,500 kW forgets the 0.90; 33,700 kW multiplies by 0.90 instead of dividing; 29,300 kW divides the margin and the load wrongly. The method gives a lower bound: the margins and the air drag are added afterwards."
+  "e": "SMCR = P_S · 1.15 / 0.90 = 32,600 · 1.278 = 41,656 ≈ 41,700 kW. The sea margin raises the power (× 1.15), and an engine used at 90 % of its MCR must be one-ninth bigger (divide by 0.90). 37,500 kW forgets the 0.90 (32,600 · 1.15); 33,700 kW multiplies by both 1.15 and 0.90; 29,300 kW multiplies by 0.90 only. The method gives a lower bound: the margins and the air drag are added afterwards."
  },
  {
   "t": "The Admiralty constant · Reading 2.3",
@@ -268,7 +269,7 @@ var Q = [
    "About 4,017 kW"
   ],
   "a": 3,
-  "e": "C cancels: P = 3,500 · (1.05)^(2/3) · (14.5 / 14)³ = 3,500 · 1.033 · 1.111 = 4,017 kW (Holtrop–Mennen: 4,065 kW, 1 % apart). 4,083 kW uses Δ to the power 1 (+5 % in place of +3.3 %); 3,889 kW forgets the displacement; 4,501 kW uses Δ³. Displacement enters with the 2/3 power, speed with the cube: speed is the dear requirement."
+  "e": "C cancels: P = 3,500 · (1.05)^(2/3) · (14.5 / 14)³ = 3,500 · 1.033 · 1.111 = 4,017 kW. 4,083 kW uses Δ to the power 1 (+5 % in place of +3.3 %); 3,889 kW forgets the displacement; 4,501 kW uses Δ³. Displacement enters with the 2/3 power, speed with the cube: speed is the dear requirement."
  }
 ];
 
