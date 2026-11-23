@@ -53,6 +53,8 @@ a.mat:hover { border-color: var(--accent); }
 .mat .k { font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
 .mat .t { min-width: 0; overflow-wrap: anywhere; }
 .mat small { color: var(--muted); font-size: 12px; }
+.mat.fresh { border-color: var(--accent); background: var(--accent-soft); }
+.mat .newtag { font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .04em; color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 1px 6px; margin-left: 8px; white-space: nowrap; }
 .mat.later { border-style: dashed; background: transparent; color: var(--muted); }
 .note { padding: 12px 14px; border-left: 4px solid var(--accent); background: var(--accent-soft); display: flex; flex-direction: column; gap: 4px; }
 .note .d { font-family: var(--mono); font-size: 12px; color: var(--muted); }
@@ -85,8 +87,9 @@ a.mat:hover { border-color: var(--accent); }
   f.appendChild(el("div", {}, [el("b", { text: g.sps.join(" · ") }), "specializations"]));
   var ins = document.getElementById("inputs");
   g.inputs.forEach(function (x, i) {
-    var kids = [el("span", { cls: "k", text: "Input " + (i + 1) }), el("span", { cls: "t" }, [x.t, el("small", { text: " · " + x.x + (x.released ? "" : " · to be released") })])];
-    ins.appendChild(x.released ? el("a", { cls: "mat", href: x.file, target: "_blank", rel: "noopener" }, kids) : el("div", { cls: "mat later" }, kids));
+    var isNew = x.released && x.fresh && new Date() < new Date("2026-11-27T00:00:00"); // NEW highlight, switches itself off after Thu 26 Nov
+    var kids = [el("span", { cls: "k", text: "Input " + (i + 1) }), el("span", { cls: "t" }, [x.t, isNew ? el("span", { cls: "newtag", text: "NEW" }) : null, el("small", { text: " · " + x.x + (x.released ? "" : " · to be released") })])];
+    ins.appendChild(x.released ? el("a", { cls: "mat" + (isNew ? " fresh" : ""), href: x.file, target: "_blank", rel: "noopener" }, kids) : el("div", { cls: "mat later" }, kids));
   });
   var nb = document.getElementById("notes");
   if (!g.notes.length) nb.appendChild(el("div", { cls: "none", text: "No notes yet." }));

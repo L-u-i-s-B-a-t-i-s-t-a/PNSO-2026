@@ -89,7 +89,8 @@ var GROUPS = {
         "t": "Stage 3 draught loop of the program above, narrated (10 min)",
         "x": "the same level of detail as the Baseline A video: one pass in detail, a loop that does not converge, a loop that converges (two passes, with the batteries settled), a bad start, and MOVED with the roll back to the hull, all over the real lines of Stage 3 with the loop indices i (passes) and j (repeats). At the end, what is different from Baseline A because this ship is more a one-off than a type: the computed deadweight, the electric plant and the two sizings, the cranes, the calibrated C_N, the battery condition in the stop test, the GM check and the light condition. Press Play; open it in a browser",
         "file": "groups/G1/Baseline_B_Stage3_Draught_Loop_Animation.html?v=20261123-0120",
-        "released": true
+        "released": true,
+        "fresh": true
       }
     ],
     "notes": []
