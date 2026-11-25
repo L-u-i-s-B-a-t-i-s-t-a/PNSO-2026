@@ -85,6 +85,8 @@ button.primary { background:var(--accent); border-color:var(--accent); color:#ff
 .sl { display:flex; align-items:center; gap:8px; font:13px var(--mono); color:var(--muted); }
 .sl input[type=range] { flex:1; min-width:0; accent-color:var(--accent); }
 .sl .pos { min-width:7.5em; text-align:right; }
+.charts svg { display:block; width:100%; height:auto; cursor:pointer; }
+.charts text { font-family:var(--mono); }
 .hint { font:12px var(--mono); color:var(--muted); margin-top:6px; }
 .col { display:flex; flex-direction:column; gap:14px; min-width:0; }
 .main { grid-template-columns:minmax(0, 1fr) minmax(0, 1.08fr) !important; }
@@ -161,6 +163,7 @@ button.primary { background:var(--accent); border-color:var(--accent); color:#ff
   <div class="main">
     <div class="col">
       <div class="card"><h2>The code <span class="leg2"><i class="c0"></i>loops <i class="c1"></i>Stage 1 <i class="c2"></i>Stage 2 <i class="c3"></i>Stage 3 <i class="c4"></i>check · <b class="ivk">0.740</b> value now</span></h2><div class="code" id="code"></div></div>
+      <div class="card"><h2>How the main variables change <span class="leg2">bold: up to this step · faint: still to come · click a step to jump</span></h2><div class="charts" id="charts"></div><div class="hint" id="chhint"></div></div>
     </div>
     <div class="col">
       <div class="card v3card">
@@ -342,7 +345,7 @@ function render() {
   }
 }
 
-var _render = render; render = function () { _render(); try { draw3d(SIT[P.s].steps[P.k]); } catch (e) { console.error(e); } };
+var _render = render; render = function () { _render(); try { paintCharts(); } catch (e) { console.error(e); } try { draw3d(SIT[P.s].steps[P.k]); } catch (e) { console.error(e); } };
 /* reading guide: the words follow the voice, or the timer without sound */
 var CAPW = [];
 function capBuild(text) {
@@ -373,6 +376,61 @@ function capAt(frac) {
   } else if (P.scrub) fr = P.scrub;
   capAt(fr); requestAnimationFrame(loop);
 })();
+/* ---------- charts of the main variables over the steps ---------- */
+var CH = { s: -1 };
+function chartLanes(sweep) {
+  if (sweep) return [
+    { k: 'r', name: 'full turns', ser: [['r', 'var(--muted)', 'step']] },
+    { k: 'hulls', name: 'hulls made', ser: [['hulls', 'var(--accent)', 'step']] },
+    { k: 'passes', name: 'passes i', ser: [['passes', 'var(--s3)', 'step']] }];
+  return [
+    { k: 'nB', name: 'n_B bays', ser: [['nB', 'var(--s1)', 'step']], d: 0 },
+    { k: 'kU', name: 'k_U', ser: [['kU', 'var(--s1)', 'step'], ['kreal', 'var(--accent)', 'dots']], d: 3, note: 'line: formula · dots: real' },
+    { k: 'CB', name: 'C_B', ser: [['CBh', 'var(--accent)', 'step'], ['cb', 'var(--s3)', 'line']], d: 3, note: 'blue: hull · teal: Stage 3' },
+    { k: 'T', name: 'T [m]', ser: [['Th', 'var(--accent)', 'step'], ['t', 'var(--s3)', 'line']], d: 2, note: 'blue: hull · teal: Stage 3' },
+    { k: 'hold', name: 'hold / N_H', ser: [['holdr', 'var(--accent)', 'step']], d: 2, ref: 1 }];
+}
+function paintCharts() {
+  var sit = SIT[P.s], steps = sit.steps, n = steps.length, sweep = steps[0].st.stage === 'sweep' || sit.n === 4;
+  var lanes = chartLanes(sweep), W = 660, padL = 118, padR = 10, lh = 46, gap = 8, top = 16, H = top + lanes.length * (lh + gap) + 6;
+  var X = function (i) { return padL + (n === 1 ? 0 : i / (n - 1) * (W - padL - padR)); };
+  var val = function (st, key) { if (key === 'holdr') return st.hold == null || !st.N_H ? null : st.hold / st.N_H; var v = st[key]; return v == null || v === '' ? null : +v; };
+  var o = [];
+  /* round bands */
+  var b0 = 0, r0 = steps[0].st.r;
+  for (var i = 1; i <= n; i++) { var ri = i < n ? steps[i].st.r : null; if (i === n || ri !== r0) { if (r0 && !sweep) { if (r0 % 2 === 1) o.push('<rect x="' + (X(b0) - 3) + '" y="' + (top - 4) + '" width="' + (X(i - 1) - X(b0) + 6) + '" height="' + (H - top) + '" fill="var(--bg)"/>'); o.push('<text x="' + X(b0) + '" y="10" font-size="9.5" fill="var(--muted)">round ' + r0 + '</text>'); } b0 = i; r0 = ri; } }
+  lanes.forEach(function (ln, li) {
+    var y0 = top + li * (lh + gap), all = [];
+    ln.ser.forEach(function (s) { steps.forEach(function (sp) { var v = val(sp.st, s[0]); if (v != null) all.push(v); }); });
+    if (ln.ref != null) all.push(ln.ref);
+    var lo = Math.min.apply(null, all), hi = Math.max.apply(null, all); if (!all.length) { lo = 0; hi = 1; } if (hi - lo < 1e-9) { lo -= 1; hi += 1; }
+    var pad = (hi - lo) * 0.12; lo -= pad; hi += pad;
+    var Y = function (v) { return y0 + lh - (v - lo) / (hi - lo) * lh; };
+    o.push('<text x="0" y="' + (y0 + 13) + '" font-size="11.5" fill="var(--ink)">' + ln.name + '</text>');
+    if (ln.note) o.push('<text x="0" y="' + (y0 + 27) + '" font-size="9" fill="var(--muted)">' + ln.note.split(' · ')[0] + '</text><text x="0" y="' + (y0 + 38) + '" font-size="9" fill="var(--muted)">' + (ln.note.split(' · ')[1] || '') + '</text>');
+    o.push('<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + (y0 + lh) + '" y2="' + (y0 + lh) + '" stroke="var(--line)"/>');
+    if (ln.ref != null) o.push('<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + Y(ln.ref) + '" y2="' + Y(ln.ref) + '" stroke="var(--ok)" stroke-dasharray="4 3"/><text x="' + (W - padR) + '" y="' + (Y(ln.ref) - 3) + '" font-size="9" text-anchor="end" fill="var(--ok)">needed</text>');
+    ln.ser.forEach(function (s) {
+      var pts = steps.map(function (sp, i) { return [X(i), val(sp.st, s[0])]; });
+      [['faint', n - 1], ['bold', P.k]].forEach(function (pass) {
+        var d = '', prev = null, last = pass[1];
+        for (var i = 0; i <= last; i++) { var p = pts[i]; if (p[1] == null) { prev = null; continue; } var y = Y(p[1]);
+          if (s[2] === 'dots') { o.push('<circle cx="' + p[0] + '" cy="' + y + '" r="' + (pass[0] === 'bold' ? 2.6 : 2) + '" fill="' + s[1] + '" opacity="' + (pass[0] === 'bold' ? 1 : 0.25) + '"/>'); continue; }
+          d += prev == null ? 'M' + p[0] + ' ' + y : (s[2] === 'step' ? 'H' + p[0] + 'V' + y : 'L' + p[0] + ' ' + y); prev = y; }
+        if (d) o.push('<path d="' + d + '" fill="none" stroke="' + s[1] + '" stroke-width="' + (pass[0] === 'bold' ? 2.2 : 1.2) + '" opacity="' + (pass[0] === 'bold' ? 1 : 0.28) + '"/>');
+      });
+      /* change marks: where the value differs from the step before (up to now) */
+      if (s[2] === 'step') for (var i = 1; i <= P.k; i++) { var a = pts[i - 1][1], b = pts[i][1]; if (a != null && b != null && Math.abs(a - b) > 1e-9) o.push('<circle cx="' + pts[i][0] + '" cy="' + Y(b) + '" r="3.2" fill="var(--surface)" stroke="' + s[1] + '" stroke-width="1.6"/>'); }
+    });
+    var cur = val(steps[P.k].st, ln.ser[0][0]);
+    o.push('<text x="' + (padL - 8) + '" y="' + (y0 + 13) + '" font-size="11.5" font-weight="600" text-anchor="end" fill="' + ln.ser[0][1] + '">' + (cur == null ? '–' : (ln.k === 'nB' || sweep ? Math.round(cur) : f(cur, ln.d))) + '</text>');
+  });
+  o.push('<line x1="' + X(P.k) + '" x2="' + X(P.k) + '" y1="' + (top - 6) + '" y2="' + H + '" stroke="var(--warn)" stroke-width="1.5"/>');
+  for (var i = 0; i < n; i++) o.push('<rect class="hs" data-k="' + i + '" x="' + (X(i) - (W - padL - padR) / Math.max(1, n - 1) / 2) + '" y="0" width="' + ((W - padL - padR) / Math.max(1, n - 1)) + '" height="' + H + '" fill="transparent"><title>step ' + (i + 1) + ': ' + steps[i].cap.slice(0, 90).replace(/</g, '&lt;') + '…</title></rect>');
+  $('charts').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Main variables over the steps of this situation">' + o.join('') + '</svg>';
+  $('chhint').textContent = 'round bands shaded · circles: the value changed at that step · orange line: this step';
+}
+$('charts').addEventListener('click', function (e) { var r = e.target.closest('.hs'); if (r) go(+r.dataset.k); });
 function stopTimers() { clearTimeout(P.timer); P.audio.pause(); P.audio.onended = null; }
 function setPlay(v) { P.playing = v; $('bPlay').textContent = v ? '❚❚ Pause' : '▶ Play'; if (!v) stopTimers(); else speak(); }
 function speak() {
