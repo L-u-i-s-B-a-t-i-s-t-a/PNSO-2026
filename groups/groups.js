@@ -27,7 +27,7 @@ var SP_RESOURCES = [
   { id: "propulsion", t: "Propulsion: the Logarithm, the Power Law and the Resistance Curve",
     x: "For all groups, in particular for SP02 Propulsion Matching, before Lecture 3.3 Main Machinery and Propeller: how the slope n of a log-log plot turns the resistance curve into a power law, using the Holtrop–Mennen example ship. Extended reading, not for evaluation.",
     items: [
-      { k: "1 · Watch", t: "Video · Logarithms and the slope n (7 min, the log series)", file: "week3/Logs_and_Slope_narrated.mp4", note: "logarithm rules, log-log axes, what k and n do", released: false },
+      { k: "1 · Watch", t: "Video · Logarithms and the slope n (7 min, the log series)", file: "week3/Logs_and_Slope_narrated.mp4", note: "logarithm rules, log-log axes, what k and n do", released: true },
       { k: "2 · Watch", t: "Animation · Propulsion, Steps 1 to 3", file: "week3/Propulsion_Steps_1-3_Animation.html", note: "from the square curve to the resistance power law; play, pause or go step by step", released: false },
       { k: "3 · Watch", t: "Video · Propulsion, Steps 1 to 3, narrated (6 min)", file: "week3/Propulsion_Steps_1-3_narrated.mp4", note: "the animation with voice", released: false },
       { k: "4 · Play", t: "Narrated animation · Propulsion, Steps 1 to 3 (interactive, 6 min)", file: "week3/Propulsion_Steps_1-3_Narrated.html", note: "the voice drives the animation; pause, jump, captions and sound on or off. On a phone, swipe the chart sideways", released: true }
