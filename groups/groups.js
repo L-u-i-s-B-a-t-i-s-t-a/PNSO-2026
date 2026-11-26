@@ -58,7 +58,7 @@ var GROUPS = {
       {
         "t": "0.5 Project Scope Sheet",
         "x": "your deliverables, studies and drawings, and specializations",
-        "file": "groups/G1/0.5_Project_Scope_Sheet_G1.pdf?v=20261126-2100",
+        "file": "groups/G1/0.5_Project_Scope_Sheet_G1.pdf?v=20261126-2105",
         "released": true,
         "fresh": true
       },
@@ -105,7 +105,7 @@ var GROUPS = {
         "d": "2026-11-26",
         "t": "Project Scope Sheet, Rev. 1",
         "x": "Your scope sheet has a new revision, Rev. 1 of 26-11-2026: A. operating speed 7 knots; B. azimuth propellers; C. open-top configuration for the electrical containers. Where the deliverables of the sheet say otherwise, Rev. 1 applies. A first approach with figures is also on this page: a concept spreadsheet of a 154 TEU electric feeder at 7 knots (Input 7).",
-        "file": "groups/G1/0.5_Project_Scope_Sheet_G1.pdf?v=20261126-2100"
+        "file": "groups/G1/0.5_Project_Scope_Sheet_G1.pdf?v=20261126-2105"
       }
     ]
   },
