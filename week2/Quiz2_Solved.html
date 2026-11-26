@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz 2, Solved · Ship and Ocean Systems Design 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>:root { --bg:#f6f8f9; --surface:#fff; --ink:#16243a; --muted:#56647a; --line:#d6dee5; --accent:#007eb5; --accent-soft:#e2f1f8; --ok:#1e7a4c; --ok-soft:#e3f4ea; --no:#b4521c; --no-soft:#fbefe5;
+  --display:"IBM Plex Sans Condensed","Arial Narrow",Arial,sans-serif; --body:"IBM Plex Sans",Arial,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#0e1522; --surface:#151f31; --ink:#e6ecf3; --muted:#9aa8bb; --line:#2a3850; --accent:#55b9ea; --accent-soft:#13324a; --ok:#5fd09a; --ok-soft:#14352a; --no:#f0965f; --no-soft:#3a2619; color-scheme:dark; } }
+:root[data-theme="dark"] { --bg:#0e1522; --surface:#151f31; --ink:#e6ecf3; --muted:#9aa8bb; --line:#2a3850; --accent:#55b9ea; --accent-soft:#13324a; --ok:#5fd09a; --ok-soft:#14352a; --no:#f0965f; --no-soft:#3a2619; color-scheme:dark; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.55 var(--body); }
+.wrap { max-width:780px; margin:0 auto; padding:28px max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px)); }
+.label { font:12px var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); }
+h1 { font:700 34px/1.05 var(--display); margin:6px 0 10px; text-wrap:balance; }
+.lead { color:var(--muted); margin:0 0 16px; }
+.part { margin:34px 0 14px; }
+.ph { font:700 26px/1.1 var(--display); margin:0 0 6px; color:var(--accent); }
+.toc { columns:2; column-gap:28px; margin:0 0 6px; padding-left:22px; font-size:14px; }
+.toc li { break-inside:avoid; margin:2px 0; }
+.toc a { color:var(--ink); text-decoration:none; border-bottom:1px dotted var(--muted); }
+.toc .ans { font:600 12px var(--mono); color:var(--ok); margin-left:4px; }
+.card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:18px 18px 14px; margin:0 0 14px; break-inside:avoid; }
+.card .top { display:flex; justify-content:space-between; gap:12px; margin-bottom:6px; }
+.calc { font:12px var(--mono); color:var(--accent); background:var(--accent-soft); border-radius:4px; padding:1px 6px; white-space:nowrap; }
+.card h2 { font:600 17px/1.35 var(--body); margin:0 0 10px; }
+.opts { list-style:none; padding:0; margin:0 0 10px; }
+.opts li { display:flex; gap:10px; align-items:flex-start; padding:6px 10px; border:1px solid var(--line); border-radius:8px; margin:5px 0; }
+.opts li.right { border-color:var(--ok); background:var(--ok-soft); font-weight:500; }
+.opts .let { font:600 13px var(--mono); color:var(--muted); min-width:1em; padding-top:2px; }
+.opts .tick { margin-left:auto; font:600 12px var(--mono); color:var(--ok); white-space:nowrap; padding-top:2px; }
+.sh { font:600 12px var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--accent); margin-bottom:4px; }
+.sol { padding:10px 12px; border-left:3px solid var(--accent); background:var(--accent-soft); border-radius:0 6px 6px 0; margin:10px 0; }
+.steps { margin:0; padding-left:22px; }
+.steps li { margin:3px 0; }
+.wrong { padding:8px 12px; border-left:3px solid var(--no); background:var(--no-soft); border-radius:0 6px 6px 0; margin:10px 0; font-size:14px; }
+.wrong .sh { color:var(--no); }
+.wrong ul { margin:0; padding-left:18px; }
+.key { font-size:14px; padding:6px 0 0; border-top:1px solid var(--line); }
+footer { color:var(--muted); font-size:13px; margin-top:24px; }
+@media (max-width:560px) { .toc { columns:1; } h1 { font-size:28px; } }
+@media print { body { background:#fff; font-size:11.5px; line-height:1.45; } h1 { font-size:28px; } .card { padding:10px 12px 8px; margin:0 0 8px; } .card h2 { font-size:13.5px; margin-bottom:6px; } .opts { display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-bottom:6px; } .opts li { margin:0; padding:4px 8px; } .sol, .wrong { margin:6px 0; padding:6px 10px; } .wrong { font-size:11px; } .key { font-size:11.5px; } .wrap { max-width:none; padding:0; } .card { border-color:#bbb; } .part { break-before:page; } .part:first-of-type { break-before:auto; } a { color:inherit; } }
+
+.adv { background:#fbf3dc; border-left:4px solid #a36f00; border-radius:0 8px 8px 0; padding:8px 12px; font-size:14px; margin:6px 0 10px; }
+@media (prefers-color-scheme: dark) { .adv { background:#3a3016; border-left-color:#f2c45a; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="label">Week 2 · Solved exercises</div>
+  <h1>Quiz 2, Solved</h1>
+  <p class="lead">Every question of Quiz 2 with the answer, the working step by step, why the other options are wrong, and the one idea to remember. Questions marked <span class="calc">calculator</span> need a short calculation: try them first, then check.</p>
+  <section class="part"><h2 class="ph">Quiz 2 · Resistance and Power</h2><p class="lead">Length and the Froude number, the Holtrop–Mennen method, effective power, margins and the Admiralty formula (Lectures 2.3 and 2.4, Reading 2.3).</p><ol class="toc"><li><a href="#q2-1">Length and the Froude number</a> <span class="ans">B</span></li><li><a href="#q2-2">The full wave along the hull</a> <span class="ans">B</span></li><li><a href="#q2-3">Length against resistance</a> <span class="ans">C</span></li><li><a href="#q2-4">Length costs steel</a> <span class="ans">A</span></li><li><a href="#q2-5">Beam and draught</a> <span class="ans">A</span></li><li><a href="#q2-6">Form coefficients</a> <span class="ans">C</span></li><li><a href="#q2-7">The six parts</a> <span class="ans">B</span></li><li><a href="#q2-8">Friction</a> <span class="ans">C</span></li><li><a href="#q2-9">Speed and power where friction dominates</a> <span class="ans">C</span></li><li><a href="#q2-10">The three parts of the wave resistance</a> <span class="ans">C</span></li><li><a href="#q2-11">Entrance angle</a> <span class="ans">A</span></li><li><a href="#q2-12">The bulb</a> <span class="ans">D</span></li><li><a href="#q2-13">The transom</a> <span class="ans">C</span></li><li><a href="#q2-14">Total resistance and effective power</a> <span class="ans">B</span></li><li><a href="#q2-15">From R_T to the effective power</a> <span class="ans">A</span></li><li><a href="#q2-16">What the power does not include</a> <span class="ans">D</span></li><li><a href="#q2-17">The Admiralty constant</a> <span class="ans">D</span></li><li><a href="#q2-18">Sister ship</a> <span class="ans">D</span></li></ol></section>
+<article class="card" id="q2-1">
+<div class="top"><span class="label">Quiz 2 · 1 · Length and the Froude number · L2.3a</span><span class="calc">calculator</span></div>
+<h2>The 596 TEU feeder has L = 113 m. What is its Froude number at 16 kn (1 kn = 0.5144 m/s)?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>Fn ≈ 0.48</span></li>
+<li class="right"><span class="let">B</span><span>Fn ≈ 0.25</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">C</span><span>Fn ≈ 0.07</span></li>
+<li class=""><span class="let">D</span><span>Fn ≈ 0.77</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>V = 16 · 0.5144 = 8.23 m/s.</li><li>√(g L) = √(9.81 · 113) = 33.3 m/s.</li><li>Fn = V / √(g L) = 8.23 / 33.3 = <b>0.25</b>.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> 0.48 uses the speed in knots.</li><li><b>C.</b> 0.07 divides by L instead of √(g L).</li><li><b>D.</b> 0.77 forgets g.</li></ul></div>
+<div class="key"><b>Remember:</b> Fn = V / √(g L), with V in m/s.</div>
+</article>
+<article class="card" id="q2-2">
+<div class="top"><span class="label">Quiz 2 · 2 · The full wave along the hull · Holtrop–Mennen</span><span class="calc">calculator</span></div>
+<h2>A ship 100 m long sails so that one full wave of her own system fits between the fore and the aft peak (wavelength λ = L). A deep-water wave has speed V = √(g λ / 2π). What speed is this (1 kn = 0.5144 m/s)?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>≈ 12.5 kn</span></li>
+<li class="right"><span class="let">B</span><span>≈ 24.3 kn</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">C</span><span>≈ 17.2 kn</span></li>
+<li class=""><span class="let">D</span><span>≈ 34.3 kn</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>λ = L = 100 m.</li><li>V = √(g λ / 2π) = √(9.81 · 100 / 6.283) = √156.1 = 12.5 m/s.</li><li>12.5 / 0.5144 = <b>24.3 kn</b> (Fn = 1/√(2π) = 0.40, the classical hull speed).</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> 12.5 is the speed in m/s, read as knots.</li><li><b>C.</b> 17.2 kn is half a wave (λ = L/2).</li><li><b>D.</b> 34.3 kn is λ = 2L.</li></ul></div>
+<div class="key"><b>Remember:</b> One wave per ship length: Fn ≈ 0.40, far above economical speed.</div>
+</article>
+<article class="card" id="q2-3">
+<div class="top"><span class="label">Quiz 2 · 3 · Length against resistance · L2.3a</span><span class="calc">calculator</span></div>
+<h2>A slow ship (Fn ≈ 0.19) has friction at 70 % of the total resistance; the other 30 % is residuary (wave and form) resistance. It is made 10 % longer at the same displacement and speed: the friction resistance grows ×1.03 and the residuary resistance falls ×0.87. What is the new total resistance, relative to the old?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>× 1.03, friction wins</span></li>
+<li class=""><span class="let">B</span><span>× 0.90, resistance follows the length</span></li>
+<li class="right"><span class="let">C</span><span>× 0.98, a saving of about 2 %</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">D</span><span>× 0.87, the waves decide everything</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>New total = 0.70 · 1.03 + 0.30 · 0.87.</li><li>= 0.721 + 0.261 = <b>0.982</b>: about 2 % less.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> Friction grows, but the waves fall more.</li><li><b>B.</b> Resistance does not follow the length directly.</li><li><b>D.</b> Only 30 % of the resistance falls by 13 %.</li></ul></div>
+<div class="key"><b>Remember:</b> At low Fn friction dominates: length gains little.</div>
+</article>
+<article class="card" id="q2-4">
+<div class="top"><span class="label">Quiz 2 · 4 · Length costs steel · L2.3a</span><span class="calc">calculator</span></div>
+<h2>Lengthening the reference ship by 10 % (same Δ) cuts the resistance, and so the fuel burned, by 3 %, and raises the hull steel by 15 %. The ship burns fuel worth 1.5 M€ per year and the hull steel costs 8 M€. Over 20 years of operation (no discounting), what is the net change in cost of the longer ship?</h2>
+<ol class="opts">
+<li class="right"><span class="let">A</span><span>+0.3 M€: the longer ship costs more</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">B</span><span>−0.9 M€: the longer ship costs less</span></li>
+<li class=""><span class="let">C</span><span>−0.3 M€: the longer ship costs less</span></li>
+<li class=""><span class="let">D</span><span>+1.2 M€: the longer ship costs more</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>Fuel saved over 20 years: 3 % · 1.5 M€ · 20 = 0.9 M€.</li><li>Extra steel: 15 % · 8 M€ = 1.2 M€.</li><li>Net: 1.2 − 0.9 = <b>+0.3 M€</b>: the longer ship costs more.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>B.</b> −0.9 M€ counts only the fuel.</li><li><b>C.</b> The sign is wrong.</li><li><b>D.</b> +1.2 M€ counts only the steel.</li></ul></div>
+<div class="key"><b>Remember:</b> Compare building plus running cost, not one of them.</div>
+</article>
+<article class="card" id="q2-5">
+<div class="top"><span class="label">Quiz 2 · 5 · Beam and draught · L2.3a</span><span class="calc">calculator</span></div>
+<h2>Reference ship: Δ = 13,200.7 t, L = 124.8 m, C_B = 0.749, ρ = 1.025 t/m³, B/T = 2.90. What draught do these give?</h2>
+<ol class="opts">
+<li class="right"><span class="let">A</span><span>T ≈ 6.89 m</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">B</span><span>T ≈ 11.74 m</span></li>
+<li class=""><span class="let">C</span><span>T ≈ 6.98 m</span></li>
+<li class=""><span class="let">D</span><span>T ≈ 47.5 m</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>∇ = Δ / ρ = 13,200.7 / 1.025 = 12,879 m³.</li><li>B·T = ∇ / (L C_B) = 12,879 / (124.8 · 0.749) = 137.8 m².</li><li>B = 2.90 T → 2.90 T² = 137.8 → T² = 47.5 → <b>T = 6.89 m</b>; B = 19.98 m.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>B.</b> 11.74 m is √(B·T).</li><li><b>C.</b> 6.98 m uses Δ in place of ∇.</li><li><b>D.</b> 47.5 is T², not T.</li></ul></div>
+<div class="key"><b>Remember:</b> Use the volume ∇, not the mass Δ.</div>
+</article>
+<article class="card" id="q2-6">
+<div class="top"><span class="label">Quiz 2 · 6 · Form coefficients · L2.3a</span></div>
+<h2>What is the prismatic coefficient C_P of a hull?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>The waterplane area divided by L · B</span></li>
+<li class=""><span class="let">B</span><span>The midship section area divided by B · T</span></li>
+<li class="right"><span class="let">C</span><span>The displaced volume ∇ divided by the midship section area A_M times the length L: C_P = ∇ / (A_M · L) = C_B / C_M</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">D</span><span>The displaced volume ∇ divided by L · B · T</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>C_P = ∇ / (A_M · L) = C_B / C_M.</li><li>It tells how the volume is spread along the length: low C_P = fine ends, suits faster ships.</li><li>Example: C_B = 0.65, C_M = 0.965 → C_P = 0.674.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> That is C_WP.</li><li><b>B.</b> That is C_M.</li><li><b>D.</b> That is C_B.</li></ul></div>
+<div class="key"><b>Remember:</b> C_P = C_B / C_M.</div>
+</article>
+<article class="card" id="q2-7">
+<div class="top"><span class="label">Quiz 2 · 7 · The six parts · Holtrop–Mennen</span></div>
+<h2>Which list gives the parts of the total resistance R_T in the Holtrop–Mennen method?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>Friction, waves, air drag, sea margin, fouling and propeller thrust</span></li>
+<li class="right"><span class="let">B</span><span>Friction (with the form factor), appendages, waves, bulb, transom and the model–ship correlation allowance</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">C</span><span>Friction, waves and the propeller thrust deduction only</span></li>
+<li class=""><span class="let">D</span><span>Friction, appendages, waves and the wind drag of the superstructure</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>R_T = R_F (1 + k1) + R_APP + R_W + R_B + R_TR + R_A.</li><li>Friction with form factor, appendages, waves, bulb, transom, correlation allowance.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> Margins, air drag and thrust are not in R_T.</li><li><b>C.</b> Thrust deduction belongs to the propulsion chain.</li><li><b>D.</b> Wind drag is added afterwards, not in the six parts.</li></ul></div>
+<div class="key"><b>Remember:</b> Six parts: F(1+k1), APP, W, B, TR, A.</div>
+</article>
+<article class="card" id="q2-8">
+<div class="top"><span class="label">Quiz 2 · 8 · Friction · Holtrop–Mennen</span></div>
+<h2>How is the friction resistance computed in the method?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>From the wave-making coefficient of the hull, with no Reynolds number</span></li>
+<li class=""><span class="let">B</span><span>From C_F = 0.075 / (log10 Re − 2)² on the wetted surface, with no form factor, because the hull is a flat plate</span></li>
+<li class="right"><span class="let">C</span><span>From the ITTC-1957 line, C_F = 0.075 / (log10 Re − 2)², on the wetted surface, multiplied by the form factor (1 + k1)</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">D</span><span>From the entrance angle iE and the bulb area A_BT</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>C_F = 0.075 / (log₁₀ Re − 2)² (ITTC-1957), with Re = V L / ν.</li><li>R_F = ½ ρ V² S C_F on the wetted surface S.</li><li>The hull is not a flat plate: multiply by the form factor (1 + k1).</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> Friction depends on Re.</li><li><b>B.</b> The form factor is missing.</li><li><b>D.</b> Entrance angle and bulb act on the waves.</li></ul></div>
+<div class="key"><b>Remember:</b> Friction = flat plate × (1 + k1).</div>
+</article>
+<article class="card" id="q2-9">
+<div class="top"><span class="label">Quiz 2 · 9 · Speed and power where friction dominates · Holtrop–Mennen</span><span class="calc">calculator</span></div>
+<h2>A 100 m ship sails in the low Froude regime (Fn &lt; 0.2), where the resistance is almost all friction. The friction coefficient C_F = 0.075 / (log10 Re − 2)² is 0.001703 at 10 kn and 0.001663 at 12 kn. How do the friction resistance R_F and the effective power P_E vary with the speed V? Use the two values of C_F to see how it changes with the speed.</h2>
+<p class="adv"><b>Advanced:</b> finding the exponent from two points is the slope of a log-log plot. This goes beyond what the Evaluation Test asks: you do not need it for the test. The video <i>Logarithms and the slope n</i> (portal, Tools and resources) explains it.</p>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>R_F ∝ V² and P_E ∝ V³ exactly, because C_F is constant</span></li>
+<li class=""><span class="let">B</span><span>R_F ∝ V^3 and P_E ∝ V^4</span></li>
+<li class="right"><span class="let">C</span><span>R_F ∝ V^1.9 and P_E ∝ V^2.9: a little below the square and the cube</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">D</span><span>R_F ∝ V^5 and P_E ∝ V^6, as near a wave hump</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>Speed ratio 12/10 = 1.2; C_F ratio 0.001663 / 0.001703 = 0.977.</li><li>Exponent of C_F with V: ln 0.977 / ln 1.2 = −0.13.</li><li>R_F = ½ρ S C_F V² ∝ V^(2 − 0.13) = <b>V^1.87</b>; P_E = R_F · V ∝ <b>V^2.87</b>.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> C_F is not constant: it falls slowly with Re.</li><li><b>B.</b> Friction does not grow with V³.</li><li><b>D.</b> V⁵ or more belongs to waves near a hump.</li></ul></div>
+<div class="key"><b>Remember:</b> Friction: a little below V²; power a little below V³.</div>
+</article>
+<article class="card" id="q2-10">
+<div class="top"><span class="label">Quiz 2 · 10 · The three parts of the wave resistance · Holtrop–Mennen</span></div>
+<h2>The wave resistance is R_W = c1 c2 c5 ∇ ρ g · exp{ m1 Fn^−0.9 + m2 cos(λ Fn^−2) }. The coefficient m1 is negative (−2.13 for the paper ship) and λ is a constant of the hull (0.65). As the speed grows, which description of the three parts is right?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>The factor c1 c2 c5 ∇ρg gives the humps and hollows; the term m1 Fn^−0.9 gives the level; the term m2 cos(λ Fn^−2) gives the smooth rise with speed</span></li>
+<li class=""><span class="let">B</span><span>The factor c1 c2 c5 ∇ρg is the wave resistance of the bulb; m1 Fn^−0.9 is that of the transom; m2 cos(λ Fn^−2) is that of the bow</span></li>
+<li class="right"><span class="let">C</span><span>The factor c1 c2 c5 ∇ρg does not depend on the speed and sets the level (volume, entrance, bulb, transom); the term m1 Fn^−0.9 rises smoothly with speed; the term m2 cos(λ Fn^−2) swings between plus and minus and gives the humps and hollows</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">D</span><span>The three parts are friction, form and correlation; the Froude number only scales them</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>c1 c2 c5 ∇ρg does not depend on speed: it sets the level (volume, entrance, bulb, transom).</li><li>m1 Fn^(−0.9) with m1 < 0 rises smoothly towards 0 as Fn grows: the smooth growth.</li><li>m2 cos(λ Fn^(−2)) swings between + and −: the humps and hollows (hump near Fn = 0.26, hollow near 0.32).</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> The roles are swapped.</li><li><b>B.</b> The terms are not bulb, transom and bow.</li><li><b>D.</b> These are not friction terms.</li></ul></div>
+<div class="key"><b>Remember:</b> Level · smooth rise · oscillation.</div>
+</article>
+<article class="card" id="q2-11">
+<div class="top"><span class="label">Quiz 2 · 11 · Entrance angle · Holtrop–Mennen</span><span class="calc">calculator</span></div>
+<h2>The entrance angle iE (half the angle of the design waterline at the bow) appears in the method only in the coefficient c1 of the wave resistance R_W = c1 c2 c5 ∇ρg · exp{…}, with c1 ∝ (90 − iE)^−1.376 (iE in degrees). All the other factors stay the same. What happens to R_W if iE goes from 8° to 16°?</h2>
+<ol class="opts">
+<li class="right"><span class="let">A</span><span>R_W rises by about 15 %</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">B</span><span>R_W falls by about 13 %</span></li>
+<li class=""><span class="let">C</span><span>R_W doubles, because the angle doubles</span></li>
+<li class=""><span class="let">D</span><span>R_W does not change: the entrance angle acts only on the friction</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>R_W ∝ c1 ∝ (90 − iE)^(−1.376).</li><li>R_W(16°) / R_W(8°) = ((90 − 8) / (90 − 16))^1.376 = (82/74)^1.376 = 1.108^1.376 = <b>1.152</b>.</li><li>R_W rises by about <b>15 %</b>: a blunter bow.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>B.</b> 13 % is the ratio turned upside down.</li><li><b>C.</b> The angle enters inside (90 − iE) with a power.</li><li><b>D.</b> iE acts on the wave resistance.</li></ul></div>
+<div class="key"><b>Remember:</b> Blunter bow, more wave resistance.</div>
+</article>
+<article class="card" id="q2-12">
+<div class="top"><span class="label">Quiz 2 · 12 · The bulb · Holtrop–Mennen</span><span class="calc">calculator</span></div>
+<h2>For the paper ship the bulb gives c2 = 0.759. In the wave resistance R_W = c1 c2 c5 ∇ρg · exp{…}, c2 is the factor that carries the bulb: with c2 = 1 there is no bulb. What does this bulb do to R_W, all the other factors being equal?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>R_W rises by about 24 %</span></li>
+<li class=""><span class="let">B</span><span>R_W falls by about 76 %</span></li>
+<li class=""><span class="let">C</span><span>R_W does not change: the bulb only adds the pressure term R_B</span></li>
+<li class="right"><span class="let">D</span><span>R_W falls by about 24 %</span><span class="tick">✓ answer</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>R_W with bulb = c2 · R_W without bulb = 0.759 · R_W.</li><li>1 − 0.759 = 0.241 → R_W falls by about <b>24 %</b>.</li><li>Price: more wetted surface and a small pressure term R_B.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> The sign is wrong.</li><li><b>B.</b> 76 % would be c2 = 0.24.</li><li><b>C.</b> c2 multiplies R_W directly.</li></ul></div>
+<div class="key"><b>Remember:</b> c2 < 1: the bulb cuts the wave resistance.</div>
+</article>
+<article class="card" id="q2-13">
+<div class="top"><span class="label">Quiz 2 · 13 · The transom · Holtrop–Mennen</span></div>
+<h2>The transom resistance is R_TR = ½ ρ V² A_T c6, with c6 = 0.2 (1 − 0.2 Fn_T) for Fn_T &lt; 5 and c6 = 0 for Fn_T ≥ 5. Fn_T = V / √(2 g A_T / (B + B C_WP)) uses the transom area A_T, a fixed input of the hull. For the paper ship R_TR is 34 kN at 15 kn (7 % of R_T) and zero from 23 kn. Why?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>Because the transom area A_T grows with the speed</span></li>
+<li class=""><span class="let">B</span><span>Because the bulb takes over the transom resistance above 23 kn</span></li>
+<li class="right"><span class="let">C</span><span>Because Fn_T reaches 5 at 23 kn: c6 becomes 0, the transom is dry and the flow leaves it cleanly</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">D</span><span>Because the method is not valid above 23 kn</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>Fn_T = V / √(2 g A_T / (B + B C_WP)) grows with speed; A_T is fixed.</li><li>When Fn_T ≥ 5, c6 = 0: the transom runs dry and the flow leaves it cleanly.</li><li>For the paper ship this happens at 23 kn, so R_TR = 0 from there.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> A_T is the immersed transom area at rest: a fixed input.</li><li><b>B.</b> The bulb has its own term; it does not take over.</li><li><b>D.</b> The method is valid there.</li></ul></div>
+<div class="key"><b>Remember:</b> Dry transom above Fn_T = 5: no transom resistance.</div>
+</article>
+<article class="card" id="q2-14">
+<div class="top"><span class="label">Quiz 2 · 14 · Total resistance and effective power · L2.4</span></div>
+<h2>What is the total resistance R_T of a ship, and what do you get by multiplying R_T by the ship speed V?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>R_T is the friction resistance only; R_T · V is the brake power at the engine</span></li>
+<li class="right"><span class="let">B</span><span>R_T is the force that opposes the motion of the hull through the water at speed V (friction, waves, form, appendages); R_T · V is the effective power P_E, the power needed to tow the ship</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">C</span><span>R_T is the thrust of the propeller; R_T · V is the delivered power P_D</span></li>
+<li class=""><span class="let">D</span><span>R_T is the wave resistance only; R_T · V is the installed power SMCR</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>R_T is the whole force of the water against the hull at speed V: friction, waves, form, appendages.</li><li>Force × speed = power: P_E = R_T · V, the effective (towing) power.</li><li>Example: 268.3 kN · 7.20 m/s = 1,932 kW.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> R_T is more than friction, and P_E is before the losses.</li><li><b>C.</b> Thrust is a different force.</li><li><b>D.</b> Waves are only part of R_T; SMCR includes margins.</li></ul></div>
+<div class="key"><b>Remember:</b> P_E = R_T · V.</div>
+</article>
+<article class="card" id="q2-15">
+<div class="top"><span class="label">Quiz 2 · 15 · From R_T to the effective power · Holtrop–Mennen</span><span class="calc">calculator</span></div>
+<h2>Paper ship, 25 kn (1 kn = 0.5144 m/s): R_T = 1,792 kN. What is the effective power P_E = R_T · V?</h2>
+<ol class="opts">
+<li class="right"><span class="let">A</span><span>P_E ≈ 23,050 kW</span><span class="tick">✓ answer</span></li>
+<li class=""><span class="let">B</span><span>P_E ≈ 44,800 kW</span></li>
+<li class=""><span class="let">C</span><span>P_E ≈ 72 kW</span></li>
+<li class=""><span class="let">D</span><span>P_E ≈ 11,520 kW</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>V = 25 · 0.5144 = 12.86 m/s.</li><li>P_E = 1,792 kN · 12.86 m/s = <b>23,045 kW</b> (kN · m/s = kW).</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>B.</b> Uses the speed in knots.</li><li><b>C.</b> Divides R_T by V.</li><li><b>D.</b> Half of the answer.</li></ul></div>
+<div class="key"><b>Remember:</b> Convert knots to m/s before multiplying.</div>
+</article>
+<article class="card" id="q2-16">
+<div class="top"><span class="label">Quiz 2 · 16 · What the power does not include · Holtrop–Mennen</span><span class="calc">calculator</span></div>
+<h2>For the paper ship the chain gives a shaft power P_S ≈ 32,600 kW at 25 kn, in calm water and with a clean hull. A sea margin of 15 % is added, and the engine is to be used at only 90 % of its MCR. What installed power (SMCR = P_S · 1.15 / 0.90) does this ask for?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>≈ 37,500 kW</span></li>
+<li class=""><span class="let">B</span><span>≈ 33,700 kW</span></li>
+<li class=""><span class="let">C</span><span>≈ 29,300 kW</span></li>
+<li class="right"><span class="let">D</span><span>≈ 41,700 kW</span><span class="tick">✓ answer</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>Sea margin: × 1.15. Engine at 90 % MCR: ÷ 0.90.</li><li>SMCR = 32,600 · 1.15 / 0.90 = 32,600 · 1.278 = <b>41,656 ≈ 41,700 kW</b>.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> Forgets ÷ 0.90.</li><li><b>B.</b> Multiplies by 0.90 instead of dividing.</li><li><b>C.</b> Multiplies by 0.90 only.</li></ul></div>
+<div class="key"><b>Remember:</b> Margins raise the power: × 1.15, ÷ 0.90.</div>
+</article>
+<article class="card" id="q2-17">
+<div class="top"><span class="label">Quiz 2 · 17 · The Admiralty constant · Reading 2.3</span><span class="calc">calculator</span></div>
+<h2>The parent is the reference ship: Δ = 13,200.7 t, P = 3,500 kW at V = 14 kn. What is its Admiralty constant C = Δ^(2/3) · V³ / P (Δ in t, V in kn, P in kW)?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>C ≈ 59.6</span></li>
+<li class=""><span class="let">B</span><span>C ≈ 31.3</span></li>
+<li class=""><span class="let">C</span><span>C ≈ 18.5</span></li>
+<li class="right"><span class="let">D</span><span>C ≈ 438</span><span class="tick">✓ answer</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>Δ^(2/3) = 13,200.7^(2/3) = 558.6.</li><li>V³ = 14³ = 2,744.</li><li>C = 558.6 · 2,744 / 3,500 = <b>438</b> (typical range 400–600).</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> Uses V in m/s.</li><li><b>B.</b> Uses V² instead of V³.</li><li><b>C.</b> Uses Δ^(1/3) instead of Δ^(2/3).</li></ul></div>
+<div class="key"><b>Remember:</b> C = Δ^(2/3) V³ / P, with V in knots.</div>
+</article>
+<article class="card" id="q2-18">
+<div class="top"><span class="label">Quiz 2 · 18 · Sister ship · Reading 2.3</span><span class="calc">calculator</span></div>
+<h2>A sister ship of the same hull form floats 5 % heavier than the reference ship (Δ = 13,860.7 t). What power does she need at 14.5 kn, if the parent needs 3,500 kW at 14 kn?</h2>
+<ol class="opts">
+<li class=""><span class="let">A</span><span>About 4,083 kW</span></li>
+<li class=""><span class="let">B</span><span>About 3,889 kW</span></li>
+<li class=""><span class="let">C</span><span>About 4,501 kW</span></li>
+<li class="right"><span class="let">D</span><span>About 4,017 kW</span><span class="tick">✓ answer</span></li>
+</ol>
+<div class="sol"><div class="sh">Solution</div><ol class="steps"><li>Same hull form: C is the same, so P₂ / P₁ = (Δ₂/Δ₁)^(2/3) · (V₂/V₁)³.</li><li>(1.05)^(2/3) = 1.033; (14.5/14)³ = 1.111.</li><li>P₂ = 3,500 · 1.033 · 1.111 = <b>4,017 kW</b>.</li></ol></div>
+<div class="wrong"><div class="sh">Why not the others</div><ul><li><b>A.</b> Uses Δ to the power 1.</li><li><b>B.</b> Forgets the displacement.</li><li><b>C.</b> Uses Δ³.</li></ul></div>
+<div class="key"><b>Remember:</b> Displacement enters with 2/3, speed with the cube.</div>
+</article>
+  <footer>T. Santos, L. Batista · Ship and Ocean Systems Design 2026 · Papanikolaou (2026) §2.1–2.13 · Holtrop and Mennen (1982)</footer>
+</div>
+</body>
+</html>
