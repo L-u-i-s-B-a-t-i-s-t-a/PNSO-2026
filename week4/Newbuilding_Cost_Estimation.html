@@ -1,0 +1,701 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Newbuilding Cost Estimation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a general-arrangement drawing (profile and upper deck) with the formula of each step called out on it; the cost tower at its side; guided steps below; live total and inputs on the right */
+:root{--bg:#f2f6f9;--card:#fcfdfe;--fg:#1e2b34;--mut:#566873;--line:#d5dee5;--acc:#0079ad;--sea:#009de0;--paper:#fbfcfd;--ink:#24333d;--ink2:#7b8c97;--grid:#e3eaef;--wl:#2f8fc4;--call:#e6f4fb;--hot:#d9692a;--ok:#1d7a4d;--warn:#fdf1e7;--btn:#1e2b34;--btnfg:#fcfdfe;
+ --m0:#4a6a80;--m1:#5f7a8c;--m2:#009de0;--m3:#d9692a;--m4:#8a6fb0;--m5:#d99a12;--m6:#1f8a5b;--m7:#2a9d92;--m8:#2e4a5c;--m9:#c0455c;--ind:#b9c4cc}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11191f;--card:#1a252d;--fg:#e6eef3;--mut:#9fb0bc;--line:#2f414d;--acc:#7fd0f2;--sea:#3cb8f0;--paper:#141e25;--ink:#c9d7e0;--ink2:#6f8594;--grid:#1f2c35;--wl:#4fb2e6;--call:#16303d;--hot:#f08a4b;--ok:#5cc08a;--warn:#33241a;--btn:#e6eef3;--btnfg:#11191f;
+ --m0:#8fb3c9;--m1:#8aa3b4;--m2:#3cb8f0;--m3:#f08a4b;--m4:#b79be0;--m5:#f2c14e;--m6:#5fd197;--m7:#6fd3c8;--m8:#9db8cc;--m9:#f08a9f;--ind:#4a5a66;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11191f;--card:#1a252d;--fg:#e6eef3;--mut:#9fb0bc;--line:#2f414d;--acc:#7fd0f2;--sea:#3cb8f0;--paper:#141e25;--ink:#c9d7e0;--ink2:#6f8594;--grid:#1f2c35;--wl:#4fb2e6;--call:#16303d;--hot:#f08a4b;--ok:#5cc08a;--warn:#33241a;--btn:#e6eef3;--btnfg:#11191f;
+ --m0:#8fb3c9;--m1:#8aa3b4;--m2:#3cb8f0;--m3:#f08a4b;--m4:#b79be0;--m5:#f2c14e;--m6:#5fd197;--m7:#6fd3c8;--m8:#9db8cc;--m9:#f08a9f;--ind:#4a5a66;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:'IBM Plex Sans',Arial,sans-serif;font-size:16px;line-height:1.5;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1280px;margin:0 auto}
+.eb{font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:0 0 6px}
+h1{font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0 0 10px;text-wrap:balance}
+.lede{max-width:75ch;color:var(--mut);margin:0 0 16px}
+.ships{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 16px}
+.fam{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.fam b{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin-right:2px}
+.chip{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:4px 12px;font-size:13.5px}
+.chip[aria-pressed="true"]{background:var(--btn);color:var(--btnfg);border-color:var(--btn)}
+.grid{display:grid;grid-template-columns:minmax(0,1.62fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:1020px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.card h2{font-size:15px;margin:0 0 8px}
+.stage{padding:10px}
+.cvbox{position:relative}
+canvas{display:block;width:100%;height:auto;border-radius:8px;background:var(--paper)}
+.callout{position:absolute;left:2.2%;bottom:1.6%;width:74%;background:var(--card);border:1.5px solid var(--cc,var(--line));border-radius:10px;padding:8px 12px;box-shadow:0 2px 10px rgba(0,0,0,.08);transition:opacity .35s ease;font-size:var(--cf,14px)}
+.callout .ct{font-size:.8em;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cc,var(--mut));margin-bottom:2px}
+.callout .cl{overflow-x:auto;white-space:nowrap;line-height:1.9}
+.callout .cr{font-size:.85em;color:var(--mut)}
+.callout mjx-container{display:inline-block;position:relative}
+.callout mjx-container>svg{overflow:visible;vertical-align:middle}
+@media (max-width:640px){.callout{position:static;width:auto;margin-top:8px;font-size:13px}}
+mjx-assistive-mml{position:absolute!important;top:0;left:0;clip:rect(1px,1px,1px,1px);padding:1px 0 0 0!important;border:0!important;display:block!important;width:auto!important;overflow:hidden!important}
+.steps{display:flex;gap:3px;margin-top:10px}
+.steps button{flex:1 1 0;min-width:0;font:inherit;cursor:pointer;border:0;padding:0;background:transparent;text-align:left}
+.steps .sb{display:block;height:7px;border-radius:3px;background:var(--grid);overflow:hidden}
+.steps .sb i{display:block;height:100%;width:0;background:var(--c)}
+.steps .sl{display:block;font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.steps button[aria-current="true"] .sl{color:var(--fg);font-weight:600}
+.nav{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;margin-top:10px}
+.btn{font:inherit;cursor:pointer;background:var(--btn);color:var(--btnfg);border:0;border-radius:8px;padding:7px 14px;font-weight:600;font-size:14px}
+.btn.alt{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn:disabled{opacity:.4;cursor:default}
+.btn:focus-visible,.chip:focus-visible,input:focus-visible,select:focus-visible,.steps button:focus-visible{outline:3px solid var(--sea);outline-offset:2px}
+.where{flex:1 1 220px;min-width:0;font-size:13.5px}
+.where b{display:block;font-size:15px}
+.where span{color:var(--mut)}
+.dots{display:inline-flex;gap:4px;vertical-align:middle;margin-left:6px}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--line)}.dots i.on{background:var(--c)}
+.spd{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--mut)}
+.spd input{width:110px;accent-color:var(--sea)}
+.sc h3{margin:0 0 6px;font-size:20px;line-height:1.2}
+.sc p{margin:0 0 10px}
+.note{font-size:13px;color:var(--mut)}
+.watch{background:var(--warn);border-left:4px solid var(--hot);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13.5px;margin:8px 0}
+.items{width:100%;border-collapse:collapse;font-size:14px;margin:6px 0 10px}
+.items td{padding:4px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.items td.v{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;width:120px}
+.items td.b{width:32%}
+.items .bg{height:8px;border-radius:4px;background:var(--bg);overflow:hidden}.items .bg i{display:block;height:100%;background:var(--c)}
+.items tr.tot td{font-weight:600;border-bottom:0}
+.items tr.dim td{opacity:.35}
+.tw{overflow-x:auto}
+.live .big{font-size:28px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.live .sub{font-size:13px;color:var(--mut)}
+.mods{display:grid;grid-template-columns:auto 1fr auto;gap:3px 8px;font-size:13px;align-items:center;margin-top:10px}
+.mods i{display:inline-block;width:10px;height:10px;border-radius:2px}
+.mods span{color:var(--mut)}.mods b{font-weight:500;font-variant-numeric:tabular-nums;text-align:right}
+.mods .on{color:var(--fg);font-weight:600}
+.form{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px 14px}
+.f{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:2px 8px;align-items:center;font-size:12.5px;line-height:1.25}
+.f input,.f select{font:inherit;font-size:13px;width:92px;padding:3px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);text-align:right;font-variant-numeric:tabular-nums}
+.f.off{opacity:.4}
+.f.bad input{border-color:var(--hot)}
+.fh{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);margin:12px 0 6px}
+.fh:first-child{margin-top:0}
+.pct{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;font-size:13px;align-items:center;margin:4px 0}
+.pct input{grid-column:1/-1;width:100%;accent-color:var(--sea);margin:0}
+.foot{margin-top:12px;font-size:13px;color:var(--mut);max-width:100ch}
+
+/* one screen: nothing to scroll on a laptop or a projector; everything below 1020 px wide falls back to a page that scrolls */
+.app{display:flex;flex-direction:column;gap:10px}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px}
+.top .ttl{flex:0 0 auto}.top .eb{margin:0;font-size:11px}.top h1{font-size:22px;margin:0}
+#ships{margin:0 0 12px;padding-bottom:12px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px 8px;flex-wrap:wrap}
+.top{justify-content:space-between}
+.shl{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+#shipsel{font:inherit;font-size:14px;padding:5px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--fg)}
+.shn{font-size:12.5px;color:var(--mut)}
+.main{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,380px);gap:12px}
+.stage{display:flex;flex-direction:column;min-width:0}
+.cvbox{position:relative;min-height:0;display:flex;align-items:center;justify-content:center}
+.cvwrap{position:relative;width:100%}
+.cvwrap canvas{width:100%;height:auto;aspect-ratio:1000/610}
+.side{display:flex;flex-direction:column;gap:10px;min-width:0}
+.live{padding:10px 12px}.lrow{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.live .big{font-size:24px}.mods{font-size:12px;gap:1px 8px;margin-top:6px}
+.tabs{padding:0;display:flex;flex-direction:column;min-height:0}
+.tabbar{display:flex;border-bottom:1px solid var(--line)}
+.tabbar button{flex:1;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;background:transparent;border:0;border-bottom:3px solid transparent;color:var(--mut);padding:8px 6px}
+.tabbar button[aria-selected="true"]{color:var(--fg);border-bottom-color:var(--sea)}
+.tabbody{padding:12px 14px;overflow:auto;min-height:0}
+.pane .lede{margin:0 0 10px;font-size:14px}.pane .foot{margin:0;font-size:12.5px}
+.sc h3{font-size:17px}.sc p{font-size:14px}
+@media (min-width:1020px) and (min-height:560px){
+ html,body{height:100%}
+ body{padding-block:12px;overflow:hidden}
+ .app{height:100%}
+ .main{flex:1 1 auto;min-height:0}
+ .stage{min-height:0}.cvbox{flex:1 1 auto}
+ .cvwrap{width:auto}
+ .side{min-height:0}.tabs{flex:1 1 auto}
+}
+@media (max-width:1019px){.main{grid-template-columns:minmax(0,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+ <div class="ttl"><p class="eb">Ship design tools · version v06</p><h1>Newbuilding Cost Estimation</h1></div>
+ <button class="btn alt sm" id="fs" title="Full screen">Full screen</button>
+</header>
+<main class="main">
+ <section class="card stage">
+  <div class="cvbox" id="cvbox"><div class="cvwrap" id="cvwrap">
+   <canvas id="cv" width="1000" height="610" role="img" aria-label="General arrangement of the ship, profile and upper deck, with the part being costed highlighted and a tower of the costs on the right"></canvas>
+   <div class="callout" id="callout" aria-live="polite"></div>
+  </div></div>
+  <div class="steps" id="steps" role="group" aria-label="Groups of the cost model"></div>
+  <div class="nav">
+   <button class="btn alt" id="back" aria-label="Previous step">◀ Back</button>
+   <button class="btn" id="play">Play</button>
+   <button class="btn alt" id="next" aria-label="Next step">Next ▶</button>
+   <div class="where" id="where"></div>
+   <div class="spd"><label for="spd">Pace</label><input type="range" id="spd" min="2" max="16" step="1" value="7"><span id="spdv">7 s a step</span></div>
+  </div>
+ </section>
+ <aside class="side">
+  <div class="card live">
+   <div class="sub">Cost so far</div><div class="big" id="lt" style="white-space:nowrap">€ 0</div><div class="sub" id="lts"></div><div class="sub" id="lsplit" style="margin-top:4px"></div>
+   <div class="mods" id="lmods"></div>
+  </div>
+  <div class="card tabs">
+   <div class="tabbar" role="tablist">
+    <button role="tab" id="tb-step" aria-selected="true" data-tab="step">This step</button>
+    <button role="tab" id="tb-in" aria-selected="false" data-tab="in">Inputs</button>
+    <button role="tab" id="tb-ab" aria-selected="false" data-tab="ab">About</button>
+   </div>
+   <div class="tabbody">
+    <div class="pane sc" id="scene" role="tabpanel" aria-labelledby="tb-step"></div>
+    <div class="pane" id="pane-in" role="tabpanel" aria-labelledby="tb-in" hidden>
+     <div class="ships" id="ships" role="group" aria-label="Type of ship"></div>
+     <h2 id="inh">Inputs</h2><p class="note" style="margin:0 0 8px" id="inn"></p>
+     <div id="inputs"></div>
+     <label style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;margin-top:10px"><input type="checkbox" id="fix" style="margin-top:2px;accent-color:var(--sea)"><span>Deck labour: count 0.2 ΣC as euros, outside the labour bracket (suggested; off = the tool as it is)</span></label>
+     <div class="nav"><button class="btn alt sm" id="reset">Back to the example values</button></div>
+    </div>
+    <div class="pane" id="pane-ab" role="tabpanel" aria-labelledby="tb-ab" hidden>
+     <p class="lede">The cost model step by step, on the general arrangement of the ship. Each step lights up the part being costed, shows its formula with your numbers, and adds the result to the cost tower. Use Next and Back, click a group in the bar under the drawing, or press Play. The example is a 1,300 TEU feeder; change any input on the right.</p>
+     <p class="foot">The cost formulas are those of the Python tool newbuilding_tool_v06 (modules/ and vessels/), run in the browser. Costs in euros; the tool does not state the year of its prices. Engine power in bhp, bores in mm, as in the tool. In the tool the structure weight W is an input; this page can also estimate it with Watson (1998): E<sub>N</sub> = L(B+T) + 0.85L(D−T) + 0.85Σl·h (superstructures) + 0.75Σl·h (deckhouses), W = K·E<sub>N</sub><sup>1.36</sup>(1 + 0.5(C<sub>B</sub>′ − 0.70)), K from Papanikolaou, Table 2.24 (container ships 0.036, bulk carriers 0.031, crude oil tankers 0.032), as in the course notebooks. The drawing is generated from L, B, D, T and the engine room and deckhouse inputs; it is a schematic arrangement, not a design. The example inputs (a 1,300 TEU, 157 m feeder with a 11,300 kW two-stroke engine) are this page's. In v06 the nine ships share the same coefficients; the families differ only in the deck and cargo handling group. The last step, from cost to price, is not part of the tool: its percentages are illustrative.</p>
+    </div>
+   </div>
+  </div>
+ </aside>
+</main>
+</div>
+<script>window.MathJax={svg:{fontCache:'local',scale:1.0},startup:{typeset:false}};</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js" async id="mjx"></script>
+<script>
+(function(){
+"use strict";
+var $=function(s){return document.querySelector(s);};
+function fmt(x,d){return (isFinite(x)?x:0).toLocaleString('en-US',{minimumFractionDigits:d||0,maximumFractionDigits:d||0});}
+var SHARED=[
+ ['W','Structure weight of the ship','t','f'],['Labour_cost','Labour cost per hour per worker','€/h','f'],
+ ['Ship_length','Ship length','m','f'],['Ship_beam','Ship beam','m','f'],['Ship_depth','Ship depth','m','f'],
+ ['Engine_room_length','Engine room length','m','f'],['Engine_room_height','Engine room height','m','f'],
+ ['Passengers','Number of passengers','','i'],['Crew','Number of crew members','','i'],
+ ['Cargo_hold_volume','Cargo holds total volume','m³','f'],['Cabin_area','Total area occupied by cabins','m²','f'],
+ ['Ship_speed','Ship speed','kn','f'],['Engine_strokes','Engine strokes','','c',['2','4']],
+ ['Engine_power_bhp','Engine power rating','bhp','f'],['Engine_rpm','Engine RPM','rpm','f'],['Gross_tonnage','Gross tonnage','GT','f']];
+var EX={ /* example values: a 1,300 TEU feeder (this page's assumption) */
+ W_method:'w',K_st:0.036,Draught:9.42,C_B:0.653,Fc_l:12,Fc_h:2.6,Dh_l:16,Dh_h:15,W_given:4600,
+ W:4600,Labour_cost:30,Ship_length:156.9,Ship_beam:24.9,Ship_depth:13.34,Engine_room_length:22,Engine_room_height:12,Passengers:0,Crew:18,
+ Cargo_hold_volume:22000,Cabin_area:350,Ship_speed:18.5,Engine_strokes:'2',Engine_power_bhp:15150,Engine_rpm:100,Gross_tonnage:14000,
+ Mh_t:40,F1:15,waste:8,Steel_price:750,Transp:30,Cost_voyage:2000,S_underwater:5000,S_above_water:3500,S_interior:30000,T_underwater:300,T_above_water:250,T_interior:200,
+ N_anchors:2,Anchor_weight:5,Chain_diameter:64,Chain_length:550,Chain_material:2,N_cranes:0,Crane_capacity:0,Crane_reach:0,N_hatches:24,Hatch_length:12.7,Hatch_width:10,
+ Rudder_length:5,Rudder_height:8,Windlass_chain_diameter:64,Capstan_traction:10,Rated_pull:150,N_drums:2,TEU_on_deck:800,
+ Cargo_density:0.85,Pump_head:120,Pump_efficiency:75,N_cargo_pumps:3,Pipe_diameter:0.4,Pipe_thickness:12,Pipe_length:600,Cargo_spaces_length:120,Largest_tank_area:400,Monitor_area:600,
+ N_engines:1,N_cylinders:6,Cylinder_diameter:500,Reduction_gear_weight:0,MCR:11300,Shaft_length:20,N_propellers:1,Propeller_pitch:'f',N_er_fans:4,ER_fan_flow:40000,
+ Nominal_steam:1.5,N_compressors:2,Compressor_flow:100,N_fuel_pumps:2,Fuel_pump_capacity:20,N_oil_purifiers:2,N_do_purifiers:1,N_fo_purifiers:2,Oil_purifier_flow:2,DO_purifier_flow:1.5,FO_purifier_flow:3,Self_cleaning:'y',FO_viscosity:1500,
+ Bilge_pump_flow:100,Fire_pump_flow:120,Protected_volume:3000,Ballast_pump_flow:600,N_bow_thrusters:1,Lateral_area:1800,Scrubber_type:'n',
+ Diesel_gen:'y',Diesel_gen_n:3,Diesel_gen_cylinders:6,Diesel_gen_diameter:270,Diesel_gen_power:900,Diesel_gen_rpm:900,Turbo_gen:'n',Turbo_gen_n:1,Turbo_gen_power:500,Clutch_gen:'n',Clutch_gen_n:1,Clutch_gen_power:500,Shaft_gen:'n',Shaft_gen_n:1,Shaft_gen_power:800,Power_installed:3000,
+ Refrigeration_volume:60,N_fw_generators:1,FW_generator_flow:25,Expense_level:'m',
+ N_rowboats:0,N_open:1,N_semi:0,N_closed:0,N_fireres:1,N_liferafts:2,P_rowboat:0,P_open:6,P_semi:0,P_closed:0,P_fireres:25,P_liferaft:25};
+var V=Object.assign({},EX);
+var YN=['y','n'];
+function pc(k){return V[k]/100;}
+
+/* ================= the nine cost groups ================= */
+var DECK_FIELDS=[['N_anchors','Number of anchors','','i'],['Anchor_weight','Anchor weight (each)','t','f'],['Chain_diameter','Mooring chain diameter','mm','f'],['Chain_length','Mooring chain length','m','f'],
+ ['Chain_material','Chain material (1 steel, 2 high strength, 3 extra high)','','c',['1','2','3']],['N_cranes','Number of cranes','','i'],['Crane_capacity','Crane lifting capacity','t','f'],['Crane_reach','Crane reach','m','f'],
+ ['N_hatches','Number of cargo hatches','','i'],['Hatch_length','Length of each hatch','m','f'],['Hatch_width','Width of each hatch','m','f'],['Rudder_length','Rudder length','m','f'],['Rudder_height','Rudder height','m','f'],
+ ['Windlass_chain_diameter','Windlass chain diameter','mm','f'],['Capstan_traction','Capstan traction','t','f'],['Rated_pull','Mooring winch rated pull (traction ≥ 5 t)','kN','f',null,['Capstan_traction',['ge',5]]],['N_drums','Mooring winch drums (traction ≥ 5 t)','','i',null,['Capstan_traction',['ge',5]]]];
+function deckItems(){var K={1:0.067,2:0.074,3:0.081}[+V.Chain_material]||0.067,H=V.Rudder_height,Lr=V.Rudder_length;
+ var M=0.0045*0.12*(H*(H+Lr))*(V.Ship_speed+0.007*V.Ship_length*V.Ship_length);
+ return [['Anchor',4050*V.N_anchors*V.Anchor_weight],['Mooring chains',K*V.Chain_length*V.Chain_diameter*V.Chain_diameter],
+  ['Cranes',4074*Math.pow(V.Crane_capacity,0.765)*Math.pow(V.Crane_reach,0.85)*V.N_cranes],['Cargo ventilation',21*Math.sqrt(10*V.Cargo_hold_volume)],
+  ['Hatches',98.61*V.Hatch_length*Math.pow(V.Hatch_width,1.77)*V.N_hatches],['Rudder',66*H*Lr*Lr],['Servomotor',6163*Math.pow(M,2/3)],
+  ['Windlass',300*Math.pow(V.Windlass_chain_diameter,1.3)],['Capstan and mooring winch',V.Capstan_traction<5?3748*Math.pow(V.Capstan_traction,1.6):3500*Math.pow(V.Rated_pull,0.65)*V.N_drums]];}
+var FIX=false;
+function deckLabour(items){var s=items.reduce(function(a,b){return a+b[1];},0);
+ var hrs=27*Math.pow(V.Anchor_weight*V.N_anchors,0.4)+290*V.N_cranes*Math.pow(V.Crane_capacity,1/3)+460*Math.pow(V.Hatch_length*V.Hatch_width,0.3)+33*Math.pow(V.Rudder_length,2/3);
+ return FIX?V.Labour_cost*hrs+0.2*s:V.Labour_cost*(hrs+0.2*s);}
+var DECKW='In v06 the 20 % of the equipment cost (0.2 ΣC, in €) sits inside the bracket that is multiplied by the labour rate, so it is counted as hours: with 30 €/h this term alone adds about 14 M€, more than the steel. It probably belongs outside the bracket. Tick the correction under the inputs to compare.';
+var DECK_TEX=['C_{anchor} = 4050\\,N_a\\,m_a \\qquad C_{chain} = K\\,L_c\\,d_c^{2}','C_{hatches} = 98.61\\,l_h\\,b_h^{1.77}\\,N_h \\qquad C_{cranes} = 4074\\,Q^{0.765} R^{0.85} N_c','C_{rudder} = 66\\,H\\,L_r^{2} \\qquad C_{servo} = 6163\\,M^{2/3}','C_{labour} = c_L\\left(27 (N_a m_a)^{0.4} + 290 N_c Q^{1/3} + 460 (l_h b_h)^{0.3} + 33 L_r^{2/3} + 0.2\\textstyle\\sum C\\right)'];
+
+var MODS={
+ structure:{name:'Steel structure',short:'Steel',col:'--m1',zone:'hull',
+  shared:['W','Labour_cost','Engine_power_bhp','Ship_length'],
+  fields:[['Mh_t','Manhours per tonne','h/t','f'],['F1','Consumables-to-labour factor F1','%','f'],['waste','Steel waste from cutting','%','f'],['Steel_price','Steel price','€/t','f'],
+   ['Transp','Voyages to bring the steel to the yard','','i'],['Cost_voyage','Cost per voyage','€','f'],['S_underwater','Paint area: hull under water','m²','f'],['S_above_water','Paint area: hull above water','m²','f'],
+   ['S_interior','Paint area: interior of the hull','m²','f'],['T_underwater','Coating: under water','µm','f'],['T_above_water','Coating: above water','µm','f'],['T_interior','Coating: interior','µm','f']],
+  calc:function(){var W=V.W,sw=W*(1+pc('waste')),pu=0.036*V.S_underwater*V.T_underwater,pa=0.023*V.S_above_water*V.T_above_water,pi=0.018*V.S_interior*V.T_interior;
+   return [['Labour (Cmo)',W*V.Mh_t*V.Labour_cost],['Consumables (Cc)',W*V.Mh_t*pc('F1')*V.Labour_cost],['Steel (Ca)',sw*V.Steel_price],['Logistics (Clt)',sw*240+V.Transp*V.Cost_voyage],
+    ['Painting, hull under water',pu],['Painting, hull above water',pa],['Painting, interior',pi],['Piping coating',1.4*(0.1*V.Engine_power_bhp+0.3*V.Ship_length)],['Galvanisation',0.075*(pu+pa+pi)],['Cathodic protection',2.5*V.S_underwater]];},
+  tex:['C_{mo} = W\\,M_{h/t}\\,c_L \\qquad C_c = F_1\\,C_{mo}','C_a = W(1+w)\\,p_{steel} \\qquad C_{lt} = 240\\,W(1+w) + N_v\\,c_v','C_{paint} = 0.036\\,S_{uw} t_{uw} + 0.023\\,S_{aw} t_{aw} + 0.018\\,S_{in} t_{in}'],
+  desc:'The hull is priced from its steel weight W: the work (man-hours per tonne times the labour rate), the welding consumables as a share of the labour, the steel bought (with the cutting waste), and bringing it to the yard. Then the paint, by area and coating thickness, galvanising and the anodes.',
+  watch:'The steel weight comes from your weight estimate; the man-hours per tonne and the labour rate depend on the yard and its country, and they set most of this group.'},
+ deck:{name:'Deck and cargo handling',short:'Deck',col:'--m2',zone:'deck',shared:['Ship_length','Ship_speed','Cargo_hold_volume','Labour_cost'],fields:DECK_FIELDS,
+  calc:function(){var it=deckItems();it.push(['Labour',deckLabour(it)]);return it;},tex:DECK_TEX,
+  desc:'Anchors and chains, cranes, hatch covers, cargo ventilation, the rudder and its steering gear, the windlass and the mooring winches. The labour is a fixed part per item plus 20 % of the cost of the equipment.',
+  watch:DECKW},
+ propulsion:{name:'Propulsion system',short:'Propulsion',col:'--m3',zone:'prop',shared:['Engine_strokes','Engine_power_bhp','Engine_rpm','Labour_cost','Ship_length','Ship_beam','Ship_depth'],
+  fields:[['N_engines','Number of engines','','i'],['N_cylinders','Cylinders per engine','','i'],['Cylinder_diameter','Cylinder diameter','mm','f'],['Reduction_gear_weight','Reduction gear weight','t','f'],['MCR','MCR','kW','f'],
+   ['Shaft_length','Shaft length','m','f'],['N_propellers','Number of propellers','','i'],['Propeller_pitch','Propeller pitch (f fixed, v variable)','','c',['f','v']],['N_er_fans','Engine room fans','','i'],['ER_fan_flow','Fan flow (if fans > 0)','m³/h','f',null,['N_er_fans','nz']]],
+  calc:function(){var P=V.Engine_power_bhp,rpm=V.Engine_rpm,e;
+   if(V.Engine_strokes==='2')e=4514*Math.pow(V.N_cylinders,0.75)*Math.pow(V.Cylinder_diameter,0.9);else e=67*Math.pow(V.N_cylinders,0.85)*Math.pow(V.Cylinder_diameter,2.2)/Math.pow(rpm,0.75);
+   e*=V.N_engines;var fixed=V.Propeller_pitch==='f';var prop=(fixed?400:582)*Math.pow(P,0.7)*V.N_propellers;
+   var K1=fixed?240:700,K2=fixed?0.004:0.44;
+   var lab=V.Labour_cost*(10*Math.pow(P,2/3)*V.N_engines+K1+K2*P*V.N_propellers+420+0.47*V.Ship_length*(V.Ship_beam+V.Ship_depth));
+   return [['Engine',e],['Coupling and clutch',2748*P/rpm],['Reduction gear',40413*Math.sqrt(V.Reduction_gear_weight)],['Shaft and bearings',0.081*Math.pow(V.MCR/rpm,2/3)*V.Shaft_length*754],
+    ['Axle',12.14*Math.pow(P,0.85)],['Brake',20530],['Propeller',prop],['Engine room ventilation',12.12*V.N_er_fans*Math.sqrt(V.ER_fan_flow)],['Labour',lab]];},
+  tex:['C_{engine} = 4514\\,n_{cyl}^{0.75} D^{0.9}\\ \\ (2\\text{-stroke}) \\qquad 67\\,\\dfrac{n_{cyl}^{0.85} D^{2.2}}{\\text{rpm}^{0.75}}\\ \\ (4\\text{-stroke})','C_{prop} = 400\\,P^{0.7}\\ (\\text{fixed}) \\quad 582\\,P^{0.7}\\ (\\text{CPP}) \\qquad C_{axle} = 12.14\\,P^{0.85}','C_{shaft} = 0.081\\left(\\dfrac{MCR}{\\text{rpm}}\\right)^{2/3} L_s \\times 754'],
+  desc:'The main engine, priced from its cylinders and bore (a two-stroke engine) or bore and speed (a four-stroke), the coupling, gear, shaft line, propeller and the engine-room fans, and the labour to install them.',
+  watch:'Propeller labour per bhp is 0.004 for a fixed-pitch propeller and 0.44 for a controllable-pitch one, about 100 times more: worth checking against the source. The coupling and clutch are charged even for a direct-drive engine. Power is in bhp here, but MCR is asked in kW.'},
+ aux:{name:'Auxiliary machinery and systems',short:'Auxiliaries',col:'--m4',zone:'aux',shared:['Engine_power_bhp','Gross_tonnage','Ship_length','Ship_beam','Engine_room_length','Engine_room_height','Cargo_hold_volume','Cabin_area','Labour_cost','Engine_strokes'],
+  fields:[['Nominal_steam','Steam production','t/h','f'],['N_compressors','Compressors','','i'],['Compressor_flow','Compressor flow','m³/h','f',null,['N_compressors','nz']],['N_fuel_pumps','Fuel transfer pumps','','i'],['Fuel_pump_capacity','Fuel pump capacity','m³/h','f',null,['N_fuel_pumps','nz']],
+   ['N_oil_purifiers','Oil purifiers','','i'],['N_do_purifiers','D.O. purifiers','','i'],['N_fo_purifiers','F.O. purifiers','','i'],['Oil_purifier_flow','Oil purifier flow','m³/h','f',null,['N_oil_purifiers','nz']],['DO_purifier_flow','D.O. purifier flow','m³/h','f',null,['N_do_purifiers','nz']],['FO_purifier_flow','F.O. purifier flow','m³/h','f',null,['N_fo_purifiers','nz']],
+   ['Self_cleaning','Self-cleaning purifiers','','c',YN],['FO_viscosity','F.O. viscosity (Redwood s, 100 °F)','s','f',null,['N_fo_purifiers','nz']],['Bilge_pump_flow','Bilge pump flow','m³/h','f'],['Fire_pump_flow','Fire pump flow','m³/h','f'],
+   ['Protected_volume','Volume protected by fixed firefighting','m³','f'],['Ballast_pump_flow','Ballast pump flow','m³/h','f'],['N_bow_thrusters','Bow thrusters','','i'],['Lateral_area','Lateral area (if thrusters > 0)','m²','f',null,['N_bow_thrusters','nz']],
+   ['Scrubber_type','SOx scrubber (n, o open, c closed, h hybrid)','','c',['n','o','c','h']]],
+  calc:function(){var P=V.Engine_power_bhp,GT=V.Gross_tonnage,r=P/2237,vis=V.FO_viscosity;
+   var K3=vis<500?1.65:vis<1500?2.2:vis<3500?2.85:4,K4=vis>3500?1.25:1,K5=V.Self_cleaning==='y'?1:0.55;
+   var K1=GT<150?1:GT<4000?2:3,K2=GT<1000?0:GT<2000?2.5:4,K3p=GT<1000?0:1;
+   var F=0.065*V.Lateral_area,Pb=3.572*F;
+   var lab=V.Labour_cost*(5.5*V.Ship_length+11*Math.pow(P,0.35)+(V.Engine_strokes==='2'?230:2250)+0.18*P+V.N_compressors*(40+3.5*V.Compressor_flow)+0.27*P+(300+0.056*P)*V.N_oil_purifiers*V.N_do_purifiers*V.N_fo_purifiers);
+   return [['Circulating, refrigeration, lubrication',55000*Math.pow(r,0.65)+52500*Math.pow(r,0.65)+35000*Math.pow(r,0.5)],['Steam generation',11000*Math.pow(V.Nominal_steam,0.65)],['Engine starting',126*V.N_compressors*V.Compressor_flow],
+    ['Fuel transfer',71.13*V.N_fuel_pumps*V.Fuel_pump_capacity+3.4*P],['Purification and heating',16165*V.N_oil_purifiers*V.Oil_purifier_flow*K5+7679*V.N_do_purifiers*V.DO_purifier_flow*K5+8406*V.N_fo_purifiers*V.FO_purifier_flow*K3*K4*K5],
+    ['Static purifiers',1617+0.2*P],['Bilge separator',252*Math.sqrt(GT)],['Fire, ballast, bilge and service pumps',970*K1*Math.cbrt(V.Bilge_pump_flow)+1552*K1*Math.cbrt(V.Fire_pump_flow)+1552*K2*V.Fire_pump_flow+1778*K3p*V.Bilge_pump_flow],
+    ['Firefighting system',13.58*V.Protected_volume],['Piping',73*V.Engine_room_length*V.Engine_room_height*V.Ship_beam+787*V.Ship_length+13*P+3*V.Cargo_hold_volume+10*V.Cabin_area],
+    ['Ballast water treatment',150000+100*V.Ballast_pump_flow],['Bow thrusters',1086*Math.pow(Pb,0.82)*V.N_bow_thrusters],['NOx reduction',45*P],['SOx scrubber',({n:0,o:150,c:360,h:250}[V.Scrubber_type]||0)*P],['Labour',lab]];},
+  tex:['C_{circ} = (55000 + 52500)\\left(\\dfrac{P}{2237}\\right)^{0.65} + 35000\\left(\\dfrac{P}{2237}\\right)^{0.5}','C_{piping} = 73\\,L_{ER} H_{ER} B + 787\\,L + 13\\,P + 3\\,V_{holds} + 10\\,A_{cabins}','C_{NOx} = 45\\,P \\qquad C_{SOx} = k_{type}\\,P \\qquad C_{BWT} = 150000 + 100\\,Q_{ballast}'],
+  desc:'Everything that keeps the engine and the ship running: cooling and lubrication, steam, compressed air, fuel transfer and purification, the pumps, the fixed firefighting, the piping, ballast water treatment, bow thrusters and the exhaust cleaning.',
+  watch:'The NOx reduction system (45 €/bhp) is always charged, even for an engine without one. The pumps carry a term linear in the fire pump flow (1552 K<sub>2</sub> Q), worth about 0.75 M€ here. The purifier term of the labour multiplies the three purifier counts: it falls to zero if any of them is zero.'},
+ elec:{name:'Electrical power',short:'Electrical',col:'--m5',zone:'elec',shared:['Engine_rpm','Labour_cost','Cabin_area'],
+  fields:[['Diesel_gen','Diesel generators','','c',YN],['Diesel_gen_n','Number','','i',null,['Diesel_gen','y']],['Diesel_gen_cylinders','Cylinders','','i',null,['Diesel_gen','y']],['Diesel_gen_diameter','Cylinder diameter','mm','f',null,['Diesel_gen','y']],
+   ['Diesel_gen_power','Power each','kW','f',null,['Diesel_gen','y']],['Diesel_gen_rpm','Engine RPM','rpm','f',null,['Diesel_gen','y']],['Turbo_gen','Turbo-generators','','c',YN],['Turbo_gen_n','Number','','i',null,['Turbo_gen','y']],['Turbo_gen_power','Power each','kW','f',null,['Turbo_gen','y']],
+   ['Clutch_gen','Generators on a clutch','','c',YN],['Clutch_gen_n','Number','','i',null,['Clutch_gen','y']],['Clutch_gen_power','Power each','kW','f',null,['Clutch_gen','y']],['Shaft_gen','Shaft generators','','c',YN],['Shaft_gen_n','Number','','i',null,['Shaft_gen','y']],['Shaft_gen_power','Power each','kW','f',null,['Shaft_gen','y']],
+   ['Power_installed','Electrical power installed','kW','f']],
+  calc:function(){var rpm=V.Engine_rpm,d=0,tg=0,cg=0,sg=0,gp=0;
+   if(V.Diesel_gen==='y'){d=V.Diesel_gen_n*(407*Math.pow(V.Diesel_gen_diameter,2.2)*Math.pow(V.Diesel_gen_cylinders,0.8)/V.Diesel_gen_rpm+38797*Math.pow(V.Diesel_gen_power/V.Diesel_gen_rpm,2/3));gp+=V.Diesel_gen_n*V.Diesel_gen_power;}
+   if(V.Turbo_gen==='y'){tg=V.Turbo_gen_n*300000*Math.pow(V.Turbo_gen_power/50,0.7);gp+=V.Turbo_gen_n*V.Turbo_gen_power;}
+   if(V.Clutch_gen==='y'){var x=Math.pow(V.Clutch_gen_power/rpm,2/3);cg=V.Clutch_gen_n*(38797*x+21338*x);gp+=V.Clutch_gen_n*V.Clutch_gen_power;}
+   if(V.Shaft_gen==='y'){sg=V.Shaft_gen_n*38797*Math.pow(V.Shaft_gen_power/rpm,2/3);gp+=V.Shaft_gen_n*V.Shaft_gen_power;}
+   return [['Diesel generators',d],['Turbo-generators',tg],['Clutch generators',cg],['Shaft generators',sg],['Electrical installations',776*Math.pow(V.Power_installed,0.77)],['Labour',V.Labour_cost*(4*V.Cabin_area+6*gp)]];},
+  tex:['C_{DG} = N\\left(407\\,\\dfrac{D^{2.2} n_{cyl}^{0.8}}{\\text{rpm}} + 38797\\left(\\dfrac{P_g}{\\text{rpm}}\\right)^{2/3}\\right)','C_{inst} = 776\\,P_{inst}^{0.77} \\qquad C_{labour} = c_L\\,(4\\,A_{cabins} + 6\\,\\textstyle\\sum P_g)'],
+  desc:'The generator sets (diesel, turbo, on a clutch or on the shaft line) and the switchboards, cables and lighting of the electrical installation.',
+  watch:'There is nothing yet for batteries, converters or electric propulsion motors: a battery or hybrid ship needs a new module.'},
+ living:{name:'Living spaces',short:'Living',col:'--m6',zone:'living',shared:['Cabin_area','Passengers','Crew','Ship_length','Labour_cost'],fields:[['Refrigeration_volume','Refrigerated stores volume','m³','f']],
+  calc:function(){var A=V.Cabin_area,c=V.Crew,n=V.Passengers+c;
+   return [['Cabins',606*A],['Galley and cold stores',485*n+2910*Math.pow(V.Refrigeration_volume,2/3)],['Laundry',388*c],['HVAC',97*A],['Mechanical ventilation',367*n+2*A],['Doors and windows',4372*Math.pow(n,0.48)],['Stairs',36*Math.pow(V.Ship_length,1.6)],['Labour',V.Labour_cost*(18*A+115*c)]];},
+  tex:['C_{cabins} = 606\\,A_c \\qquad C_{HVAC} = 97\\,A_c \\qquad C_{stairs} = 36\\,L^{1.6}','C_{galley} = 485\\,N_p + 2910\\,V_r^{2/3} \\qquad C_{doors} = 4372\\,N_p^{0.48}'],
+  desc:'Cabins, galley and cold stores, laundry, air conditioning, ventilation, doors, windows and stairs, mostly by cabin area and by the number of people on board.'},
+ sanitary:{name:'Sanitary system',short:'Sanitary',col:'--m7',zone:'san',shared:['Passengers','Crew','Labour_cost'],fields:[['N_fw_generators','Fresh water generators','','i'],['FW_generator_flow','Flow each (if any)','t/day','f',null,['N_fw_generators','nz']]],
+  calc:function(){var n=V.Passengers+V.Crew;return [['Fresh water generators',2231*V.N_fw_generators*V.FW_generator_flow],['Hydrophore groups',1067*Math.sqrt(n)],['Sewage treatment',4268*Math.pow(n,0.4)],['Incinerator',18428*Math.pow(n,0.2)],['Labour',V.Labour_cost*(280+8*V.N_fw_generators*V.FW_generator_flow+200+3.5*n)]];},
+  tex:['C_{FW} = 2231\\,N\\,Q \\qquad C_{hydro} = 1067\\,N_p^{0.5} \\qquad C_{sewage} = 4268\\,N_p^{0.4} \\qquad C_{inc} = 18428\\,N_p^{0.2}'],
+  desc:'Fresh water generators, pressure sets, sewage treatment and the incinerator, by the number of people on board.'},
+ nav:{name:'Navigation and communication',short:'Navigation',col:'--m8',zone:'nav',shared:['Passengers'],fields:[['Expense_level','Equipment level (l low, m medium, h high)','','c',['l','m','h']]],
+  calc:function(){var c={l:203561,m:292291,h:381021}[V.Expense_level]||292291;return [['Navigation and communication',c],['Auxiliary navigation equipment',0.08*c],['Internal communications',800*Math.pow(V.Passengers,0.85)+({l:20000,m:40000,h:60000}[V.Expense_level]||40000)],['Labour',0.12*c]];},
+  tex:['C_{nav} = 203{,}561\\ /\\ 292{,}291\\ /\\ 381{,}021 \\qquad C_{aux} = 0.08\\,C_{nav} \\qquad C_{labour} = 0.12\\,C_{nav}'],
+  desc:'Radars, ECDIS, radio and the bridge equipment, chosen as a low, medium or high package, plus internal communications.'},
+ safety:{name:'Safety equipment',short:'Safety',col:'--m9',zone:'safety',shared:['Passengers','Crew','Labour_cost'],
+  fields:[['N_rowboats','Rowboats','','i'],['N_open','Open motorboats','','i'],['N_semi','Semi-closed motorboats','','i'],['N_closed','Closed motorboats','','i'],['N_fireres','Fire-resistant motorboats','','i'],['N_liferafts','Liferafts','','i'],
+   ['P_rowboat','People per rowboat','','i'],['P_open','People per open boat','','i'],['P_semi','People per semi-closed boat','','i'],['P_closed','People per closed boat','','i'],['P_fireres','People per fire-resistant boat','','i'],['P_liferaft','People per liferaft','','i']],
+  calc:function(){var nb=V.N_rowboats+V.N_open+V.N_semi+V.N_closed+V.N_fireres,mx=Math.max(V.P_rowboat,V.P_open,V.P_semi,V.P_closed,V.P_fireres),n=V.Passengers+V.Crew,t=2/3;
+   return [['Rowboats',1616*V.N_rowboats*Math.pow(V.P_rowboat,t)],['Open motorboats',3232*V.N_open*Math.pow(V.P_open,t)],['Semi-closed motorboats',3636*V.N_semi*Math.pow(V.P_semi,t)],['Closed motorboats',4849*V.N_closed*Math.pow(V.P_closed,t)],
+    ['Fire-resistant motorboats',7274*V.N_fireres*Math.pow(V.P_fireres,t)],['Liferafts',1778*V.N_liferafts*Math.cbrt(V.P_liferaft)],['Davits',6465*nb*Math.pow(mx,t)],['Personal protective equipment',4041+30*n],['Labour',V.Labour_cost*(300+1.5*n)]];},
+  tex:['C_{boat} = k\\,N\\,n^{2/3}\\ \\ (k = 1616 \\ldots 7274) \\qquad C_{raft} = 1778\\,N\\,n^{1/3} \\qquad C_{davits} = 6465\\,N_b\\,n_{max}^{2/3}'],
+  desc:'Lifeboats and rescue boats, liferafts, davits and personal protective equipment.'}};
+/* the deck group of each family */
+var DECK_C={name:'Deck and cargo handling',short:'Deck',col:'--m2',zone:'deck',shared:MODS.deck.shared,fields:DECK_FIELDS.concat([['TEU_on_deck','TEU on deck','TEU','i']]),
+ calc:function(){var it=deckItems();it.push(['Loose lashing gear',72*V.TEU_on_deck]);it.push(['Labour',deckLabour(it)]);return it;},tex:DECK_TEX.concat(['C_{lashing} = 72\\,N_{TEU,deck}']),
+ desc:MODS.deck.desc+' Container ships add the loose lashing gear, 72 € per TEU on deck.',watch:DECKW+' Cell guides, lashing bridges and reefer sockets are not in the tool.'};
+var DECK_T={name:'Deck and cargo handling',short:'Deck',col:'--m2',zone:'deck',shared:MODS.deck.shared.concat(['Ship_beam']),
+ fields:DECK_FIELDS.concat([['Cargo_density','Cargo density','t/m³','f'],['Pump_head','Pump head','m','f'],['Pump_efficiency','Cargo pump efficiency','%','f'],['N_cargo_pumps','Cargo pumps','','i'],['Pipe_diameter','Cargo pipe diameter','m','f'],['Pipe_thickness','Pipe wall thickness','mm','f'],['Pipe_length','Cargo pipe length','m','f'],['Cargo_spaces_length','Cargo spaces length','m','f'],['Largest_tank_area','Largest tank area','m²','f'],['Monitor_area','Area of the largest foam monitor','m²','f']]),
+ calc:function(){var it=deckItems(),Q=V.Cargo_hold_volume/16,Ps=V.Cargo_density*9.81*Q*V.Pump_head/(3600*pc('Pump_efficiency')),R=Math.max(0.6*V.Ship_beam*V.Cargo_spaces_length,6*V.Largest_tank_area,3*V.Monitor_area,1250);
+  it.push(['Cargo pumps and drivers',1086*V.N_cargo_pumps*Math.pow(Ps,0.82)]);it.push(['Cargo piping',197*V.Pipe_diameter*V.Pipe_thickness*V.Pipe_length*1.4]);
+  it.push(['Inert gas system',2300*Math.pow(1.25*Q,0.6)]);it.push(['Deck foam system',1.3*(787*V.Cargo_spaces_length+1552*Math.cbrt(0.06*R))]);it.push(['Labour',deckLabour(it)]);return it;},
+ tex:DECK_TEX.concat(['Q = \\dfrac{V_{cargo}}{16\\,\\text{h}} \\qquad P_s = \\dfrac{\\rho\\,g\\,Q\\,H}{3600\\,\\eta} \\qquad C_{pumps} = 1086\\,N\\,P_s^{0.82}','C_{IG} = 2300\\,(1.25\\,Q)^{0.6}']),
+ desc:MODS.deck.desc+' Tankers add the cargo pumps (the cargo is discharged in 16 h), cargo piping, the inert gas system and the deck foam.',watch:DECKW};
+var FAMS=[{n:'Container ships',k:'c',ships:['Feeder','Panamax','Post-Panamax'],deck:DECK_C},{n:'Bulk carriers',k:'b',ships:['Handysize','Kamsarmax','Capesize'],deck:MODS.deck},{n:'Tankers',k:'t',ships:['General purpose','Panamax','Suezmax'],deck:DECK_T}];
+
+var fam=0,ship=0,FIX=false;
+var IND0=[['Design and engineering',6],['Class and certification',1.5],['Yard overheads',15],['Contingency',5],['Profit',8]],IND=IND0.map(function(x){return x.slice();});
+var STEEL_FIELDS=[['W_method','Structure weight W (w = Watson estimate, g = given)','','c',['w','g']],['W_given','W given','t','f',null,['W_method','g']],
+ ['K_st','Watson K (Table 2.24)','','f',null,['W_method','w']],['Draught','Draught T','m','f'],['C_B','Block coefficient C_B','','f'],
+ ['Fc_l','Forecastle length','m','f'],['Fc_h','Forecastle height','m','f'],['Dh_l','Deckhouse length','m','f'],['Dh_h','Deckhouse height above deck','m','f']];
+var KFAM=[0.036,0.031,0.032];
+function mods(){var f=FAMS[fam];return [MODS.structure,f.deck,MODS.propulsion,MODS.aux,MODS.elec,MODS.living,MODS.sanitary,MODS.nav,MODS.safety];}
+var R=[],TOT=0,PRICE=0,WS={};
+function watson(){var L=V.Ship_length,B=V.Ship_beam,D=V.Ship_depth,T=V.Draught,CB=V.C_B;
+ var e1=L*(B+T),e2=0.85*L*(D-T),e3=0.85*V.Fc_l*V.Fc_h,e4=0.75*V.Dh_l*V.Dh_h,EN=e1+e2+e3+e4,CB8=CB+(1-CB)*(0.8*D-T)/(3*T),f=1+0.5*(CB8-0.7),W=V.K_st*Math.pow(EN,1.36)*f;
+ return {e1:e1,e2:e2,e3:e3,e4:e4,EN:EN,CB8:CB8,f:f,W:W};}
+function compute(){WS=watson();V.W=V.W_method==='w'?WS.W:V.W_given;
+ var M=mods();TOT=0;R=M.map(function(m){var it=m.calc().map(function(x){return [x[0],isFinite(x[1])?x[1]:0];});var s=it.reduce(function(a,b){return a+b[1];},0);TOT+=s;return {m:m,items:it,tot:s};});
+ PRICE=TOT*(1+IND.reduce(function(a,x){return a+x[1]/100;},0));}
+function I(g,name){var it=R[g].items;for(var i=0;i<it.length;i++)if(it[i][0]===name)return it[i][1];return 0;}
+function S(g,names){return names.reduce(function(a,n){return a+I(g,n);},0);}
+/* TeX helpers */
+function n(x,d){return fmt(x,d).replace(/,/g,'{,}');}
+var GC=['--m1','--m2','--m3','--m4','--m5','--m6','--m7','--m8','--m9'];
+var GN=['Steel structure','Deck and cargo','Propulsion','Auxiliaries','Electrical','Living spaces','Sanitary','Navigation','Safety'];
+/* ================= the guided steps ================= */
+function labHours(g){/* labour hours of each group, to show c_L × h */
+ if(g===2){var P=V.Engine_power_bhp,f=V.Propeller_pitch==='f';return 10*Math.pow(P,2/3)*V.N_engines+(f?240:700)+(f?0.004:0.44)*P*V.N_propellers+420+0.47*V.Ship_length*(V.Ship_beam+V.Ship_depth);}
+ return I(g,'Labour')/V.Labour_cost;}
+var STEPS=[
+ {seg:'Breakdown',g:-5,zone:'tree',title:'The cost breakdown structure',items:[],
+  tex:function(){var n_=R.reduce(function(a,r){return a+r.items.length;},0);return ['C_{ship} = \\textstyle\\sum_{g=1}^{9} C_g, \\qquad C_g = \\textstyle\\sum_{i} C_{g,i} \\qquad (9\\ \\text{groups},\\ '+n_+'\\ \\text{items})'];},
+  html:function(){return 'The ship is split into nine groups of equipment and work; each group into items, each with its own formula. Labour is an item of each group.';}},
+ {seg:'Start',g:-1,zone:'all',title:'What the model needs and gives',items:[],
+  tex:function(){return [];},
+  html:function(){return '<b>Inputs:</b> 16 general inputs (L, B, D, crew, power, steel weight, labour rate…) and about 90 inputs of the nine groups (engine, pumps, anchors, boats…). <b>Outputs:</b> a cost in € for each item, a total for each group, and their sum for the ship.';}},
+ {seg:'Steel weight',g:-2,zone:'en',title:'Steel weight · the equipment numeral',items:[],
+  tex:function(){var w=WS;return ['E_N = L(B+T) + 0.85\\,L(D-T) + 0.85\\,l_f h_f + 0.75\\,l_h h_h',
+   '= '+n(V.Ship_length,1)+'\\,('+n(V.Ship_beam,1)+'+'+n(V.Draught,2)+') + 0.85 \\times '+n(V.Ship_length,1)+' \\times '+n(V.Ship_depth-V.Draught,2)+' + '+n(w.e3)+' + '+n(w.e4)+' = '+n(w.EN)];},
+  html:function(){return 'Watson (1998). The hull below the deck counts in full, the superstructures at 85 % and the deckhouses at 75 % of their side area.';}},
+ {seg:'Steel weight',g:-2,zone:'hull',title:'Steel weight · W',items:[],
+  tex:function(){var w=WS;return ["C_B' = C_B + (1-C_B)\\,\\dfrac{0.8D-T}{3T} = "+n(w.CB8,3),
+   "W = K\\,E_N^{1.36}\\left(1+0.5\\,(C_B'-0.70)\\right)",'= '+n(V.K_st,3)+' \\times '+n(w.EN)+'^{1.36} \\times '+n(w.f,3)+' = '+n(w.W)+'\\,\\text{t}'];},
+  html:function(){return V.W_method==='w'?'This W is used for the cost of the structure. In the tool W is typed in: choose “given” on the right to use your own value.':'You chose to give W: the cost below uses <b>'+fmt(V.W)+' t</b>; Watson would give '+fmt(WS.W)+' t.';}},
+ {seg:GN[0],g:0,zone:'hull',title:'Steel structure · labour and consumables',items:['Labour (Cmo)','Consumables (Cc)'],
+  tex:function(){var m=V.W*V.Mh_t*V.Labour_cost;return ['C_{mo} = W\\,M_{h/t}\\,c_L = '+n(V.W)+' \\times '+n(V.Mh_t)+' \\times '+n(V.Labour_cost)+' = '+n(m),'C_c = F_1\\,C_{mo} = '+n(V.F1/100,2)+' \\times '+n(m)+' = '+n(m*V.F1/100)];}},
+ {seg:GN[0],g:0,zone:'hull',title:'Steel structure · steel bought and brought to the yard',items:['Steel (Ca)','Logistics (Clt)'],
+  tex:function(){var sw=V.W*(1+V.waste/100);return ['C_a = W(1+w)\\,p_{steel} = '+n(sw)+' \\times '+n(V.Steel_price)+' = '+n(sw*V.Steel_price),'C_{lt} = 240\\,W(1+w) + N_v\\,c_v = 240 \\times '+n(sw)+' + '+n(V.Transp)+' \\times '+n(V.Cost_voyage)+' = '+n(I(0,'Logistics (Clt)'))];}},
+ {seg:GN[0],g:0,zone:'paint',title:'Steel structure · paint and protection',items:['Painting, hull under water','Painting, hull above water','Painting, interior','Piping coating','Galvanisation','Cathodic protection'],
+  tex:function(){return ['C_p = 0.036\\,S_{uw}t_{uw} + 0.023\\,S_{aw}t_{aw} + 0.018\\,S_{in}t_{in} = '+n(S(0,['Painting, hull under water','Painting, hull above water','Painting, interior'])),
+   '+\\ 0.075\\,C_p\\ (\\text{galvanising}) + 2.5\\,S_{uw}\\ (\\text{anodes}) + 1.4(0.1P+0.3L) = '+n(S(0,['Galvanisation','Cathodic protection','Piping coating']))];}},
+ {seg:GN[1],g:1,zone:'moor',title:'Deck · anchoring and mooring',items:['Anchor','Mooring chains','Windlass','Capstan and mooring winch'],
+  tex:function(){var K={1:0.067,2:0.074,3:0.081}[+V.Chain_material];return ['4050\\,N_a m_a + K L_c d_c^{2} = 4050 \\times '+V.N_anchors+' \\times '+n(V.Anchor_weight,1)+' + '+K+' \\times '+n(V.Chain_length)+' \\times '+n(V.Chain_diameter)+'^{2} = '+n(S(1,['Anchor','Mooring chains'])),
+   '300\\,d_w^{1.3} + '+(V.Capstan_traction<5?'3748\\,F^{1.6}':'3500\\,F_p^{0.65} N_d')+' = '+n(S(1,['Windlass','Capstan and mooring winch']))];}},
+ {seg:GN[1],g:1,zone:'hatch',title:'Deck · hatches, cranes and cargo ventilation',items:['Hatches','Cranes','Cargo ventilation'],
+  tex:function(){return ['98.61\\,l_h b_h^{1.77} N_h = 98.61 \\times '+n(V.Hatch_length,1)+' \\times '+n(V.Hatch_width,1)+'^{1.77} \\times '+V.N_hatches+' = '+n(I(1,'Hatches')),
+   '4074\\,Q^{0.765}R^{0.85}N_c + 21\\sqrt{10\\,V_h} = '+n(I(1,'Cranes'))+' + '+n(I(1,'Cargo ventilation'))];}},
+ {seg:GN[1],g:1,zone:'rudder',title:'Deck · rudder and steering gear',items:['Rudder','Servomotor'],
+  tex:function(){return ['66\\,H L_r^{2} = 66 \\times '+n(V.Rudder_height,1)+' \\times '+n(V.Rudder_length,1)+'^{2} = '+n(I(1,'Rudder')),'6163\\,M^{2/3},\\ M = 0.00054\\,H(H+L_r)(V+0.007L^2) \\ \\rightarrow\\ '+n(I(1,'Servomotor'))];}},
+ {seg:GN[1],g:1,zone:'cargo',title:'Deck · what this family adds',items:['Loose lashing gear','Cargo pumps and drivers','Cargo piping','Inert gas system','Deck foam system'],
+  tex:function(){var f=FAMS[fam].k;if(f==='c')return ['72\\,N_{TEU,\\,deck} = 72 \\times '+n(V.TEU_on_deck)+' = '+n(I(1,'Loose lashing gear'))];
+   if(f==='t')return ['P_s = \\dfrac{\\rho g Q H}{3600\\,\\eta},\\ Q = \\dfrac{V_{cargo}}{16} \\quad 1086\\,N P_s^{0.82} = '+n(I(1,'Cargo pumps and drivers')),'\\text{piping } '+n(I(1,'Cargo piping'))+' \\quad \\text{inert gas } 2300(1.25Q)^{0.6} = '+n(I(1,'Inert gas system'))+' \\quad \\text{foam } '+n(I(1,'Deck foam system'))];
+   return ['\\text{bulk carriers: no extra items in v06}'];}},
+ {seg:GN[1],g:1,zone:'deckall',title:'Deck · labour',items:['Labour'],
+  tex:function(){var h=27*Math.pow(V.Anchor_weight*V.N_anchors,0.4)+290*V.N_cranes*Math.pow(V.Crane_capacity,1/3)+460*Math.pow(V.Hatch_length*V.Hatch_width,0.3)+33*Math.pow(V.Rudder_length,2/3),s=0;
+   R[1].items.forEach(function(x){if(x[0]!=='Labour')s+=x[1];});
+   return ['c_L\\left(27(N_a m_a)^{0.4} + 290N_cQ^{1/3} + 460(l_hb_h)^{0.3} + 33L_r^{2/3} + 0.2\\textstyle\\sum C\\right)',
+    (FIX?n(V.Labour_cost)+' \\times '+n(h)+' + 0.2 \\times '+n(s):n(V.Labour_cost)+' \\times ('+n(h)+' + 0.2 \\times '+n(s)+')')+' = '+n(I(1,'Labour'))];},
+  html:function(){return FIX?'Corrected on the right: 0.2 ΣC is counted in euros.':'In the tool the 0.2 ΣC term (euros) is multiplied by the labour rate, as if it were hours.';}},
+ {seg:GN[2],g:2,zone:'engine',title:'Propulsion · main engine',items:['Engine'],
+  tex:function(){return V.Engine_strokes==='2'?['4514\\,n_{cyl}^{0.75}D^{0.9}\\,N_e = 4514 \\times '+V.N_cylinders+'^{0.75} \\times '+n(V.Cylinder_diameter)+'^{0.9} \\times '+V.N_engines+' = '+n(I(2,'Engine'))]:
+   ['67\\,\\dfrac{n_{cyl}^{0.85}D^{2.2}}{\\text{rpm}^{0.75}}N_e = 67 \\times \\dfrac{'+V.N_cylinders+'^{0.85} \\times '+n(V.Cylinder_diameter)+'^{2.2}}{'+n(V.Engine_rpm)+'^{0.75}} \\times '+V.N_engines+' = '+n(I(2,'Engine'))];},
+  html:function(){return V.Engine_strokes==='2'?'A two-stroke engine is priced from its cylinders and bore only.':'A four-stroke engine is priced from cylinders, bore and speed.';}},
+ {seg:GN[2],g:2,zone:'shaft',title:'Propulsion · coupling, gear and shaft line',items:['Coupling and clutch','Reduction gear','Shaft and bearings','Axle','Brake'],
+  tex:function(){return ['2748\\dfrac{P}{\\text{rpm}} + 40413\\sqrt{m_g} + 0.081\\left(\\dfrac{MCR}{\\text{rpm}}\\right)^{2/3}\\!\\!754\\,L_s + 12.14P^{0.85} + 20530','= '+n(I(2,'Coupling and clutch'))+' + '+n(I(2,'Reduction gear'))+' + '+n(I(2,'Shaft and bearings'))+' + '+n(I(2,'Axle'))+' + 20{,}530 = '+n(S(2,['Coupling and clutch','Reduction gear','Shaft and bearings','Axle','Brake']))];}},
+ {seg:GN[2],g:2,zone:'prop',title:'Propulsion · propeller',items:['Propeller'],
+  tex:function(){var f=V.Propeller_pitch==='f';return [(f?'400':'582')+'\\,P^{0.7}N_p = '+(f?'400':'582')+' \\times '+n(V.Engine_power_bhp)+'^{0.7} \\times '+V.N_propellers+' = '+n(I(2,'Propeller'))];},
+  html:function(){return V.Propeller_pitch==='f'?'Fixed pitch. A controllable-pitch propeller costs 582 instead of 400.':'Controllable pitch.';}},
+ {seg:GN[2],g:2,zone:'er',title:'Propulsion · engine room fans and labour',items:['Engine room ventilation','Labour'],
+  tex:function(){return ['12.12\\,N_f\\sqrt{Q_f} = '+n(I(2,'Engine room ventilation')),'c_L\\left(10P^{2/3}N_e + K_1 + K_2PN_p + 420 + 0.47L(B+D)\\right) = '+n(V.Labour_cost)+' \\times '+n(labHours(2))+' = '+n(I(2,'Labour'))];}},
+ {seg:GN[3],g:3,zone:'er',title:'Auxiliaries · machinery for the engine',items:['Circulating, refrigeration, lubrication','Steam generation','Engine starting','Fuel transfer','Purification and heating','Static purifiers'],
+  tex:function(){return ['(55000+52500)\\left(\\dfrac{P}{2237}\\right)^{0.65} + 35000\\left(\\dfrac{P}{2237}\\right)^{0.5} = '+n(I(3,'Circulating, refrigeration, lubrication')),
+   '\\text{steam, starting air, fuel transfer, purifiers: } '+n(S(3,['Steam generation','Engine starting','Fuel transfer','Purification and heating','Static purifiers']))];}},
+ {seg:GN[3],g:3,zone:'pumps',title:'Auxiliaries · pumps, firefighting and ballast water',items:['Bilge separator','Fire, ballast, bilge and service pumps','Firefighting system','Ballast water treatment'],
+  tex:function(){return ['970K_1Q_b^{1/3} + 1552K_1Q_f^{1/3} + 1552K_2Q_f + 1778K_3Q_b = '+n(I(3,'Fire, ballast, bilge and service pumps')),'13.58\\,V_{prot} + 150000 + 100\\,Q_{ballast} + 252\\sqrt{GT} = '+n(S(3,['Firefighting system','Ballast water treatment','Bilge separator']))];},
+  html:function(){return 'K<sub>1</sub>, K<sub>2</sub>, K<sub>3</sub> are set by the gross tonnage ('+fmt(V.Gross_tonnage)+' GT).';}},
+ {seg:GN[3],g:3,zone:'piping',title:'Auxiliaries · piping',items:['Piping'],
+  tex:function(){return ['73\\,L_{ER}H_{ER}B + 787L + 13P + 3V_{holds} + 10A_{cabins}','= '+n(73*V.Engine_room_length*V.Engine_room_height*V.Ship_beam)+' + '+n(787*V.Ship_length)+' + '+n(13*V.Engine_power_bhp)+' + '+n(3*V.Cargo_hold_volume)+' + '+n(10*V.Cabin_area)+' = '+n(I(3,'Piping'))];}},
+ {seg:GN[3],g:3,zone:'bow',title:'Auxiliaries · bow thruster',items:['Bow thrusters'],
+  tex:function(){var F=0.065*V.Lateral_area;return ['F = 0.065\\,A_L = '+n(F,1)+',\\quad P = 3.572F = '+n(3.572*F)+',\\quad 1086\\,P^{0.82}N = '+n(I(3,'Bow thrusters'))];}},
+ {seg:GN[3],g:3,zone:'funnel',title:'Auxiliaries · exhaust cleaning',items:['NOx reduction','SOx scrubber'],
+  tex:function(){return ['45\\,P + k_{SOx}P = 45 \\times '+n(V.Engine_power_bhp)+' + '+n(I(3,'SOx scrubber'))+' = '+n(S(3,['NOx reduction','SOx scrubber']))];},
+  html:function(){return 'The NOx term is always charged in v06.';}},
+ {seg:GN[3],g:3,zone:'er',title:'Auxiliaries · labour',items:['Labour'],
+  tex:function(){return ['c_L(5.5L + 11P^{0.35} + K_3 + 0.45P + N_c(40+3.5Q_c) + (300+0.056P)N_{oil}N_{DO}N_{FO})','= '+n(V.Labour_cost)+' \\times '+n(labHours(3))+' = '+n(I(3,'Labour'))];}},
+ {seg:GN[4],g:4,zone:'gens',title:'Electrical · generating sets',items:['Diesel generators','Turbo-generators','Clutch generators','Shaft generators'],
+  tex:function(){return ['N\\left(407\\dfrac{D^{2.2}n_{cyl}^{0.8}}{\\text{rpm}} + 38797\\left(\\dfrac{P_g}{\\text{rpm}}\\right)^{2/3}\\right) = '+V.Diesel_gen_n+'\\left(407\\dfrac{'+n(V.Diesel_gen_diameter)+'^{2.2}\\,'+V.Diesel_gen_cylinders+'^{0.8}}{'+n(V.Diesel_gen_rpm)+'} + 38797\\left(\\dfrac{'+n(V.Diesel_gen_power)+'}{'+n(V.Diesel_gen_rpm)+'}\\right)^{2/3}\\right)','= '+n(S(4,['Diesel generators','Turbo-generators','Clutch generators','Shaft generators']))];}},
+ {seg:GN[4],g:4,zone:'cables',title:'Electrical · installation and labour',items:['Electrical installations','Labour'],
+  tex:function(){return ['776\\,P_{inst}^{0.77} = 776 \\times '+n(V.Power_installed)+'^{0.77} = '+n(I(4,'Electrical installations')),'c_L(4A_c + 6\\textstyle\\sum P_g) = '+n(I(4,'Labour'))];}},
+ {seg:GN[5],g:5,zone:'house',title:'Living spaces · cabins and services',items:['Cabins','HVAC','Mechanical ventilation','Doors and windows','Stairs'],
+  tex:function(){return ['606A_c + 97A_c + 367N + 2A_c + 4372N^{0.48} + 36L^{1.6}','A_c = '+n(V.Cabin_area)+'\\,\\text{m}^2,\\ N = '+(V.Passengers+V.Crew)+' \\ \\rightarrow\\ '+n(S(5,['Cabins','HVAC','Mechanical ventilation','Doors and windows','Stairs']))];}},
+ {seg:GN[5],g:5,zone:'galley',title:'Living spaces · galley, laundry and labour',items:['Galley and cold stores','Laundry','Labour'],
+  tex:function(){return ['485N + 2910V_r^{2/3} + 388N_{crew} = '+n(S(5,['Galley and cold stores','Laundry'])),'c_L(18A_c + 115N_{crew}) = '+n(V.Labour_cost)+' \\times '+n(18*V.Cabin_area+115*V.Crew)+' = '+n(I(5,'Labour'))];}},
+ {seg:GN[6],g:6,zone:'san',title:'Sanitary system',items:['Fresh water generators','Hydrophore groups','Sewage treatment','Incinerator','Labour'],
+  tex:function(){return ['2231NQ + 1067N_p^{0.5} + 4268N_p^{0.4} + 18428N_p^{0.2} + c_L(480 + 8NQ + 3.5N_p) = '+n(R[6].tot)];}},
+ {seg:GN[7],g:7,zone:'bridge',title:'Navigation and communication',items:['Navigation and communication','Auxiliary navigation equipment','Internal communications','Labour'],
+  tex:function(){var c=I(7,'Navigation and communication');return ['C_{nav} = '+n(c)+'\\ (\\text{level '+V.Expense_level+'}) \\qquad C_{nav}(1 + 0.08 + 0.12) + C_{int} = '+n(R[7].tot)];},
+  html:function(){return 'A fixed package price by level: low 203,561, medium 292,291, high 381,021.';}},
+ {seg:GN[8],g:8,zone:'boat',title:'Safety equipment',items:['Rowboats','Open motorboats','Semi-closed motorboats','Closed motorboats','Fire-resistant motorboats','Liferafts','Davits','Personal protective equipment','Labour'],
+  tex:function(){return ['k\\,N n^{2/3}\\ (\\text{boats}) + 1778Nn^{1/3}\\ (\\text{rafts}) + 6465N_bn_{max}^{2/3}\\ (\\text{davits}) + 4041 + 30N_p = '+n(R[8].tot)];}},
+ {seg:'Whole ship',g:-3,zone:'all',title:'The whole ship',items:[],
+  tex:function(){return ['C_{direct} = \\textstyle\\sum_{g=1}^{9} C_g = '+n(TOT)];},html:function(){return 'This is the tool’s “estimated newbuilding cost”: equipment, materials and yard labour. € '+fmt(TOT/V.W)+' per tonne of steel.';}},
+ {seg:'Price',g:-4,zone:'all',title:'From cost to price (not in the tool)',items:[],
+  tex:function(){var s=IND.reduce(function(a,x){return a+x[1];},0);return ['\\text{Price} = C_{direct}\\left(1+\\textstyle\\sum s_i\\right) = '+n(TOT)+' \\times '+n(1+s/100,3)+' = '+n(PRICE)];},
+  html:function(){return 'Design, class, overheads, contingency and profit as shares of the direct cost: assumptions, set them below the drawing.';}}];
+function drawTree(){var y0=16,rh=(452-y0)/9,i;cx.fillStyle=col('--paper');cx.fillRect(0,0,800,610);
+ cx.strokeStyle=col('--grid');cx.lineWidth=1;for(i=0;i<=800;i+=25){cx.beginPath();cx.moveTo(i,0);cx.lineTo(i,610);cx.stroke();}for(i=0;i<=610;i+=25){cx.beginPath();cx.moveTo(0,i);cx.lineTo(800,i);cx.stroke();}
+ var ry=y0+4.5*rh;cx.fillStyle=col('--card');cx.strokeStyle=col('--ink');cx.lineWidth=1.4;cx.beginPath();cx.rect(18,ry-40,120,80);cx.fill();cx.stroke();
+ cx.fillStyle=col('--fg');cx.font='700 13px IBM Plex Sans, Arial';cx.textAlign='center';cx.fillText('Newbuilding',78,ry-12);cx.fillText('cost',78,ry+4);cx.font='500 11px IBM Plex Sans, Arial';cx.fillStyle=col('--mut');cx.fillText('€ '+fmt(TOT/1e6,1)+' M',78,ry+24);cx.textAlign='left';
+ for(i=0;i<9;i++){var y=y0+i*rh+rh/2,vis=Math.min(1,Math.max(0,u*3-i*0.12));if(vis<=0)continue;cx.globalAlpha=vis;
+  cx.strokeStyle=col('--ink2');cx.lineWidth=1;cx.beginPath();cx.moveTo(138,ry);cx.lineTo(152,ry);cx.lineTo(152,y);cx.lineTo(166,y);cx.stroke();
+  cx.fillStyle=col(GC[i]);cx.beginPath();cx.rect(166,y-rh/2+5,150,rh-10);cx.fill();cx.fillStyle='#fff';cx.font='600 12px IBM Plex Sans, Arial';cx.fillText((i+1)+'  '+GN[i],174,y-2);cx.font='500 10.5px IBM Plex Sans, Arial';cx.fillText(R[i].items.length+' items · € '+fmt(R[i].tot/1e6,2)+' M',174,y+13);
+  cx.strokeStyle=col(GC[i]);cx.beginPath();cx.moveTo(316,y);cx.lineTo(328,y);cx.stroke();
+  var words=R[i].items.map(function(x){return x[0];}),line='',ly=y-rh/2+16,lx=332;cx.font='400 10.5px IBM Plex Sans, Arial';cx.fillStyle=col('--fg');
+  for(var w=0;w<words.length;w++){var t=(line?line+' · ':'')+words[w];if(cx.measureText(t).width>455){cx.fillText(line,lx,ly);ly+=13;line=words[w];if(ly>y+rh/2-2)break;}else line=t;}if(line&&ly<=y+rh/2-2)cx.fillText(line,lx,ly);cx.globalAlpha=1;}}
+var SHORT={'Breakdown':'Breakdown','Start':'In / out','Steel weight':'Weight','Steel structure':'Steel','Deck and cargo':'Deck','Propulsion':'Propulsion','Auxiliaries':'Auxiliaries','Electrical':'Electrical','Living spaces':'Living','Sanitary':'Sanitary','Navigation':'Navigation','Safety':'Safety','Whole ship':'Whole','Price':'Price'};
+var SEGS=[];STEPS.forEach(function(s,i){if(!SEGS.length||SEGS[SEGS.length-1].n!==s.seg)SEGS.push({n:s.seg,a:i,b:i,g:s.g});else SEGS[SEGS.length-1].b=i;});
+function stepVal(i){var s=STEPS[i];if(s.g<0)return 0;return S(s.g,s.items);}
+
+/* ================= drawing: a schematic general arrangement ================= */
+var cv=$('#cv'),cx=cv.getContext('2d'),css;
+function tok(){css=getComputedStyle(document.documentElement);}function col(n){return css.getPropertyValue(n).trim();}
+function rgba(c,a){if(c.charAt(0)==='#'){var x=parseInt(c.slice(1),16);return 'rgba('+((x>>16)&255)+','+((x>>8)&255)+','+(x&255)+','+a+')';}return c;}
+var G={};
+function geom(){var L=V.Ship_length,B=V.Ship_beam,D=V.Ship_depth,T=Math.min(V.Draught,D*0.95);
+ var top=D+Math.max(V.Dh_h,4)+6, s=Math.min(746/(L+19),(236-28)/top,112/B);
+ G={L:L,B:B,D:D,T:T,s:s,x0:24+7*s,yk:236,yc:345,
+  xap:0.04*L,xer:0.04*L+V.Engine_room_length,xcol:0.95*L,dh0:0.04*L,dh1:0.04*L+V.Dh_l,fcl:Math.max(4,V.Fc_l),fch:V.Fc_h,dhh:V.Dh_h};
+ var bayL=13.2;G.nb=Math.max(1,Math.floor((G.xcol-G.xer-1)/bayL));G.bayL=(G.xcol-G.xer-1)/G.nb;
+ G.rows=Math.max(2,Math.floor((B-1)/2.5));
+ var perTier=G.nb*G.rows*2;G.tiers=Math.max(1,Math.min(7,Math.ceil(V.TEU_on_deck/perTier)));
+ G.htiers=Math.max(1,Math.floor((D-1.5)/2.6));}
+function X(x){return G.x0+x*G.s;}function Z(z){return G.yk-z*G.s;}function Y(y){return G.yc+y*G.s;}
+function halfB(x){var L=G.L,B=G.B/2;if(x<0.2*L){var u=(x+5)/(0.2*L+5);return B*(0.55+0.45*Math.sin(Math.min(1,Math.max(0,u))*Math.PI/2));}
+ if(x<0.68*L)return B;var u2=(x-0.68*L)/(L+8-0.68*L);return B*Math.sqrt(Math.max(0,1-u2*u2*u2*0.98-u2*0.02));}
+function hullProfile(){var L=G.L,D=G.D,T=G.T;cx.beginPath();
+ cx.moveTo(X(-5),Z(D));cx.lineTo(X(-4.6),Z(T+0.8));cx.quadraticCurveTo(X(0.5),Z(T*0.72),X(2.5),Z(T*0.62));cx.lineTo(X(6.5),Z(T*0.45));cx.quadraticCurveTo(X(7.5),Z(0),X(10),Z(0));
+ cx.lineTo(X(L-6),Z(0));cx.quadraticCurveTo(X(L+1),Z(0),X(L+3.8),Z(T*0.28));cx.quadraticCurveTo(X(L+4.6),Z(T*0.45),X(L+2.2),Z(T*0.62));
+ cx.quadraticCurveTo(X(L+0.5),Z(T*0.72),X(L+2),Z(T*0.95));cx.lineTo(X(L+7),Z(D+G.fch));cx.lineTo(X(L-G.fcl),Z(D+G.fch));cx.lineTo(X(L-G.fcl),Z(D));cx.closePath();}
+function deckPlan(){cx.beginPath();var x;cx.moveTo(X(-5),Y(-halfB(-5)));for(x=-5;x<=G.L+7;x+=1)cx.lineTo(X(x),Y(-halfB(x)));cx.lineTo(X(G.L+8),Y(0));for(x=G.L+7;x>=-5;x-=1)cx.lineTo(X(x),Y(halfB(x)));cx.closePath();}
+var HL=null,HC='--m1',HA=0;
+function hl(z){return HL===z||(HL==='deckall'&&(z==='moor'||z==='hatch'||z==='rudder'||z==='cargo'))||(HL==='all'&&z!=='en'&&z!=='paint');}
+function sty(z,fillA){var on=hl(z);cx.strokeStyle=on?col(HC):col('--ink');cx.lineWidth=on?1.8:0.9;cx.fillStyle=on?rgba(col(HC),fillA||0.35*HA+0.05):'transparent';return on;}
+function box(x0,z0,x1,z1,z){var on=sty(z);cx.beginPath();cx.rect(X(x0),Z(z1),(x1-x0)*G.s,(z1-z0)*G.s);if(on)cx.fill();cx.stroke();}
+function pbox(x0,y0,x1,y1,z){var on=sty(z);cx.beginPath();cx.rect(X(x0),Y(y0),(x1-x0)*G.s,(y1-y0)*G.s);if(on)cx.fill();cx.stroke();}
+function drawGA(){
+ var L=G.L,D=G.D,T=G.T,B=G.B,f=FAMS[fam].k,s=G.s,i,j;
+ cx.fillStyle=col('--paper');cx.fillRect(0,0,1000,610);
+ /* sheet grid */
+ cx.strokeStyle=col('--grid');cx.lineWidth=1;for(i=0;i<=1000;i+=25){cx.beginPath();cx.moveTo(i,0);cx.lineTo(i,610);cx.stroke();}for(i=0;i<=610;i+=25){cx.beginPath();cx.moveTo(0,i);cx.lineTo(1000,i);cx.stroke();}
+ /* ---- PROFILE ---- */
+ /* hull */
+ var onH=hl('hull')||hl('paint');hullProfile();cx.fillStyle=col('--paper');cx.fill();
+ if(hl('hull')){hullProfile();cx.fillStyle=rgba(col(HC),0.12+0.25*HA);cx.fill();}
+ if(hl('paint')){cx.save();hullProfile();cx.clip();cx.fillStyle=rgba(col(HC),0.15+0.35*HA);cx.fillRect(0,Z(T),1000,400);cx.restore();}
+ if(hl('en')){cx.save();hullProfile();cx.clip();cx.fillStyle=rgba(col('--m0'),0.15+0.25*HA);cx.fillRect(X(-5),Z(T),(L+13)*s,T*s);cx.fillStyle=rgba(col('--m2'),0.12+0.2*HA);cx.fillRect(X(-5),Z(D),(L+13)*s,(D-T)*s);cx.restore();}
+ hullProfile();cx.strokeStyle=onH?col(HC):col('--ink');cx.lineWidth=onH?2.2:1.4;cx.stroke();
+ /* double bottom, bulkheads */
+ cx.strokeStyle=col('--ink2');cx.lineWidth=0.8;cx.beginPath();cx.moveTo(X(G.xap),Z(1.5));cx.lineTo(X(G.xcol),Z(1.5));cx.stroke();
+ [G.xap,G.xer,G.xcol].forEach(function(x){cx.beginPath();cx.moveTo(X(x),Z(0.2));cx.lineTo(X(x),Z(D));cx.stroke();});
+ for(i=2;i<G.nb;i+=2){var xb=G.xer+0.5+i*G.bayL;cx.beginPath();cx.moveTo(X(xb),Z(1.5));cx.lineTo(X(xb),Z(D));cx.stroke();}
+ /* holds */
+ cx.lineWidth=0.6;cx.strokeStyle=col('--ink2');
+ for(i=0;i<G.nb;i++){var x0=G.xer+0.5+i*G.bayL+0.3,x1=x0+G.bayL-0.6;
+  if(f==='c'){var hz=Math.min(G.htiers,Math.floor((D-1.6)/2.6));for(j=0;j<hz;j++){var inner=(x0>0.15*L&&x1<0.85*L)||j>0;if(!inner&&j===0)continue;cx.strokeRect(X(x0),Z(1.6+(j+1)*2.6),(x1-x0)*s/2-1,2.5*s);cx.strokeRect(X((x0+x1)/2),Z(1.6+(j+1)*2.6),(x1-x0)*s/2-1,2.5*s);}}
+  else if(f==='b'){cx.beginPath();cx.moveTo(X(x0),Z(1.5+2));cx.lineTo(X(x0+1.5),Z(1.5));cx.moveTo(X(x1),Z(1.5+2));cx.lineTo(X(x1-1.5),Z(1.5));cx.stroke();}
+  else{cx.beginPath();cx.moveTo(X(x0),Z(D-0.5));cx.lineTo(X(x1),Z(D-0.5));cx.stroke();}}
+ /* hatch covers and cargo */
+ for(i=0;i<G.nb;i++){var a=G.xer+0.5+i*G.bayL+0.4,b=a+G.bayL-0.8;
+  if(f!=='t')box(a,D,b,D+1.4,'hatch');
+  if(f==='c'){for(j=0;j<G.tiers;j++){var zz=D+1.4+j*2.6;var on2=sty('cargo');cx.beginPath();cx.rect(X(a),Z(zz+2.55),(b-a)*s/2-0.6,2.5*s);cx.rect(X((a+b)/2),Z(zz+2.55),(b-a)*s/2-0.6,2.5*s);if(on2)cx.fill();cx.stroke();}}}
+ if(f==='t'){var on3=sty('cargo');cx.lineWidth=on3?2.2:1.2;cx.beginPath();cx.moveTo(X(G.xer+2),Z(D+1));cx.lineTo(X(G.xcol-3),Z(D+1));cx.moveTo(X(G.xer+2),Z(D+1.6));cx.lineTo(X(G.xcol-3),Z(D+1.6));cx.stroke();box(L*0.52,D,L*0.52+4,D+2.6,'cargo');}
+ if(f==='b'){sty('cargo');}
+ /* cargo ventilation heads at the bulkheads */
+ for(i=0;i<=G.nb;i+=2){var xv=G.xer+0.5+i*G.bayL;box(xv-0.6,D,xv+0.6,D+2.2,'hatch');}
+ /* cranes */
+ if(V.N_cranes>0){for(i=0;i<V.N_cranes;i++){var xc=G.xer+G.bayL*(1+i*2.2);box(xc-1,D,xc+1,D+6,'hatch');cx.beginPath();cx.moveTo(X(xc),Z(D+6));cx.lineTo(X(xc+V.Crane_reach*0.6),Z(D+9));cx.stroke();}}
+ /* engine room, engine, shaft, propeller, rudder */
+ if(hl('er')){cx.fillStyle=rgba(col(HC),0.1+0.2*HA);cx.fillRect(X(G.xap),Z(D),(G.xer-G.xap)*s,(D-1.5)*s);}
+ box(G.xap+2.5,1.5,G.xap+2.5+Math.min(9,V.Engine_room_length*0.45),Math.min(D*0.72,1.5+0.55*D),'engine');
+ var pz=T*0.36,pr=T*0.31;
+ var onS=sty('shaft');cx.lineWidth=onS?3.2:1.6;cx.beginPath();cx.moveTo(X(G.xap+2.5),Z(pz));cx.lineTo(X(3.2),Z(pz));cx.stroke();
+ var onP=sty('prop');cx.lineWidth=onP?2:1;cx.beginPath();cx.ellipse(X(2.8),Z(pz),1.1*s*0.6,pr*s,0,0,6.3);if(onP){cx.fillStyle=rgba(col(HC),0.5);cx.fill();}cx.stroke();
+ box(-2.6,0.6,0.6,T*0.82,'rudder');box(-3.5,D-2.4,2,D,'rudder');
+ /* gensets, pumps */
+ for(i=0;i<Math.max(1,Math.min(4,V.Diesel_gen==='y'?V.Diesel_gen_n:1));i++)box(G.xer-7+i*0.1,1.5+i*2.2,G.xer-2,3.4+i*2.2,'gens');
+ box(G.xap+1,1.6,G.xap+2.2,3.2,'pumps');box(G.xer-11,1.6,G.xer-9,3,'pumps');box(G.xer-11,3.3,G.xer-9,4.6,'pumps');
+ if(hl('pumps')||hl('piping')){cx.strokeStyle=col(HC);cx.lineWidth=1.6;cx.setLineDash([5,3]);cx.beginPath();cx.moveTo(X(G.xap+2),Z(1.0));cx.lineTo(X(G.xcol),Z(1.0));if(hl('piping')){cx.moveTo(X(G.xer),Z(D-0.6));cx.lineTo(X(G.xcol),Z(D-0.6));cx.moveTo(X(G.xer-3),Z(1));cx.lineTo(X(G.xer-3),Z(D));}cx.stroke();cx.setLineDash([]);}
+ if(hl('cables')){cx.strokeStyle=col(HC);cx.lineWidth=1.6;cx.setLineDash([2,3]);cx.beginPath();cx.moveTo(X(G.xer-4),Z(3));cx.lineTo(X(G.xer-4),Z(D-0.3));cx.lineTo(X(L-2),Z(D-0.3));cx.moveTo(X(G.dh0+3),Z(D-0.3));cx.lineTo(X(G.dh0+3),Z(D+G.dhh));cx.stroke();cx.setLineDash([]);}
+ /* bow thruster */
+ var onB=sty('bow');cx.beginPath();cx.arc(X(L-4),Z(T*0.4),Math.max(3,1.2*s),0,6.3);if(onB)cx.fill();cx.stroke();
+ /* deckhouse, galley, sanitary, bridge, mast, funnel, lifeboat */
+ var tierH=2.8,nt=Math.max(2,Math.round(G.dhh/tierH)),hh=nt*tierH;
+ box(G.dh0,D,G.dh1,D+hh-tierH,'house');
+ cx.strokeStyle=col('--ink2');cx.lineWidth=0.6;for(i=1;i<nt-1;i++){cx.beginPath();cx.moveTo(X(G.dh0),Z(D+i*tierH));cx.lineTo(X(G.dh1),Z(D+i*tierH));cx.stroke();
+  for(j=0;j<Math.floor(V.Dh_l/2.6);j++)cx.strokeRect(X(G.dh0+1+j*2.6),Z(D+i*tierH-0.8),0.9*s,0.9*s);}
+ box(G.dh0+0.5,D+0.2,G.dh0+V.Dh_l*0.45,D+tierH-0.2,'galley');
+ box(G.dh1-3,D+0.2,G.dh1-0.6,D+tierH-0.4,'san');
+ box(G.dh0-1,D+hh-tierH,G.dh1+1.2,D+hh,'bridge');
+ var onBr=hl('bridge');cx.strokeStyle=onBr?col(HC):col('--ink');cx.lineWidth=onBr?1.6:0.9;cx.beginPath();cx.moveTo(X((G.dh0+G.dh1)/2),Z(D+hh));cx.lineTo(X((G.dh0+G.dh1)/2),Z(D+hh+5));cx.moveTo(X((G.dh0+G.dh1)/2-2),Z(D+hh+4));cx.lineTo(X((G.dh0+G.dh1)/2+2),Z(D+hh+4));cx.stroke();
+ if(onBr){cx.globalAlpha=.7;for(i=1;i<4;i++){cx.beginPath();cx.arc(X((G.dh0+G.dh1)/2),Z(D+hh+5),i*7+(HA*20)%7,-2.6,-0.5);cx.stroke();}cx.globalAlpha=1;}
+ /* funnel */
+ var onF=sty('funnel');cx.beginPath();cx.moveTo(X(G.dh0-4.2),Z(D));cx.lineTo(X(G.dh0-4.2),Z(D+hh+1.5));cx.lineTo(X(G.dh0-0.4),Z(D+hh+2.2));cx.lineTo(X(G.dh0-0.4),Z(D));if(onF)cx.fill();cx.stroke();
+ /* free-fall lifeboat and rafts at the stern */
+ var onL=sty('boat');cx.save();cx.translate(X(-3.2),Z(D+3.2));cx.rotate(-0.33);cx.beginPath();cx.moveTo(0,0);cx.lineTo(8.5*s,0);cx.lineTo(9.4*s,-1.6*s);cx.lineTo(0.8*s,-2.4*s);cx.closePath();if(onL)cx.fill();cx.stroke();cx.restore();
+ box(G.dh1+0.5,D+tierH,G.dh1+2,D+tierH+1.1,'boat');
+ /* mooring: anchor, windlass, winches */
+ var onM=sty('moor');cx.beginPath();cx.moveTo(X(L+3.6),Z(D-1.5));cx.lineTo(X(L+3.6),Z(D-4.2));cx.moveTo(X(L+2.6),Z(D-3.6));cx.quadraticCurveTo(X(L+3.6),Z(D-5),X(L+4.6),Z(D-3.6));cx.stroke();
+ box(L-5,D+G.fch,L-2.5,D+G.fch+1.2,'moor');box(-3,D,-1,D+1.1,'moor');
+ /* waterline, baseline, marks */
+ cx.strokeStyle=col('--wl');cx.lineWidth=1.2;cx.setLineDash([8,4]);cx.beginPath();cx.moveTo(X(-7),Z(T));cx.lineTo(X(L+10),Z(T));cx.stroke();cx.setLineDash([]);
+ cx.fillStyle=col('--wl');cx.font='600 10px IBM Plex Mono, monospace';cx.fillText('DWL  T = '+fmt(T,2)+' m',X(L*0.42),Z(T)+12);
+ cx.strokeStyle=col('--ink2');cx.lineWidth=0.8;cx.beginPath();cx.moveTo(X(-6),Z(0));cx.lineTo(X(L+9),Z(0));cx.stroke();
+ cx.fillStyle=col('--ink2');cx.font='500 9px IBM Plex Mono, monospace';cx.textAlign='center';
+ for(i=0;i<=L;i+=20){cx.beginPath();cx.moveTo(X(i),Z(0));cx.lineTo(X(i),Z(0)+4);cx.stroke();cx.fillText(i,X(i),Z(0)+14);}
+ cx.fillText('AP',X(0),Z(0)+25);cx.fillText('FP',X(L),Z(0)+25);cx.textAlign='left';
+ cx.font='600 11px IBM Plex Sans, Arial';cx.fillStyle=col('--ink');cx.fillText('PROFILE',X(-6),Z(0)+40);
+ /* ---- UPPER DECK ---- */
+ var onHp=hl('hull')||hl('paint')||hl('en');deckPlan();cx.fillStyle=col('--paper');cx.fill();if(onHp){deckPlan();cx.fillStyle=rgba(col(hl('en')?'--m0':HC),0.1+0.2*HA);cx.fill();}
+ deckPlan();cx.strokeStyle=onHp?col(HC):col('--ink');cx.lineWidth=onHp?2:1.3;cx.stroke();
+ cx.strokeStyle=col('--ink2');cx.lineWidth=0.6;cx.setLineDash([4,3]);cx.beginPath();cx.moveTo(X(-6),Y(0));cx.lineTo(X(L+9),Y(0));cx.stroke();
+ cx.strokeRect(X(G.xap),Y(-halfB(G.xap)+0.8),(G.xer-G.xap)*s,(2*halfB(G.xap)-1.6)*s);cx.setLineDash([]);
+ for(i=0;i<G.nb;i++){var a2=G.xer+0.5+i*G.bayL+0.4,b2=a2+G.bayL-0.8,hw=Math.min(halfB(a2),halfB(b2))-1.6;if(hw<2)continue;
+  if(f==='t')continue;pbox(a2,-hw,b2,hw,f==='c'&&hl('cargo')?'cargo':'hatch');
+  if(f==='c'){cx.strokeStyle=hl('cargo')?col(HC):col('--ink2');cx.lineWidth=0.5;var rw=2*hw/Math.max(1,Math.floor(2*hw/2.5));for(var yy=-hw+rw;yy<hw-0.1;yy+=rw){cx.beginPath();cx.moveTo(X(a2),Y(yy));cx.lineTo(X(b2),Y(yy));cx.stroke();}cx.beginPath();cx.moveTo(X((a2+b2)/2),Y(-hw));cx.lineTo(X((a2+b2)/2),Y(hw));cx.stroke();}}
+ if(f==='t'){var on4=sty('cargo');cx.lineWidth=on4?2:1;for(var py=-1.5;py<=1.5;py+=1){cx.beginPath();cx.moveTo(X(G.xer+2),Y(py));cx.lineTo(X(G.xcol-3),Y(py));cx.stroke();}pbox(L*0.5,-G.B/2+2,L*0.5+3,G.B/2-2,'cargo');}
+ pbox(G.dh0,-G.B*0.42,G.dh1,G.B*0.42,'house');pbox(G.dh0-1,-G.B/2,G.dh0+3,G.B/2,'bridge');
+ pbox(G.dh0-4.2,-2,G.dh0-0.4,2,'funnel');pbox(-4,-1.6,3.5,1.6,'boat');
+ pbox(L-5,-2.5,L-2.5,2.5,'moor');pbox(-3,-G.B*0.3,-1,-G.B*0.3+2,'moor');pbox(-3,G.B*0.3-2,-1,G.B*0.3,'moor');
+ var onBT=sty('bow');cx.setLineDash([3,2]);cx.beginPath();cx.moveTo(X(L-4),Y(-halfB(L-4)));cx.lineTo(X(L-4),Y(halfB(L-4)));cx.stroke();cx.setLineDash([]);
+ cx.font='600 11px IBM Plex Sans, Arial';cx.fillStyle=col('--ink');cx.fillText('UPPER DECK',X(-6),Y(G.B/2)+22);
+ /* EN annotations */
+ if(hl('en')){var w=WS;cx.font='600 11px IBM Plex Sans, Arial';cx.fillStyle=col('--m0');
+  cx.fillText('L(B+T) = '+fmt(w.e1),X(L*0.3),Z(T*0.45));cx.fillStyle=col('--m2');cx.fillText('0.85 L(D−T) = '+fmt(w.e2),X(L*0.3),Z(T+(D-T)*0.35));
+  cx.strokeStyle=col('--m9');cx.lineWidth=2;cx.setLineDash([4,3]);cx.strokeRect(X(G.dh0),Z(D+V.Dh_h),V.Dh_l*s,V.Dh_h*s);cx.strokeRect(X(L-G.fcl),Z(D+G.fch),G.fcl*s,G.fch*s);cx.setLineDash([]);
+  cx.fillStyle=col('--m9');cx.fillText('0.75 l·h = '+fmt(w.e4),X(G.dh1+1),Z(D+V.Dh_h*0.75));cx.fillText('0.85 l·h = '+fmt(w.e3),X(L-G.fcl-28),Z(D+G.fch+3));}
+ /* scale bar */
+ cx.strokeStyle=col('--ink');cx.lineWidth=1.2;var sx=X(L*0.62),sy=Z(0)+40;cx.beginPath();cx.moveTo(sx,sy);cx.lineTo(sx+20*s,sy);cx.moveTo(sx,sy-4);cx.lineTo(sx,sy+4);cx.moveTo(sx+10*s,sy-3);cx.lineTo(sx+10*s,sy+3);cx.moveTo(sx+20*s,sy-4);cx.lineTo(sx+20*s,sy+4);cx.stroke();
+ cx.fillStyle=col('--ink2');cx.font='500 10px IBM Plex Mono, monospace';cx.fillText('0',sx-3,sy-7);cx.fillText('20 m',sx+20*s-10,sy-7);
+ cx.fillText(FAMS[fam].ships[ship]+' · L '+fmt(L,1)+' × B '+fmt(B,1)+' × D '+fmt(D,2)+' m · schematic',X(L*0.62)-4,Y(G.B/2)+22);}
+var ANCH={all:[0.5,'m'],en:[0.5,'h'],hull:[0.55,'h'],paint:[0.55,'w'],moor:[1.01,'d'],hatch:[0.55,'c'],rudder:[-0.005,'r'],cargo:[0.6,'s'],deckall:[0.6,'c'],engine:[0,'e'],shaft:[0,'sh'],prop:[0,'p'],er:[0,'er'],pumps:[0,'pu'],piping:[0.5,'pi'],bow:[0.975,'b'],funnel:[0,'f'],gens:[0,'g'],cables:[0.5,'ca'],house:[0,'ho'],galley:[0,'ga'],san:[0,'sa'],bridge:[0,'br'],boat:[0,'bo']};
+function anchor(z){var L=G.L,D=G.D,T=G.T,hh=Math.max(2,Math.round(G.dhh/2.8))*2.8;
+ switch(z){case 'moor':return [X(L-3.7),Z(D+G.fch+0.6)];case 'hatch':return [X(L*0.55),Z(D+0.7)];case 'rudder':return [X(-1),Z(T*0.6)];case 'cargo':return [X(L*0.6),Z(D+1.4+G.tiers*1.3)];case 'deckall':return [X(L*0.6),Z(D+0.7)];
+  case 'engine':return [X(G.xap+6),Z(D*0.4)];case 'shaft':return [X(G.xap),Z(T*0.36)];case 'prop':return [X(2.8),Z(T*0.36)];case 'er':return [X((G.xap+G.xer)/2),Z(D*0.75)];case 'pumps':return [X(G.xer-10),Z(3)];
+  case 'piping':return [X(L*0.45),Z(1)];case 'bow':return [X(L-4),Z(T*0.4)];case 'funnel':return [X(G.dh0-2.3),Z(D+hh+1.8)];case 'gens':return [X(G.xer-4.5),Z(3)];case 'cables':return [X(L*0.5),Z(D-0.3)];
+  case 'house':return [X((G.dh0+G.dh1)/2),Z(D+hh*0.5)];case 'galley':return [X(G.dh0+3),Z(D+1.4)];case 'san':return [X(G.dh1-1.8),Z(D+1.3)];case 'bridge':return [X((G.dh0+G.dh1)/2),Z(D+hh-1.4)];
+  case 'boat':return [X(0.8),Z(D+3.2)];case 'paint':return [X(L*0.5),Z(T*0.5)];case 'en':return [X(L*0.5),Z(D)];default:return [X(L*0.5),Z(D*0.5)];}}
+/* the cost tower */
+var TX=812,TW=150,TB=572,TH=520;
+function towerDraw(cur,u){var price=STEPS[cur].g===-4,gi,k;
+ cx.fillStyle=col('--card');cx.globalAlpha=.92;cx.fillRect(TX-18,8,TW+30,TB+14);cx.globalAlpha=1;cx.strokeStyle=col('--line');cx.strokeRect(TX-17.5,8.5,TW+29,TB+13);
+ /* totals of the whole ship, to fix the scale */
+ var Et=0,Lt=0;R.forEach(function(r){r.items.forEach(function(x){if(isLab(x[0]))Lt+=x[1];else Et+=x[1];});});
+ var At=TOT*IND.reduce(function(a,x){return a+x[1]/100;},0);
+ var nc=price?3:2,gap=8,cw=(TW+12-gap*(nc-1))/nc,top=48,scale=(TB-top-30)/Math.max(Et,Lt,price?At:0,1);
+ var cols=[];for(k=0;k<nc;k++)cols.push(TX-6+k*(cw+gap));
+ var se=0,sl=0,ye=TB,yl=TB;
+ for(gi=0;gi<9;gi++){var sp=groupSplit(gi,cur,u),he=sp[0]*scale,hl_=sp[1]*scale;se+=sp[0];sl+=sp[1];
+  if(he>0){cx.fillStyle=col(GC[gi]);cx.fillRect(cols[0],ye-he,cw,he);cx.strokeStyle=col('--card');cx.lineWidth=1.2;cx.strokeRect(cols[0],ye-he,cw,he);
+   if(he>12){cx.fillStyle='#fff';cx.font='600 9.5px IBM Plex Sans, Arial';cx.textAlign='center';cx.fillText(SHORT[GN[gi]]||GN[gi],cols[0]+cw/2,ye-he/2+3.5);}ye-=he;}
+  if(hl_>0){cx.fillStyle=rgba(col(GC[gi]),0.4);cx.fillRect(cols[1],yl-hl_,cw,hl_);cx.save();cx.beginPath();cx.rect(cols[1],yl-hl_,cw,hl_);cx.clip();cx.strokeStyle=col(GC[gi]);cx.lineWidth=1.3;for(var q=-hl_;q<cw;q+=6){cx.beginPath();cx.moveTo(cols[1]+q,yl);cx.lineTo(cols[1]+q+hl_,yl-hl_);cx.stroke();}cx.restore();
+   cx.strokeStyle=col('--card');cx.lineWidth=1.2;cx.strokeRect(cols[1],yl-hl_,cw,hl_);
+   if(hl_>12){cx.fillStyle=col('--fg');cx.font='600 9.5px IBM Plex Sans, Arial';cx.textAlign='center';cx.fillText(SHORT[GN[gi]]||GN[gi],cols[1]+cw/2,yl-hl_/2+3.5);}yl-=hl_;}}
+ var sa=0,ya=TB;
+ if(price){var uu=Math.min(1,u*1.4);IND.forEach(function(x,j){var v=TOT*x[1]/100*Math.min(1,Math.max(0,uu*IND.length-j)),h=v*scale;sa+=v;if(h<=0)return;cx.fillStyle=col('--ind');cx.fillRect(cols[2],ya-h,cw,h);cx.strokeStyle=col('--card');cx.strokeRect(cols[2],ya-h,cw,h);
+  if(h>12){cx.fillStyle=col('--fg');cx.font='500 9px IBM Plex Sans, Arial';cx.textAlign='center';cx.fillText(x[0].split(' ')[0],cols[2]+cw/2,ya-h/2+3);}ya-=h;});}
+ /* column totals and names */
+ cx.textAlign='center';cx.fillStyle=col('--fg');cx.font='700 11.5px IBM Plex Sans, Arial';
+ cx.fillText(fmt(se/1e6,1)+' M',cols[0]+cw/2,ye-5);cx.fillText(fmt(sl/1e6,1)+' M',cols[1]+cw/2,yl-5);if(price)cx.fillText(fmt(sa/1e6,1)+' M',cols[2]+cw/2,ya-5);
+ cx.font='600 10px IBM Plex Sans, Arial';cx.fillStyle=col('--mut');cx.fillText('Equipment',cols[0]+cw/2,TB+11);cx.fillText('and materials',cols[0]+cw/2,TB+22);
+ cx.fillText('Labour',cols[1]+cw/2,TB+11);cx.fillText(fmt(sl/V.Labour_cost/1000)+' k h',cols[1]+cw/2,TB+22);if(price){cx.fillText('Additions',cols[2]+cw/2,TB+11);cx.fillText('(assumed)',cols[2]+cw/2,TB+22);}
+ cx.fillStyle=col('--fg');cx.font='700 16px IBM Plex Sans, Arial';cx.fillText('€ '+fmt((se+sl+sa)/1e6,2)+' M',TX+TW/2,30);
+ cx.font='500 10px IBM Plex Sans, Arial';cx.fillStyle=col('--mut');cx.fillText(price?'price (illustrative)':'direct cost so far',TX+TW/2,43);cx.textAlign='left';
+ return Math.min(ye,yl);}
+function credit(i,u){var c=Math.min(1,Math.max(0,(u-0.35)/0.45));return i<cur?1:(i===cur?c:0);}
+function isLab(name){return /^Labour/.test(name);}
+/* equipment and materials [0] and labour [1] of a group, so far */
+function groupSplit(g,c,u){var e=0,l=0;STEPS.forEach(function(st,i){if(st.g!==g)return;var k=i<c?1:(i===c?Math.min(1,Math.max(0,(u-0.35)/0.45)):0);if(!k)return;
+ st.items.forEach(function(nm){var v=I(g,nm)*k;if(isLab(nm))l+=v;else e+=v;});});return [e,l];}
+function groupSoFar(g,c,u){var s=0;STEPS.forEach(function(st,i){if(st.g!==g)return;var k=i<c?1:(i===c?Math.min(1,Math.max(0,(u-0.35)/0.45)):0);s+=stepVal(i)*k;});return s;}
+function draw(now){tok();var sc=cv.width/1000;cx.setTransform(sc,0,0,sc,0,0);cx.lineCap='round';cx.lineJoin='round';
+ var st=STEPS[cur];HL=st.zone;HC=st.g>=0?GC[st.g]:(st.g===-2?'--m0':'--m1');HA=Math.min(1,u/0.15);
+ if(st.zone==='tree')drawTree();else drawGA();var ty=towerDraw(cur,u);
+ /* leader line from the callout to the part */
+ var co=$('#callout'),cvr=cv.getBoundingClientRect(),r=co.getBoundingClientRect();
+ if(st.zone!=='all'&&st.zone!=='tree'&&r.width>0&&getComputedStyle(co).position==='absolute'&&u>0.15){var k=1000/cvr.width,bx=(r.left-cvr.left+r.width*0.5)*k,by=(r.top-cvr.top)*k,a=anchor(st.zone);
+  cx.strokeStyle=col(HC);cx.lineWidth=1.3;cx.globalAlpha=Math.min(1,(u-0.15)/0.15);cx.beginPath();cx.moveTo(bx,by);cx.lineTo(bx,(by+a[1])/2);cx.lineTo(a[0],a[1]);cx.stroke();cx.beginPath();cx.arc(a[0],a[1],3.5,0,6.3);cx.fillStyle=col(HC);cx.fill();cx.globalAlpha=1;}}
+
+/* ================= navigation and panels ================= */
+var cur=0,u=1,playing=false,SEC=7,last=0,shown=-1;
+function tex(l){if(window.MathJax&&MathJax.tex2svg){try{return MathJax.tex2svg(l,{display:false}).outerHTML;}catch(e){}}return '<code>'+l.replace(/</g,'&lt;')+'</code>';}
+function callout(){var st=STEPS[cur],c=st.g>=0?GC[st.g]:(st.g===-2?'--m0':'--m1');var v=stepVal(cur);
+ $('#callout').style.setProperty('--cc','var('+c+')');
+ $('#callout').innerHTML='<div class="ct">'+st.title+'</div>'+st.tex().map(function(l){return '<div class="cl">'+tex(l)+'</div>';}).join('')+
+  '<div class="cr">'+(st.g>=0?'<b style="color:var(--fg)">€ '+fmt(v)+'</b> added to the '+GN[st.g].toLowerCase()+'. ':'')+(st.html?st.html():'')+'</div>';}
+function stepsBar(){$('#steps').innerHTML=SEGS.map(function(sg,k){var c=sg.g>=0?GC[sg.g]:(sg.g===-2?'--m0':'--m1');return '<button data-seg="'+k+'" style="--c:var('+c+')" aria-current="'+(cur>=sg.a&&cur<=sg.b)+'" title="'+sg.n+'"><span class="sb"><i></i></span><span class="sl">'+(SHORT[sg.n]||sg.n)+'</span></button>';}).join('');}
+function stepsFill(){var bs=document.querySelectorAll('#steps button');SEGS.forEach(function(sg,k){var p=cur>sg.b?1:(cur<sg.a?0:((cur-sg.a)+Math.min(1,u))/(sg.b-sg.a+1));bs[k].querySelector('i').style.width=(p*100).toFixed(1)+'%';bs[k].setAttribute('aria-current',String(cur>=sg.a&&cur<=sg.b));});}
+function where(){var st=STEPS[cur],sg=SEGS.filter(function(x){return cur>=x.a&&cur<=x.b;})[0],c=st.g>=0?GC[st.g]:'--m0';var dots='';for(var i=sg.a;i<=sg.b;i++)dots+='<i class="'+(i<=cur?'on':'')+'"></i>';
+ $('#where').innerHTML='<b>'+sg.n+'</b><span>Step '+(cur+1)+' of '+STEPS.length+(sg.b>sg.a?' · part '+(cur-sg.a+1)+' of '+(sg.b-sg.a+1):'')+'</span><span class="dots" style="--c:var('+c+')">'+dots+'</span>';
+ $('#back').disabled=cur===0;$('#next').disabled=cur===STEPS.length-1;}
+function scene(){var st=STEPS[cur],h;
+ if(st.g>=0){var r=R[st.g],m=r.m,mx=Math.max.apply(null,r.items.map(function(x){return x[1];}))||1;
+  h='<h3>'+GN[st.g]+'</h3><p>'+m.desc+'</p>'+(m.watch?'<div class="watch">'+m.watch+'</div>':'')+'<div class="tw"><table class="items">'+r.items.map(function(x){var mine=st.items.indexOf(x[0])>=0,done=STEPS.some(function(s2,i){return i<cur&&s2.g===st.g&&s2.items.indexOf(x[0])>=0;});
+   return '<tr class="'+(mine||done?'':'dim')+'"><td>'+(mine?'<b>'+x[0]+'</b>':x[0])+'</td><td class="b"><div class="bg"><i style="width:'+(x[1]/mx*100).toFixed(1)+'%;--c:var('+m.col+')"></i></div></td><td class="v">€ '+fmt(x[1])+'</td></tr>';}).join('')+
+   '<tr class="tot"><td>'+GN[st.g]+', total</td><td></td><td class="v">€ '+fmt(r.tot)+'</td></tr></table></div><p class="note">Bold: the items of this step. Faded: the items still to come in this group.</p>';}
+ else if(st.g===-5){h='<h3>The cost breakdown structure</h3><p>The estimate is built bottom up: the ship is divided into nine groups, and each group into items. Every item has its own formula from the inputs; the group total is the sum of its items, and the ship’s cost the sum of the nine groups.</p><div class="tw"><table class="items">'+R.map(function(r,i){return '<tr><td><b>'+(i+1)+' · '+GN[i]+'</b><br><span class="note">'+r.items.map(function(x){return x[0];}).join(' · ')+'</span></td><td class="v">'+r.items.length+' items</td></tr>';}).join('')+'</table></div>';}
+ else if(st.g===-1){h='<h3>Inputs and outputs of the model</h3><p>The model takes the description of the ship and gives its cost. Three kinds of input:</p><ul style="margin:0 0 10px;padding-left:20px;font-size:14.5px"><li><b>Main design data</b>, known early: L, B, D, speed, gross tonnage, crew, hold volume, cabin area, steel weight, engine power and rpm.</li><li><b>Equipment</b>, known once the machinery and the outfit are chosen: the engine and generators, pumps, purifiers, compressors, anchors, winches, rudder, hatches, cranes, boats.</li><li><b>Yard and market data</b>: labour rate, man-hours per tonne, consumables, steel waste and price, steel transport.</li></ul><p>Outputs: a cost in € for each item, the total of each of the nine groups, and their sum, the estimated newbuilding cost. The coefficients are fixed in the code; the year of the prices is not stated.</p>';}
+ else if(st.g===-2){var w=WS;h='<h3>Steel weight</h3><p>The cost of the structure starts from its weight. Watson’s method needs only the main dimensions and the size of the superstructures and deckhouses, so it can be used before the structure is designed.</p><div class="tw"><table class="items"><tr><td>L(B+T)</td><td class="v">'+fmt(w.e1)+'</td></tr><tr><td>0.85 L(D−T)</td><td class="v">'+fmt(w.e2)+'</td></tr><tr><td>0.85 l·h, forecastle</td><td class="v">'+fmt(w.e3)+'</td></tr><tr><td>0.75 l·h, deckhouse</td><td class="v">'+fmt(w.e4)+'</td></tr><tr class="tot"><td>E<sub>N</sub></td><td class="v">'+fmt(w.EN)+'</td></tr><tr><td>C<sub>B</sub> at 0.8 D</td><td class="v">'+fmt(w.CB8,3)+'</td></tr><tr class="tot"><td>W, Watson (K = '+V.K_st+')</td><td class="v">'+fmt(w.W)+' t</td></tr><tr><td>W used for the cost</td><td class="v">'+fmt(V.W)+' t</td></tr></table></div><p class="note">Table 2.24 gives K and its range of validity in E<sub>N</sub>: container ships 0.036 ± 0.003 (6,000–13,000), bulk carriers 0.031 ± 0.002 (3,000–15,000), crude oil tankers 0.032 ± 0.003 (1,500–40,000). The coefficients are for mild steel; with high tensile steel the weight is somewhat lower.</p>';}
+ else if(st.g===-3){h='<h3>The whole ship</h3><div class="tw"><table class="items">'+R.map(function(r,i){return '<tr><td>'+GN[i]+'</td><td class="b"><div class="bg"><i style="width:'+(r.tot/TOT*100).toFixed(1)+'%;--c:var('+GC[i]+')"></i></div></td><td class="v">€ '+fmt(r.tot)+'</td></tr>';}).join('')+'<tr class="tot"><td>Estimated cost (the tool’s total)</td><td></td><td class="v">€ '+fmt(TOT)+'</td></tr></table></div>';}
+ else{h='<h3>From cost to price</h3><p>Shares of the direct cost, assumed for this page:</p>'+IND.map(function(x,i){return '<div class="pct"><label for="ind'+i+'">'+x[0]+'</label><output id="indo'+i+'">'+x[1]+' %</output><input type="range" id="ind'+i+'" min="0" max="30" step="0.5" value="'+x[1]+'" data-ind="'+i+'"></div>';}).join('')+'<p class="note">Not counted either: insulation and joinery outside the cabins, trials, launching, insurance and finance during construction.</p>';}
+ $('#scene').innerHTML=h;}
+function live(){var so=0,gi;for(gi=0;gi<9;gi++)so+=groupSoFar(gi,cur,u);
+ var price=STEPS[cur].g===-4;if(price){var uu=Math.min(1,u*1.4);IND.forEach(function(x,k){so+=TOT*x[1]/100*Math.min(1,Math.max(0,uu*IND.length-k));});}
+ var E_=0,L_=0;for(gi=0;gi<9;gi++){var sp2=groupSplit(gi,cur,u);E_+=sp2[0];L_+=sp2[1];}
+ $('#lsplit').innerHTML='Equipment and materials <b>€ '+fmt(E_)+'</b> · Labour <b>€ '+fmt(L_)+'</b> ('+fmt(L_/V.Labour_cost)+' man-hours at '+fmt(V.Labour_cost)+' €/h)';
+ $('#lt').textContent='€ '+fmt(so);$('#lts').textContent=price?'of € '+fmt(PRICE)+' with the assumed additions':'of € '+fmt(TOT)+', the whole ship (the tool’s total)';
+ var cg=STEPS[cur].g;$('#lmods').innerHTML=R.map(function(r,i){return '<i style="background:var('+GC[i]+')"></i><span class="'+(i===cg?'on':'')+'">'+GN[i]+'</span><b>€ '+fmt(groupSoFar(i,cur,u))+'</b>';}).join('');}
+/* inputs */
+function applies(f){var d=f[5];if(!d)return true;var v=V[d[0]];if(d[1]==='nz')return +v!==0;if(Array.isArray(d[1]))return +v>=d[1][1];return String(v)===d[1];}
+function fieldHTML(f){var k=f[0],v=V[k],on=applies(f),id='in_'+k,ctl;
+ if(f[3]==='c')ctl='<select id="'+id+'" data-k="'+k+'"'+(on?'':' disabled')+'>'+f[4].map(function(c){return '<option'+(String(v)===c?' selected':'')+'>'+c+'</option>';}).join('')+'</select>';
+ else ctl='<input id="'+id+'" data-k="'+k+'" inputmode="decimal" value="'+(typeof v==='number'?+v.toFixed(4):v)+'"'+(on?'':' disabled')+'>';
+ return '<div class="f'+(on?'':' off')+'"><label for="'+id+'">'+f[1]+(f[2]?' <span style="color:var(--mut)">('+f[2]+')</span>':'')+'</label>'+ctl+'</div>';}
+function inputs(){var st=STEPS[cur],h='',nt;
+ if(st.g===-2){h='<div class="fh">Steel weight</div><div class="form">'+STEEL_FIELDS.map(fieldHTML).join('')+'</div><div class="fh">Main dimensions</div><div class="form">'+SHARED.filter(function(f){return ['Ship_length','Ship_beam','Ship_depth'].indexOf(f[0])>=0;}).map(fieldHTML).join('')+'</div>';$('#inh').textContent='Inputs · steel weight';nt='Not in the tool: there W is typed in.';}
+ else if(st.g>=0){var m=R[st.g].m,sh=SHARED.filter(function(f){return m.shared.indexOf(f[0])>=0&&f[0]!=='W';});
+  h='<div class="fh">General inputs this group uses</div><div class="form">'+sh.map(fieldHTML).join('')+(m.shared.indexOf('W')>=0?'<div class="f"><label>Structure weight W (t), from the steel weight step</label><input value="'+fmt(V.W)+'" disabled></div>':'')+'</div><div class="fh">'+GN[st.g]+'</div><div class="form">'+m.fields.map(fieldHTML).join('')+'</div>';
+  $('#inh').textContent='Inputs · '+GN[st.g];nt='The general inputs this group needs, then its own, as in the tool. Example values.';}
+ else{h='<div class="fh">General inputs</div><div class="form">'+SHARED.filter(function(f){return f[0]!=='W';}).map(fieldHTML).join('')+'</div>';$('#inh').textContent='Inputs · general';nt='Each group’s own inputs appear when you reach it.';}
+ $('#inputs').innerHTML=h;$('#inn').textContent=nt;}
+var ALLF=function(){var a=SHARED.concat(STEEL_FIELDS);[MODS.structure,DECK_C,DECK_T,MODS.propulsion,MODS.aux,MODS.elec,MODS.living,MODS.sanitary,MODS.nav,MODS.safety].forEach(function(m){a=a.concat(m.fields);});return a;}();
+function findField(k){for(var i=0;i<ALLF.length;i++)if(ALLF[i][0]===k)return ALLF[i];return [k,'','','f'];}
+function go(i,fromPlay){cur=Math.max(0,Math.min(STEPS.length-1,i));u=(playing||fromPlay)?0:1;callout();stepsFill();where();scene();inputs();live();
+ if(window.MathJax&&MathJax.tex2svg)return;}
+function refresh(){compute();callout();scene();live();var a=document.activeElement&&document.activeElement.id;inputs();if(a&&document.getElementById(a))try{document.getElementById(a).focus();}catch(e){}}
+document.addEventListener('change',function(e){var el=e.target;if(el.matches('#inputs [data-k]')){var k=el.getAttribute('data-k'),f=findField(k);
+  if(f[3]==='c'){V[k]=el.value;}else{var x=parseFloat(String(el.value).replace(',','.'));var bad=!isFinite(x)||x<0;el.parentNode.classList.toggle('bad',bad);if(bad)return;V[k]=f[3]==='i'?Math.round(x):x;}
+  geom();refresh();}});
+document.addEventListener('input',function(e){var el=e.target;if(el.matches('[data-ind]')){var i=+el.getAttribute('data-ind');IND[i][1]=parseFloat(el.value);$('#indo'+i).textContent=IND[i][1]+' %';compute();callout();live();}});
+function shipsBar(){$('#ships').innerHTML='<label for="shipsel" class="shl">Type of ship</label><select id="shipsel">'+FAMS.map(function(F,i){return '<optgroup label="'+F.n+'">'+F.ships.map(function(nm,j){return '<option value="'+i+'-'+j+'"'+(i===fam&&j===ship?' selected':'')+'>'+nm+' ('+F.n.toLowerCase().replace(/s$/,'')+')</option>';}).join('')+'</optgroup>';}).join('')+'</select><span class="shn">'+(FAMS[fam].k==='c'?'adds lashing gear to the deck group':FAMS[fam].k==='t'?'adds cargo pumps, piping, inert gas and foam':'uses the common deck group')+'</span>';}
+document.addEventListener('change',function(e){if(e.target.id!=='shipsel')return;var p=e.target.value.split('-'),nf=+p[0];if(nf!==fam){fam=nf;V.K_st=KFAM[fam];}ship=+p[1];shipsBar();geom();refresh();});
+document.addEventListener('click',function(e){var b=e.target.closest('[data-f]');if(b){var nf=+b.getAttribute('data-f');if(nf!==fam){fam=nf;V.K_st=KFAM[fam];}ship=+b.getAttribute('data-sh');shipsBar();geom();refresh();return;}
+ var sgb=e.target.closest('[data-seg]');if(sgb){go(SEGS[+sgb.getAttribute('data-seg')].a);return;}});
+$('#next').addEventListener('click',function(){go(cur+1);});
+$('#back').addEventListener('click',function(){go(cur-1);});
+$('#play').addEventListener('click',function(){if(!playing&&cur===STEPS.length-1&&u>=1)go(0,true);playing=!playing;if(playing&&u>=1&&cur<STEPS.length-1){go(cur+1,true);}this.textContent=playing?'Pause':'Play';});
+document.addEventListener('keydown',function(e){if(e.target.matches('input,select,textarea'))return;if(e.key==='ArrowRight'){go(cur+1);e.preventDefault();}else if(e.key==='ArrowLeft'){go(cur-1);e.preventDefault();}else if(e.key===' '&&e.target===document.body){$('#play').click();e.preventDefault();}});
+$('#spd').addEventListener('input',function(){SEC=+this.value;$('#spdv').textContent=SEC+' s a step';});
+$('#fix').addEventListener('change',function(){FIX=this.checked;refresh();});
+$('#reset').addEventListener('click',function(){V=Object.assign({},EX);V.K_st=KFAM[fam];IND=IND0.map(function(x){return x.slice();});geom();refresh();});
+var FIT=window.matchMedia('(min-width:1020px) and (min-height:560px)');
+function sizeCanvas(){var box=$('#cvbox'),wr=$('#cvwrap');
+ if(FIT.matches){var w=box.clientWidth,h=box.clientHeight;wr.style.width=Math.floor(Math.min(w,h/0.61))+'px';}else wr.style.width='100%';
+ var r=cv.getBoundingClientRect(),d=Math.min(window.devicePixelRatio||1,2);cv.width=Math.round(r.width*d);cv.height=Math.round(r.width*0.61*d);
+ wr.style.setProperty('--cf',Math.max(11,Math.min(16,r.width/64)).toFixed(1)+'px');}
+if(FIT.addEventListener)FIT.addEventListener('change',sizeCanvas);
+document.addEventListener('click',function(e){var t=e.target.closest('[data-tab]');if(!t)return;var k=t.getAttribute('data-tab');
+ document.querySelectorAll('[data-tab]').forEach(function(b){b.setAttribute('aria-selected',String(b===t));});
+ $('#scene').hidden=k!=='step';$('#pane-in').hidden=k!=='in';$('#pane-ab').hidden=k!=='ab';});
+$('#fs').addEventListener('click',function(){var d=document;try{if(d.fullscreenElement){d.exitFullscreen();}else{d.documentElement.requestFullscreen().catch(function(){});}}catch(e){}});
+document.addEventListener('fullscreenchange',function(){$('#fs').textContent=document.fullscreenElement?'Exit full screen':'Full screen';setTimeout(sizeCanvas,60);});
+function frame(now){var dt=last?Math.min(.1,(now-last)/1000):0;last=now;
+ if(playing&&u<1){u=Math.min(1,u+dt/SEC);if(u>=1){if(cur<STEPS.length-1){go(cur+1,true);}else{playing=false;$('#play').textContent='Play';}}}
+ if(u<1){$('#callout').style.opacity=Math.min(1,Math.max(0.05,(u-0.12)/0.15));}else $('#callout').style.opacity=1;
+ draw(now);stepsFill();if(playing||u<1)live();requestAnimationFrame(frame);}
+window.addEventListener('resize',sizeCanvas);
+compute();geom();shipsBar();stepsBar();sizeCanvas();go(0);requestAnimationFrame(frame);
+(function mj(){if(window.MathJax&&MathJax.startup&&MathJax.startup.promise){MathJax.startup.promise.then(function(){callout();});}else setTimeout(mj,200);})();
+window.__nbc={R:function(){return R;},TOT:function(){return TOT;},WS:function(){return WS;},go:go,STEPS:STEPS};
+
+})();
+</script>
+</body>
+</html>
